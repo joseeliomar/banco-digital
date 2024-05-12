@@ -1,0 +1,17 @@
+server:
+  port: 8100 
+spring:
+  application:
+    name: conta-digital-cliente-ms
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/conta_digital_cliente_ms?useTimezone=true&serverTimezone=UTC
+    username: root
+    password: abc@123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        '[format_sql]': true
+    show-sql: true
