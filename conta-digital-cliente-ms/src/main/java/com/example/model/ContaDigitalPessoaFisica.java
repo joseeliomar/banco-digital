@@ -1,6 +1,7 @@
-package com.example.entities;
+package com.example.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import jakarta.persistence.Column;
@@ -31,6 +32,21 @@ public class ContaDigitalPessoaFisica extends ContaDigitalCliente {
 
 	@Column(nullable = false, length = 100)
 	private String nomeCompletoMae;
+	
+	public ContaDigitalPessoaFisica() {
+		super();
+	}
+
+	public ContaDigitalPessoaFisica(String agencia, String conta, String senha, String telefone, String email,
+			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cpf,
+			String nomeCompleto, LocalDate dataNascimento, String paisNascimento, String nomeCompletoMae) {
+		super(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, dataHoraAlteracao);
+		this.cpf = cpf;
+		this.nomeCompleto = nomeCompleto;
+		this.dataNascimento = dataNascimento;
+		this.paisNascimento = paisNascimento;
+		this.nomeCompletoMae = nomeCompletoMae;
+	}
 
 	public String getCpf() {
 		return cpf;
