@@ -77,10 +77,11 @@
 # Visão geral do sistema
 Aqui é mostrada uma visão geral do sistema com os microsserviços e os bancos de dados deles.
 
-## Diagramas de classes
-	Aqui são encontrados os diagramas de classes dos microsserviços.
-
 <img src="/imagens-para-o-readme/Visão geral do sistema.png">
+
+## Diagramas de classes
+
+Aqui são encontrados os diagramas de classes dos microsserviços.
 
 ## Diagrama de classes do microsserviço conta-digital-cliente-ms
 
