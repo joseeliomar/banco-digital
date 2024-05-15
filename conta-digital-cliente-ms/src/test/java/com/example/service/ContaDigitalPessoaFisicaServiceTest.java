@@ -8,12 +8,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.BDDMockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.example.model.ContaDigitalPessoaFisica;
+import com.example.repository.ContaDigitalPessoaFisicaRepository;
 import com.example.service.exceptions.ValidacaoException;
 
 //@ExtendWith(MockitoExtension.class)
@@ -33,10 +36,14 @@ class ContaDigitalPessoaFisicaServiceTest {
 	@Autowired
 	ContaDigitalPessoaFisicaService service;
 	
+	@MockBean
+	ContaDigitalPessoaFisicaRepository repository;
+	
 	ContaDigitalPessoaFisica contaDigitalPessoaFisica1;
 	
 	@BeforeEach
 	void setup() {
+		// Given
 		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
 				"19980001234", "fulano@email.com", 1L, LocalDateTime.now(), null, "1234567890", "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "BR", "Fulana de Tal");
@@ -46,7 +53,8 @@ class ContaDigitalPessoaFisicaServiceTest {
 	@Test
 	void testCriaContaDigital_WithSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNullo() {
 		// Given
-
+		given(repository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica1);
+		
 		// When & Then
 		ContaDigitalPessoaFisica actual = Assertions.assertDoesNotThrow(
 				() -> service.criaContaDigitalPessoaFisica(contaDigitalPessoaFisica1),
@@ -210,13 +218,13 @@ class ContaDigitalPessoaFisicaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quanto tenta criar conta digital com senha com mais de 10 caracteres deve ser lançada uma exceção.")
+	@DisplayName("Quanto tenta criar conta digital com senha com mais de 16 caracteres deve ser lançada uma exceção.")
 	@Test
-	void testCriaContaDigital_ComSenhaComMaisDezCaracteres_DeveSerLancadaExcecao() {
+	void testCriaContaDigital_ComSenhaComMaisDezesseisCaracteres_DeveSerLancadaExcecao() {
 		// Given
-		String senhaCom11Caracteres = "1234567890@";
-		contaDigitalPessoaFisica1.setSenha(senhaCom11Caracteres);
-		String mensagemEsperada = "Senha com mais de 10 caracteres.";
+		String senhaCom17Caracteres = "1234567890123456@";
+		contaDigitalPessoaFisica1.setSenha(senhaCom17Caracteres);
+		String mensagemEsperada = "Senha com mais de 16 caracteres.";
 
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperado();
@@ -265,6 +273,77 @@ class ContaDigitalPessoaFisicaServiceTest {
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
+	
+	@DisplayName("Quanto tenta criar conta digital com e-mail não informado (string nula) deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComEmailNulo_DeveSerLancadaExcecao() {
+		// Given
+		String emailNulo = null;
+		contaDigitalPessoaFisica1.setEmail(emailNulo);
+		String mensagemEsperada = "E-mail não informado.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperado();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quanto tenta criar conta digital com e-mail não informado (string em branco) deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComEmailEmBranco_DeveSerLancadaExcecao() {
+		// Given
+		String emailEmBranco = "       ";
+		contaDigitalPessoaFisica1.setEmail(emailEmBranco);
+		String mensagemEsperada = "E-mail não informado.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperado();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quanto tenta criar conta digital com e-mail sem o símbolo @ (arroba) deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComEmailSemArroba_DeveSerLancadaExcecao() {
+		// Given
+		String emailEmBranco = "email123gmail.com";
+		contaDigitalPessoaFisica1.setEmail(emailEmBranco);
+		String mensagemEsperada = "E-mail informado sem o símbolo @ (arroba).";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperado();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quanto tenta criar conta digital sem o código do endereço deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_SemCodigoEndereco_DeveSerLancadaExcecao() {
+		// Given
+		Long codigoEnderecoNulo = null;
+		contaDigitalPessoaFisica1.setIdEndereco(codigoEnderecoNulo);
+		String mensagemEsperada = "O código do endereço não foi informado.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperado();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quanto tenta criar conta digital com endereço não localizado deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComEnderecoNaoLocalizado_DeveSerLancadaExcecao() {
+		// Given
+		Long codigoEnderecoNulo = 1L;
+		contaDigitalPessoaFisica1.setIdEndereco(codigoEnderecoNulo);
+		String mensagemEsperada = "O código do endereço não foi informado.";
+//		given();
+		
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperado();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
 
 	private void confirmaSeExcecaoLancadaContemMensagemEsperada(String mensagemEsperada, ValidacaoException exception) {
 		Assertions.assertEquals(mensagemEsperada, exception.getMessage(),
@@ -276,4 +355,6 @@ class ContaDigitalPessoaFisicaServiceTest {
 				() -> service.criaContaDigitalPessoaFisica(contaDigitalPessoaFisica1),
 				() -> "A exceção do tipo esperado não foi lançada.");
 	}
+	
+	
 }

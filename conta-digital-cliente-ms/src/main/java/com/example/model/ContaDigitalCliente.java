@@ -16,7 +16,7 @@ abstract class ContaDigitalCliente {
 	@Column(nullable = false, length = 10)
 	private String conta;
 
-	@Column(nullable = false, length = 10)
+	@Column(nullable = false, length = 16)
 	private String senha;
 
 	@Column(nullable = false, length = 11)
