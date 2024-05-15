@@ -18,19 +18,17 @@ import jakarta.persistence.UniqueConstraint;
 public class ContaDigitalPessoaFisica extends ContaDigitalCliente {
 
 	@Id
+	@Column(length = 11)
 	private String cpf;
 
-	@Column(nullable = false, length = 100)
+	@Column(name = "nome_completo", nullable = false, length = 100)
 	private String nomeCompleto;
 
-	@Column(nullable = false)
+	@Column(name = "data_nascimento", nullable = false)
 	@Temporal(TemporalType.DATE)
 	private LocalDate dataNascimento;
 
-	@Column(nullable = false, length = 100)
-	private String paisNascimento;
-
-	@Column(nullable = false, length = 100)
+	@Column(name = "nome_completo_mae", nullable = false, length = 100)
 	private String nomeCompletoMae;
 	
 	public ContaDigitalPessoaFisica() {
@@ -39,12 +37,11 @@ public class ContaDigitalPessoaFisica extends ContaDigitalCliente {
 
 	public ContaDigitalPessoaFisica(String agencia, String conta, String senha, String telefone, String email,
 			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cpf,
-			String nomeCompleto, LocalDate dataNascimento, String paisNascimento, String nomeCompletoMae) {
+			String nomeCompleto, LocalDate dataNascimento, String nomeCompletoMae) {
 		super(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, dataHoraAlteracao);
 		this.cpf = cpf;
 		this.nomeCompleto = nomeCompleto;
 		this.dataNascimento = dataNascimento;
-		this.paisNascimento = paisNascimento;
 		this.nomeCompletoMae = nomeCompletoMae;
 	}
 
@@ -70,14 +67,6 @@ public class ContaDigitalPessoaFisica extends ContaDigitalCliente {
 
 	public void setDataNascimento(LocalDate dataNascimento) {
 		this.dataNascimento = dataNascimento;
-	}
-
-	public String getPaisNascimento() {
-		return paisNascimento;
-	}
-
-	public void setPaisNascimento(String paisNascimento) {
-		this.paisNascimento = paisNascimento;
 	}
 
 	public String getNomeCompletoMae() {

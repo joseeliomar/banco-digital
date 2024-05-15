@@ -17,7 +17,7 @@ public class ContaDigitalPessoaJuridica extends ContaDigitalCliente {
 	@Id
 	private String cnpj;
 
-	@Column(nullable = false, length = 100)
+	@Column(name = "nome_social", nullable = false, length = 100)
 	private String nomeSocial;
 
 	public ContaDigitalPessoaJuridica(String agencia, String conta, String senha, String telefone, String email,
