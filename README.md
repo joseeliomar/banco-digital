@@ -1,4 +1,4 @@
-# banco-digital (ainda em processo de desenvolvimento)
+# Banco-Digital (ainda em processo de desenvolvimento)
 
 
 # Requisitos funcionais
@@ -74,4 +74,27 @@
 
   O sistema deverá permitir que seja feito login via token.
 
+# Visão geral do sistema
+Aqui é mostrada uma visão geral do sistema com os microsserviços e os bancos de dados deles.
+
+## Diagramas de classes
+	Aqui são encontrados os diagramas de classes dos microsserviços.
+
+<img src="/imagens-para-o-readme/Visão geral do sistema.png>
+
+## Diagrama de classes do microsserviço conta-digital-cliente-ms
+
+<img src="/imagens-para-o-readme/Diagrama de classes do microsserviço conta-digital-cliente-ms.png>
+
+## Diagrama de classes do microsserviço endereco-ms
+
+<img src="/imagens-para-o-readme/Diagrama de classes do microsserviço endereco-ms.png>
+
+## Diagrama de classes do microsserviço conta-corrente-poupanca-ms
+
+<img src="/imagens-para-o-readme/Diagrama de classes do microsserviço conta-corrente-poupanca-ms.png>
+
+## Diagrama de classes do microsserviço extrato-bancario-ms
+
+<img src="/imagens-para-o-readme/Diagrama de classes do microsserviço extrato-bancario-ms.png>
 
