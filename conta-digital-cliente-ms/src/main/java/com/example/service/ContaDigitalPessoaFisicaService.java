@@ -2,6 +2,7 @@ package com.example.service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,8 @@ public class ContaDigitalPessoaFisicaService {
 		validaNomeCompleto(nomeCompleto);
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
+		
+		
 		
 		contaDigitalPessoaFisica.setDataHoraCadastro(LocalDateTime.now());
 		contaDigitalPessoaFisica.setDataHoraAlteracao(null);
@@ -153,5 +156,48 @@ public class ContaDigitalPessoaFisicaService {
 		if (nomeCompletoMae.length() > 100) {
 			throw new ValidacaoException("Nome completo da mãe com mais de 100 caracteres.", HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	public ContaDigitalPessoaFisica alteraContaDigitalPessoaFisica(ContaDigitalPessoaFisica contaDigitalPessoaFisica) {
+		String agencia = contaDigitalPessoaFisica.getAgencia();
+		String conta = contaDigitalPessoaFisica.getConta();
+		String senha = contaDigitalPessoaFisica.getSenha();
+		String telefone = contaDigitalPessoaFisica.getTelefone();
+		String email = contaDigitalPessoaFisica.getEmail();
+		Long idEndereco = contaDigitalPessoaFisica.getIdEndereco();
+		String cpf = contaDigitalPessoaFisica.getCpf();
+		String nomeCompleto = contaDigitalPessoaFisica.getNomeCompleto();
+		LocalDate dataNascimento = contaDigitalPessoaFisica.getDataNascimento();
+		String nomeCompletoMae = contaDigitalPessoaFisica.getNomeCompletoMae();
+		
+		validaAgencia(agencia);
+		validaConta(conta);
+		validaSenha(senha);
+		validaTelefone(telefone);
+		validaEmail(email);
+		validaEndereco(idEndereco);
+		validaCpf(cpf);
+		validaNomeCompleto(nomeCompleto);
+		validaDataNascimento(dataNascimento);
+		validaNomeCompletoMae(nomeCompletoMae);
+		
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = this.repository.findById(cpf);
+		
+		ContaDigitalPessoaFisica contaDigitalPessoaFisicaSalvaBancoDados = contaDigitalPessoaFisicaOptional
+				.orElseThrow(
+						() -> new ValidacaoException("Não foi encontrada uma conta com o CPF informado.", HttpStatus.BAD_REQUEST));
+		
+		contaDigitalPessoaFisicaSalvaBancoDados.setAgencia(agencia);
+		contaDigitalPessoaFisicaSalvaBancoDados.setConta(conta);
+		contaDigitalPessoaFisicaSalvaBancoDados.setSenha(senha);
+		contaDigitalPessoaFisicaSalvaBancoDados.setTelefone(telefone);
+		contaDigitalPessoaFisicaSalvaBancoDados.setEmail(email);
+		contaDigitalPessoaFisicaSalvaBancoDados.setIdEndereco(idEndereco);
+		contaDigitalPessoaFisicaSalvaBancoDados.setNomeCompleto(nomeCompleto);
+		contaDigitalPessoaFisicaSalvaBancoDados.setDataNascimento(dataNascimento);
+		contaDigitalPessoaFisicaSalvaBancoDados.setNomeCompletoMae(nomeCompletoMae);
+		
+		contaDigitalPessoaFisicaSalvaBancoDados.setDataHoraAlteracao(LocalDateTime.now());
+		return repository.save(contaDigitalPessoaFisicaSalvaBancoDados);
 	}
 }

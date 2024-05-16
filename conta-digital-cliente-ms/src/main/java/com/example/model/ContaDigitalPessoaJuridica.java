@@ -15,17 +15,18 @@ import jakarta.persistence.UniqueConstraint;
 public class ContaDigitalPessoaJuridica extends ContaDigitalCliente {
 
 	@Id
+	@Column(length = 14)
 	private String cnpj;
 
-	@Column(name = "nome_social", nullable = false, length = 100)
-	private String nomeSocial;
+	@Column(name = "razao_social", nullable = false, length = 144)
+	private String razaoSocial;
 
 	public ContaDigitalPessoaJuridica(String agencia, String conta, String senha, String telefone, String email,
 			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cnpj,
-			String nomeSocial) {
+			String razaoSocial) {
 		super(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, dataHoraAlteracao);
 		this.cnpj = cnpj;
-		this.nomeSocial = nomeSocial;
+		this.razaoSocial = razaoSocial;
 	}
 
 	public String getCnpj() {
@@ -36,12 +37,12 @@ public class ContaDigitalPessoaJuridica extends ContaDigitalCliente {
 		this.cnpj = cnpj;
 	}
 
-	public String getNomeSocial() {
-		return nomeSocial;
+	public String getRazaoSocial() {
+		return razaoSocial;
 	}
 
-	public void setNomeSocial(String nomeSocial) {
-		this.nomeSocial = nomeSocial;
+	public void setRazaoSocial(String razaoSocial) {
+		this.razaoSocial = razaoSocial;
 	}
 
 	@Override
