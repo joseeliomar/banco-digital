@@ -557,7 +557,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Agência não informada.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -571,7 +571,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Agência não informada.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -585,7 +585,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Agência com menos de 10 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -599,7 +599,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Agência com mais de 10 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -613,7 +613,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Conta não informada.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -627,7 +627,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Conta não informada.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -641,7 +641,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Conta com menos de 10 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -655,7 +655,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Conta com mais de 10 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -669,7 +669,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Senha não informada.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -683,7 +683,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Senha não informada.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -697,7 +697,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Senha com menos de 8 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 		
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -711,7 +711,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Senha com mais de 16 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -725,7 +725,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Telefone não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -739,7 +739,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Telefone não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -753,7 +753,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Telefone com mais de 11 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -767,7 +767,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "E-mail não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -781,7 +781,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "E-mail não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -795,7 +795,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "E-mail informado sem o símbolo @ (arroba).";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -809,7 +809,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "E-mail com mais de 50 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -823,7 +823,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "O código do endereço não foi informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -837,7 +837,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "O endereço não foi localizado.";
 		
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -851,7 +851,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "CPF não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -865,7 +865,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "CPF não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -879,7 +879,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "CPF com menos de 11 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -893,7 +893,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "CPF com mais de 11 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -907,7 +907,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Nome completo não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -921,7 +921,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Nome completo não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -935,7 +935,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Nome completo com mais de 100 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -949,7 +949,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Data nascimento não informada.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -963,7 +963,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Nome completo da mãe não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -977,7 +977,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Nome completo da mãe não informado.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -991,7 +991,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String mensagemEsperada = "Nome completo da mãe com mais de 100 caracteres.";
 
 		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital();
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
@@ -1007,7 +1007,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 				() -> "A exceção do tipo esperado não foi lançada.");
 	}
 	
-	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoAlteraContaDigital() {
+	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital() {
 		return assertThrows(ValidacaoException.class,
 				() -> service.alteraContaDigitalPessoaFisica(contaDigitalPessoaFisica1),
 				() -> "A exceção do tipo esperado não foi lançada.");
