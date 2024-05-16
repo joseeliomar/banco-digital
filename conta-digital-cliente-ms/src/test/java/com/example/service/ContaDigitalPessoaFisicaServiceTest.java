@@ -531,25 +531,6 @@ class ContaDigitalPessoaFisicaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	// ----------------------------------------------------------- Alteração --------------------------------------------------------------------
 	
 	@DisplayName("Altera uma conta digital com sucesso quando nenhuma exceção for lançada e for retornado um objeto não nullo do tipo persistido")
