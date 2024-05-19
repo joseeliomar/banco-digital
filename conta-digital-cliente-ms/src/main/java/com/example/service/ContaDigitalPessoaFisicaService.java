@@ -14,6 +14,7 @@ import com.example.model.ContaDigitalPessoaFisica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 import com.example.service.exceptions.ValidacaoException;
 import com.example.services.controller.dto.ContaDigitalPessoaFisicaAlteracaoDto;
+import com.example.services.controller.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.services.controller.dto.ContaDigitalPessoaFisicaInsercaoDto;
 
 @Service
@@ -204,12 +205,16 @@ public class ContaDigitalPessoaFisicaService {
 	public Optional<ContaDigitalPessoaFisica> buscaContaDigitalPeloCpf(String cpf) {
 		return repository.findById(cpf);
 	}
+	
+	public ContaDigitalPessoaFisicaDTO1Busca buscaContaDigitalPeloCpfComRespostaSemSenha(String cpf) {
+		return new ContaDigitalPessoaFisicaDTO1Busca(repository.findById(cpf).orElse(null));
+	}
 
 	public Optional<ContaDigitalPessoaFisica> buscaContaDigitalPelaAgenciaConta(String agencia, String conta) {
 		return repository.findByAgenciaAndConta(agencia, conta);
 	}
 
-	public void removeContaDigital(String cpf) {
+	public void removeContaDigitalPessoaFisica(String cpf) {
 		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
 		
 		ContaDigitalPessoaFisica contaDigitalPessoaFisicaSalvaBancoDados = contaDigitalPessoaFisicaOptional.orElseThrow(

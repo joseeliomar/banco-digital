@@ -1,10 +1,13 @@
 package com.example.services.controller.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class ContaDigitalPessoaFisicaInsercaoDto {
+public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private String agencia;
 	private String conta;

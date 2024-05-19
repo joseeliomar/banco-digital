@@ -79,7 +79,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", codigoEnderecoExistente, null, null, cpf1, "Fulano de Tal",
+				"19980001234", "fulano@email.com", codigoEnderecoExistente, cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
@@ -926,7 +926,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String cpfContaDigitalNaoCadastrada = "89815127312";
 		ContaDigitalPessoaFisicaAlteracaoDto contaDigitalNaoCadastrada = new ContaDigitalPessoaFisicaAlteracaoDto(
 				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", codigoEnderecoExistente,
-				null, null, cpfContaDigitalNaoCadastrada, "Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
+				cpfContaDigitalNaoCadastrada, "Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		contaDigitalPessoaFisicaAlteracaoDto1 = contaDigitalNaoCadastrada;
 		String mensagemEsperada = "Não foi encontrada uma conta com o CPF informado.";
 
@@ -1124,7 +1124,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		String cpf = contaDigitalPessoaFisica1.getCpf();
 		willDoNothing().given(repository).delete(contaDigitalPessoaFisica1);
 		
-		service.removeContaDigital(cpf);
+		service.removeContaDigitalPessoaFisica(cpf);
 		
 		verify(repository, times(1)).delete(contaDigitalPessoaFisica1);
 	}
@@ -1161,7 +1161,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 	
 	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoRemocaoContaDigital(String cpf) {
 		return assertThrows(ValidacaoException.class,
-				() -> service.removeContaDigital(cpf),
+				() -> service.removeContaDigitalPessoaFisica(cpf),
 				() -> EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA);
 	}
 }

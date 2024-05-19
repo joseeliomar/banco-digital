@@ -26,8 +26,5 @@ public class ContaDigitalPessoaJuridicaService {
 		if (razaoSocial == null || razaoSocial.isBlank()) {
 			throw new ValidacaoException("Razão social não informada.", HttpStatus.BAD_REQUEST);
 		}
-		/*if (nomeCompleto.length() > 100) {
-			throw new ValidacaoException("Nome completo com mais de 100 caracteres.", HttpStatus.BAD_REQUEST);
-		}*/
 	}
 }
