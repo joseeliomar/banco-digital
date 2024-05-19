@@ -13,6 +13,8 @@ import com.example.feignclients.dto.EnderecoDto;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 import com.example.service.exceptions.ValidacaoException;
+import com.example.services.controller.dto.ContaDigitalPessoaFisicaAlteracaoDto;
+import com.example.services.controller.dto.ContaDigitalPessoaFisicaInsercaoDto;
 
 @Service
 public class ContaDigitalPessoaFisicaService {
@@ -23,17 +25,17 @@ public class ContaDigitalPessoaFisicaService {
 	@Autowired
 	private EnderecoFeignClient enderecoFeignClient;
 	
-	public ContaDigitalPessoaFisica criaContaDigitalPessoaFisica(ContaDigitalPessoaFisica contaDigitalPessoaFisica) {
-		String agencia = contaDigitalPessoaFisica.getAgencia();
-		String conta = contaDigitalPessoaFisica.getConta();
-		String senha = contaDigitalPessoaFisica.getSenha();
-		String telefone = contaDigitalPessoaFisica.getTelefone();
-		String email = contaDigitalPessoaFisica.getEmail();
-		Long idEndereco = contaDigitalPessoaFisica.getIdEndereco();
-		String cpf = contaDigitalPessoaFisica.getCpf();
-		String nomeCompleto = contaDigitalPessoaFisica.getNomeCompleto();
-		LocalDate dataNascimento = contaDigitalPessoaFisica.getDataNascimento();
-		String nomeCompletoMae = contaDigitalPessoaFisica.getNomeCompletoMae();
+	public ContaDigitalPessoaFisica insereContaDigitalPessoaFisica(ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
+		String agencia = contaDigitalPessoaFisicaInsercaoDto.getAgencia();
+		String conta = contaDigitalPessoaFisicaInsercaoDto.getConta();
+		String senha = contaDigitalPessoaFisicaInsercaoDto.getSenha();
+		String telefone = contaDigitalPessoaFisicaInsercaoDto.getTelefone();
+		String email = contaDigitalPessoaFisicaInsercaoDto.getEmail();
+		Long idEndereco = contaDigitalPessoaFisicaInsercaoDto.getIdEndereco();
+		String cpf = contaDigitalPessoaFisicaInsercaoDto.getCpf();
+		String nomeCompleto = contaDigitalPessoaFisicaInsercaoDto.getNomeCompleto();
+		LocalDate dataNascimento = contaDigitalPessoaFisicaInsercaoDto.getDataNascimento();
+		String nomeCompletoMae = contaDigitalPessoaFisicaInsercaoDto.getNomeCompletoMae();
 		
 		validaAgencia(agencia);
 		validaConta(conta);
@@ -46,10 +48,8 @@ public class ContaDigitalPessoaFisicaService {
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
 		
-		
-		
-		contaDigitalPessoaFisica.setDataHoraCadastro(LocalDateTime.now());
-		contaDigitalPessoaFisica.setDataHoraAlteracao(null);
+		LocalDateTime dataHoraCadastro = LocalDateTime.now();
+		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
 		return repository.save(contaDigitalPessoaFisica);
 	}
 
@@ -158,7 +158,7 @@ public class ContaDigitalPessoaFisicaService {
 		}
 	}
 	
-	public ContaDigitalPessoaFisica alteraContaDigitalPessoaFisica(ContaDigitalPessoaFisica contaDigitalPessoaFisica) {
+	public ContaDigitalPessoaFisica alteraContaDigitalPessoaFisica(ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisica) {
 		String agencia = contaDigitalPessoaFisica.getAgencia();
 		String conta = contaDigitalPessoaFisica.getConta();
 		String senha = contaDigitalPessoaFisica.getSenha();
@@ -181,7 +181,7 @@ public class ContaDigitalPessoaFisicaService {
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
 		
-		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = this.repository.findById(cpf);
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
 		
 		ContaDigitalPessoaFisica contaDigitalPessoaFisicaSalvaBancoDados = contaDigitalPessoaFisicaOptional
 				.orElseThrow(
@@ -199,5 +199,22 @@ public class ContaDigitalPessoaFisicaService {
 		
 		contaDigitalPessoaFisicaSalvaBancoDados.setDataHoraAlteracao(LocalDateTime.now());
 		return repository.save(contaDigitalPessoaFisicaSalvaBancoDados);
+	}
+
+	public Optional<ContaDigitalPessoaFisica> buscaContaDigitalPeloCpf(String cpf) {
+		return repository.findById(cpf);
+	}
+
+	public Optional<ContaDigitalPessoaFisica> buscaContaDigitalPelaAgenciaConta(String agencia, String conta) {
+		return repository.findByAgenciaAndConta(agencia, conta);
+	}
+
+	public void removeContaDigital(String cpf) {
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
+		
+		ContaDigitalPessoaFisica contaDigitalPessoaFisicaSalvaBancoDados = contaDigitalPessoaFisicaOptional.orElseThrow(
+				() -> new ValidacaoException("Não foi encontrada uma conta com o CPF informado.", HttpStatus.BAD_REQUEST));
+		
+		repository.delete(contaDigitalPessoaFisicaSalvaBancoDados);
 	}
 }
