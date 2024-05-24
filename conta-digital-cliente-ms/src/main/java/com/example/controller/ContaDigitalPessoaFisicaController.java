@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
+import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
+import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.service.ContaDigitalPessoaFisicaService;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaAlteracaoDto;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaDTO1Busca;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaInsercaoDto;
 
 @RestController
 @RequestMapping("/contaDigitalPessoaFisica")

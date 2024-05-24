@@ -1,4 +1,4 @@
-package com.example.services.controller.dto;
+package com.example.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;

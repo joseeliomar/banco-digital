@@ -13,9 +13,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaJuridica;
 import com.example.repository.ContaDigitalPessoaJuridicaRepository;
-import com.example.service.exceptions.ValidacaoException;
 
 @ExtendWith(SpringExtension.class)
 class ContaDigitalPessoaJuridicaServiceTest {

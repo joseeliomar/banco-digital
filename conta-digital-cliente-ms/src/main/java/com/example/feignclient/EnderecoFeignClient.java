@@ -1,9 +1,9 @@
-package com.example.feignclients;
+package com.example.feignclient;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.example.feignclients.dto.EnderecoDto;
+import com.example.dto.EnderecoDto;
 
 //@FeignClient(name = "endereco-ms", url = "")
 @Component // trocar o @Component pela anotação @FeignClient com as duas devidas propriedades configuradas

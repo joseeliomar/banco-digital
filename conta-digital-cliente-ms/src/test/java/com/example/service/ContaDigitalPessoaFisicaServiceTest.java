@@ -24,13 +24,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.example.feignclients.EnderecoFeignClient;
-import com.example.feignclients.dto.EnderecoDto;
+import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
+import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
+import com.example.dto.EnderecoDto;
+import com.example.exception.ValidacaoException;
+import com.example.feignclient.EnderecoFeignClient;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
-import com.example.service.exceptions.ValidacaoException;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaAlteracaoDto;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaInsercaoDto;
 
 @ExtendWith(SpringExtension.class)
 class ContaDigitalPessoaFisicaServiceTest {

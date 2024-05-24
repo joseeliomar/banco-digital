@@ -1,11 +1,10 @@
-package com.example.services.controller.dto;
+package com.example.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
+public class ContaDigitalPessoaFisicaAlteracaoDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -15,15 +14,13 @@ public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
 	private String telefone;
 	private String email;
 	private Long idEndereco;
-	private LocalDateTime dataHoraCadastro;
-	private LocalDateTime dataHoraAlteracao;
 	private String cpf;
 	private String nomeCompleto;
 	private LocalDate dataNascimento;
 	private String nomeCompletoMae;
 
-	public ContaDigitalPessoaFisicaInsercaoDto(String agencia, String conta, String senha, String telefone,
-			String email, Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cpf,
+	public ContaDigitalPessoaFisicaAlteracaoDto(String agencia, String conta, String senha, String telefone,
+			String email, Long idEndereco, String cpf,
 			String nomeCompleto, LocalDate dataNascimento, String nomeCompletoMae) {
 		this.agencia = agencia;
 		this.conta = conta;
@@ -31,8 +28,6 @@ public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
 		this.telefone = telefone;
 		this.email = email;
 		this.idEndereco = idEndereco;
-		this.dataHoraCadastro = dataHoraCadastro;
-		this.dataHoraAlteracao = dataHoraAlteracao;
 		this.cpf = cpf;
 		this.nomeCompleto = nomeCompleto;
 		this.dataNascimento = dataNascimento;
@@ -87,22 +82,6 @@ public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
 		this.idEndereco = idEndereco;
 	}
 
-	public LocalDateTime getDataHoraCadastro() {
-		return dataHoraCadastro;
-	}
-
-	public void setDataHoraCadastro(LocalDateTime dataHoraCadastro) {
-		this.dataHoraCadastro = dataHoraCadastro;
-	}
-
-	public LocalDateTime getDataHoraAlteracao() {
-		return dataHoraAlteracao;
-	}
-
-	public void setDataHoraAlteracao(LocalDateTime dataHoraAlteracao) {
-		this.dataHoraAlteracao = dataHoraAlteracao;
-	}
-
 	public String getCpf() {
 		return cpf;
 	}
@@ -148,7 +127,7 @@ public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaDigitalPessoaFisicaInsercaoDto other = (ContaDigitalPessoaFisicaInsercaoDto) obj;
+		ContaDigitalPessoaFisicaAlteracaoDto other = (ContaDigitalPessoaFisicaAlteracaoDto) obj;
 		return Objects.equals(cpf, other.cpf);
 	}
 

@@ -1,4 +1,4 @@
-package com.example.feignclients.dto;
+package com.example.dto;
 
 public record EnderecoDto(Long id) {
 

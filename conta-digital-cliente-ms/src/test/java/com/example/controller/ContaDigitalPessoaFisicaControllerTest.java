@@ -26,11 +26,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
+import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
+import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.service.ContaDigitalPessoaFisicaService;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaAlteracaoDto;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaDTO1Busca;
-import com.example.services.controller.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

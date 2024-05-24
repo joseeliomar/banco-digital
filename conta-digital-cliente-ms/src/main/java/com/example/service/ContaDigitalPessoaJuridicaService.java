@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaJuridica;
 import com.example.repository.ContaDigitalPessoaJuridicaRepository;
-import com.example.service.exceptions.ValidacaoException;
 
 @Service
 public class ContaDigitalPessoaJuridicaService {
