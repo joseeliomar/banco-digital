@@ -37,7 +37,12 @@ public class ContaDigitalPessoaFisicaController {
 	public ResponseEntity<?> buscaContaDigitalPessoaFisica(@PathVariable String cpf) {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisicaDTO1Busca = contaDigitalPessoaFisicaService
 				.buscaContaDigitalPeloCpfComRespostaSemSenha(cpf);
-		return ResponseEntity.ok(contaDigitalPessoaFisicaDTO1Busca);
+		
+		if (contaDigitalPessoaFisicaDTO1Busca != null) {
+			return ResponseEntity.ok(contaDigitalPessoaFisicaDTO1Busca);
+		}
+		
+		return ResponseEntity.notFound().build();
 	}
 	
 	@PutMapping("/")

@@ -3,9 +3,11 @@ package com.example.service;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
@@ -25,6 +27,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
+import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.dto.EnderecoDto;
 import com.example.exception.ValidacaoException;
@@ -1140,6 +1143,38 @@ class ContaDigitalPessoaFisicaServiceTest {
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoRemocaoContaDigital(cpf);
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando busca conta digital para pessoa física com sucesso "
+			+ "deve ser retornado um objeto com os dados da conta digital")
+	@Test
+	void testBuscaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoDadosContaDigital() {
+		// Given
+		given(repository.findById(anyString())).willReturn(Optional.of(contaDigitalPessoaFisica1));
+
+		// When
+		ContaDigitalPessoaFisicaDTO1Busca actual = assertDoesNotThrow(
+				() -> service.buscaContaDigitalPeloCpfComRespostaSemSenha(contaDigitalPessoaFisica1.getCpf()),
+				() -> "Não deve ser lançada nehuma exceção.");
+
+		// Then
+		assertNotNull(actual, () -> "O objeto retornado não deve ser nulo.");
+	}
+	
+	@DisplayName("Quando busca conta digital para pessoa física sem sucesso "
+			+ "não deve ser retornado um objeto com os dados da conta digital")
+	@Test
+	void testBuscaContaDigitalPessoaFisica_SemSucesso_DeveSerRetornadoObjetoDadosContaDigital() {
+		// Given
+		given(repository.findById(anyString())).willReturn(Optional.ofNullable(null));
+
+		// When
+		ContaDigitalPessoaFisicaDTO1Busca actual = assertDoesNotThrow(
+				() -> service.buscaContaDigitalPeloCpfComRespostaSemSenha(""),
+				() -> "Não deve ser lançada nehuma exceção.");
+
+		// Then
+		assertNull(actual, () -> "O objeto retornado deve ser nulo.");
 	}
 
 	private void confirmaSeExcecaoLancadaContemMensagemEsperada(String mensagemEsperada, ValidacaoException exception) {

@@ -207,7 +207,13 @@ public class ContaDigitalPessoaFisicaService {
 	}
 	
 	public ContaDigitalPessoaFisicaDTO1Busca buscaContaDigitalPeloCpfComRespostaSemSenha(String cpf) {
-		return new ContaDigitalPessoaFisicaDTO1Busca(repository.findById(cpf).orElse(null));
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = repository.findById(cpf);
+		
+		if (contaDigitalPessoaFisicaOptional.isPresent()) {
+			return new ContaDigitalPessoaFisicaDTO1Busca(contaDigitalPessoaFisicaOptional.get());
+		}
+		
+		return null;
 	}
 
 	public Optional<ContaDigitalPessoaFisica> buscaContaDigitalPelaAgenciaConta(String agencia, String conta) {
