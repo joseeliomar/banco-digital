@@ -13,6 +13,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -22,8 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,8 +39,7 @@ import com.example.service.ContaDigitalPessoaFisicaService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest
 class ContaDigitalPessoaFisicaControllerTest {
 	
 	@Autowired
@@ -76,6 +75,8 @@ class ContaDigitalPessoaFisicaControllerTest {
 	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201() throws JsonProcessingException, Exception {
 		// Given
 		given(contaDigitalPessoaFisicaService.insereContaDigitalPessoaFisica(any(ContaDigitalPessoaFisicaInsercaoDto.class))).willReturn(contaDigitalPessoaFisica1);
+		String localizacaoRecursoCriado = "http://localhost" + "/contaDigitalPessoaFisica/"
+				+ contaDigitalPessoaFisicaInsercaoDto1.getCpf();
 		
 		// When
 		ResultActions resultActions = mockMvc.perform(post("/contaDigitalPessoaFisica/")
@@ -84,9 +85,15 @@ class ContaDigitalPessoaFisicaControllerTest {
 				);
 		
 		// Then
-		resultActions
+		String cabecalhoLocation = resultActions
 				.andDo(print())
-				.andExpect(status().is(201));
+				.andExpect(status().is(201))
+				.andExpect(header().exists("Location"))
+				.andReturn()
+				.getResponse()
+				.getHeader("Location");
+		
+		assertEquals(localizacaoRecursoCriado, cabecalhoLocation, () -> "A localização presente no cabeçalho Location é diferente do esperado");
 	}
 	
 	@DisplayName("Quando insere conta digital para pessoa física sem sucesso não deve ser retornado o código de status 201")

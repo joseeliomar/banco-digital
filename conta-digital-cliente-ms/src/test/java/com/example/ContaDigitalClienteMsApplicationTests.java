@@ -3,8 +3,10 @@ package com.example;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class ContaDigitalClienteMsApplicationTests {
+import com.example.integrationtests.testcontainers.ConfiguracaoAmbienteTestesParaUsoContainers;
+
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+class ContaDigitalClienteMsApplicationTests extends ConfiguracaoAmbienteTestesParaUsoContainers {
 
 	@Test
 	void contextLoads() {

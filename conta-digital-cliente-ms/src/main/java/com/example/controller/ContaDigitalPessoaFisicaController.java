@@ -1,7 +1,8 @@
 package com.example.controller;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.service.ContaDigitalPessoaFisicaService;
+import com.example.utils.Utils;
 
 @RestController
 @RequestMapping("/contaDigitalPessoaFisica")
@@ -30,7 +32,8 @@ public class ContaDigitalPessoaFisicaController {
 			@RequestBody ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
 		ContaDigitalPessoaFisica contaDigitalPessoaFisica = contaDigitalPessoaFisicaService
 				.insereContaDigitalPessoaFisica(contaDigitalPessoaFisicaInsercaoDto);
-		return ResponseEntity.status(HttpStatus.CREATED).body(contaDigitalPessoaFisica);
+		URI localizacaoRecursoCriado = Utils.obtemLocalizacaoRecursoCriado(contaDigitalPessoaFisica.getCpf());
+		return ResponseEntity.created(localizacaoRecursoCriado).body(contaDigitalPessoaFisica);
 	}
 	
 	@GetMapping("/{cpf}")
