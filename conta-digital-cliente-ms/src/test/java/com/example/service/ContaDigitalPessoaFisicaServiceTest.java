@@ -78,7 +78,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 		
 		String cpf1 = "12345678901";
 		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", codigoEnderecoExistente, null, null, cpf1, "Fulano de Tal",
+				"19980001234", "fulano@email.com", null, null, cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("1234567890", "0000000011", "12345678",
@@ -367,34 +367,6 @@ class ContaDigitalPessoaFisicaServiceTest {
 		contaDigitalPessoaFisicaInsercaoDto1.setEmail(emailCom51Caracteres);
 		String mensagemEsperada = "E-mail com mais de 50 caracteres.";
 
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta criar conta digital sem o código do endereço deve ser lançada uma exceção.")
-	@Test
-	void testCriaContaDigital_SemCodigoEndereco_DeveSerLancadaExcecao() {
-		// Given
-		Long codigoEnderecoNulo = null;
-		contaDigitalPessoaFisicaInsercaoDto1.setIdEndereco(codigoEnderecoNulo);
-		String mensagemEsperada = "O código do endereço não foi informado.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta criar conta digital com o endereço não localizado deve ser lançada uma exceção.")
-	@Test
-	void testCriaContaDigital_ComEnderecoNaoLocalizado_DeveSerLancadaExcecao() {
-		// Given
-		Long codigoEnderecoNaoExistente = 998955511747451151L;
-		contaDigitalPessoaFisicaInsercaoDto1.setIdEndereco(codigoEnderecoNaoExistente);
-		String mensagemEsperada = "O endereço não foi localizado.";
-		
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
 
@@ -832,34 +804,6 @@ class ContaDigitalPessoaFisicaServiceTest {
 		contaDigitalPessoaFisicaAlteracaoDto1.setEmail(emailCom51Caracteres);
 		String mensagemEsperada = "E-mail com mais de 50 caracteres.";
 
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta alterar conta digital sem o código do endereço deve ser lançada uma exceção.")
-	@Test
-	void testAlteraContaDigital_SemCodigoEndereco_DeveSerLancadaExcecao() {
-		// Given
-		Long codigoEnderecoNulo = null;
-		contaDigitalPessoaFisicaAlteracaoDto1.setIdEndereco(codigoEnderecoNulo);
-		String mensagemEsperada = "O código do endereço não foi informado.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta alterar conta digital com o endereço não localizado deve ser lançada uma exceção.")
-	@Test
-	void testAlteraContaDigital_ComEnderecoNaoLocalizado_DeveSerLancadaExcecao() {
-		// Given
-		Long codigoEnderecoNaoExistente = 998955511747451151L;
-		contaDigitalPessoaFisicaAlteracaoDto1.setIdEndereco(codigoEnderecoNaoExistente);
-		String mensagemEsperada = "O endereço não foi localizado.";
-		
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
 

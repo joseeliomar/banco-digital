@@ -42,6 +42,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @WebMvcTest
 class ContaDigitalPessoaFisicaControllerTest {
 	
+	private static final String CAMINHO_BASE = "/contaDigitalPessoaFisica/";
+
 	@Autowired
 	MockMvc mockMvc;
 	
@@ -62,7 +64,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 		cpf1 = "12345678901";
 		
 		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", 1L, null, null, cpf1, "Fulano de Tal",
+				"19980001234", "fulano@email.com", null, null, cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
@@ -75,11 +77,11 @@ class ContaDigitalPessoaFisicaControllerTest {
 	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201() throws JsonProcessingException, Exception {
 		// Given
 		given(contaDigitalPessoaFisicaService.insereContaDigitalPessoaFisica(any(ContaDigitalPessoaFisicaInsercaoDto.class))).willReturn(contaDigitalPessoaFisica1);
-		String localizacaoRecursoCriado = "http://localhost" + "/contaDigitalPessoaFisica/"
+		String localizacaoRecursoCriado = "http://localhost" + CAMINHO_BASE
 				+ contaDigitalPessoaFisicaInsercaoDto1.getCpf();
 		
 		// When
-		ResultActions resultActions = mockMvc.perform(post("/contaDigitalPessoaFisica/")
+		ResultActions resultActions = mockMvc.perform(post(CAMINHO_BASE)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(contaDigitalPessoaFisicaInsercaoDto1))
 				);
@@ -107,7 +109,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 		contaDigitalPessoaFisicaInsercaoDto1.setCpf(null);
 		
 		// When
-		ResultActions resultActions = mockMvc.perform(post("/contaDigitalPessoaFisica/")
+		ResultActions resultActions = mockMvc.perform(post(CAMINHO_BASE)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(contaDigitalPessoaFisicaInsercaoDto1))
 				);
@@ -131,7 +133,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 				.willReturn(contaDigitalPessoaFisicaDTO1Busca);
 		
 		// When
-		ResultActions resultActions = mockMvc.perform(get("/contaDigitalPessoaFisica/{cpf}", this.cpf1));
+		ResultActions resultActions = mockMvc.perform(get(CAMINHO_BASE + "{cpf}", this.cpf1));
 		String conteudoBodyResposta = resultActions.andReturn().getResponse().getContentAsString();
 		
 		// Then
@@ -153,7 +155,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 				.willReturn(null);
 
 		// When
-		ResultActions resultActions = mockMvc.perform(get("/contaDigitalPessoaFisica/{cpf}", this.cpf1));
+		ResultActions resultActions = mockMvc.perform(get(CAMINHO_BASE + "{cpf}", this.cpf1));
 		String conteudoBodyResposta = resultActions.andReturn().getResponse().getContentAsString();
 
 		// Then
@@ -176,7 +178,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 		contaDigitalPessoaFisica1.setEmail(novoEmail);
 		
 		// When
-		ResultActions resultActions = mockMvc.perform(put("/contaDigitalPessoaFisica/")
+		ResultActions resultActions = mockMvc.perform(put(CAMINHO_BASE)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(contaDigitalPessoaFisicaComNovosDados))
 				);
@@ -204,7 +206,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 		contaDigitalPessoaFisica1.setEmail(novoEmail);
 		
 		// When
-		ResultActions resultActions = mockMvc.perform(put("/contaDigitalPessoaFisica/")
+		ResultActions resultActions = mockMvc.perform(put(CAMINHO_BASE)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(contaDigitalPessoaFisicaComNovosDados))
 				);
@@ -224,7 +226,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 		willDoNothing().given(contaDigitalPessoaFisicaService).removeContaDigitalPessoaFisica(anyString());
 		
 		// When
-		ResultActions resultActions = mockMvc.perform(delete("/contaDigitalPessoaFisica/{cpf}", this.cpf1));
+		ResultActions resultActions = mockMvc.perform(delete(CAMINHO_BASE + "{cpf}", this.cpf1));
 		
 		// Then
 		resultActions
@@ -240,7 +242,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 				.removeContaDigitalPessoaFisica(anyString());
 		
 		// When
-		ResultActions resultActions = mockMvc.perform(delete("/contaDigitalPessoaFisica/{cpf}", this.cpf1));
+		ResultActions resultActions = mockMvc.perform(delete(CAMINHO_BASE + "{cpf}", this.cpf1));
 		
 		// Then
 		int codigoStatusHttpResposta = resultActions

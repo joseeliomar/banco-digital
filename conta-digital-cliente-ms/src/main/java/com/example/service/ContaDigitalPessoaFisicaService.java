@@ -11,9 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
-import com.example.dto.EnderecoDto;
 import com.example.exception.ValidacaoException;
-import com.example.feignclient.EnderecoFeignClient;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 
@@ -23,16 +21,12 @@ public class ContaDigitalPessoaFisicaService {
 	@Autowired
 	private ContaDigitalPessoaFisicaRepository repository;
 	
-	@Autowired
-	private EnderecoFeignClient enderecoFeignClient;
-	
 	public ContaDigitalPessoaFisica insereContaDigitalPessoaFisica(ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
 		String agencia = contaDigitalPessoaFisicaInsercaoDto.getAgencia();
 		String conta = contaDigitalPessoaFisicaInsercaoDto.getConta();
 		String senha = contaDigitalPessoaFisicaInsercaoDto.getSenha();
 		String telefone = contaDigitalPessoaFisicaInsercaoDto.getTelefone();
 		String email = contaDigitalPessoaFisicaInsercaoDto.getEmail();
-		Long idEndereco = contaDigitalPessoaFisicaInsercaoDto.getIdEndereco();
 		String cpf = contaDigitalPessoaFisicaInsercaoDto.getCpf();
 		String nomeCompleto = contaDigitalPessoaFisicaInsercaoDto.getNomeCompleto();
 		LocalDate dataNascimento = contaDigitalPessoaFisicaInsercaoDto.getDataNascimento();
@@ -43,14 +37,13 @@ public class ContaDigitalPessoaFisicaService {
 		validaSenha(senha);
 		validaTelefone(telefone);
 		validaEmail(email);
-		validaEndereco(idEndereco);
 		validaCpf(cpf);
 		validaNomeCompleto(nomeCompleto);
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
 		
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
-		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
+		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha, telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
 		return repository.save(contaDigitalPessoaFisica);
 	}
 
@@ -111,18 +104,6 @@ public class ContaDigitalPessoaFisicaService {
 		}
 	}
 	
-	private void validaEndereco(Long idEndereco) {
-		if (idEndereco == null) {
-			throw new ValidacaoException("O código do endereço não foi informado.", HttpStatus.BAD_REQUEST);
-		}
-		
-		EnderecoDto enderecoDto = enderecoFeignClient.buscaEndereco(idEndereco);
-		
-		if (enderecoDto == null) {
-			throw new ValidacaoException("O endereço não foi localizado.", HttpStatus.BAD_REQUEST);
-		}
-	}
-	
 	private void validaCpf(String cpf) {
 		if (cpf == null || cpf.isBlank()) {
 			throw new ValidacaoException("CPF não informado.", HttpStatus.BAD_REQUEST);
@@ -176,7 +157,6 @@ public class ContaDigitalPessoaFisicaService {
 		validaSenha(senha);
 		validaTelefone(telefone);
 		validaEmail(email);
-		validaEndereco(idEndereco);
 		validaCpf(cpf);
 		validaNomeCompleto(nomeCompleto);
 		validaDataNascimento(dataNascimento);

@@ -28,12 +28,15 @@ public class ContaDigitalPessoaFisicaController {
 	private ContaDigitalPessoaFisicaService contaDigitalPessoaFisicaService;
 
 	@PostMapping("/")
-	public ResponseEntity<ContaDigitalPessoaFisica> insereContaDigitalPessoaFisica(
+	public ResponseEntity<ContaDigitalPessoaFisicaInseridaDto> insereContaDigitalPessoaFisica(
 			@RequestBody ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
 		ContaDigitalPessoaFisica contaDigitalPessoaFisica = contaDigitalPessoaFisicaService
 				.insereContaDigitalPessoaFisica(contaDigitalPessoaFisicaInsercaoDto);
-		URI localizacaoRecursoCriado = Utils.obtemLocalizacaoRecursoCriado(contaDigitalPessoaFisica.getCpf());
-		return ResponseEntity.created(localizacaoRecursoCriado).body(contaDigitalPessoaFisica);
+		ContaDigitalPessoaFisicaInseridaDto contaDigitalPessoaFisicaInseridaDto = new ContaDigitalPessoaFisicaInseridaDto(
+				contaDigitalPessoaFisica);
+		URI localizacaoRecursoCriado = Utils
+				.obtemLocalizacaoRecursoCriado(contaDigitalPessoaFisicaInseridaDto.getCpf());
+		return ResponseEntity.created(localizacaoRecursoCriado).body(contaDigitalPessoaFisicaInseridaDto);
 	}
 	
 	@GetMapping("/{cpf}")

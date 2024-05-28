@@ -25,7 +25,7 @@ abstract class ContaDigitalCliente {
 	@Column(nullable = false, length = 50)
 	private String email;
 
-	@Column(nullable = false)
+	@Column(nullable = true)
 	private Long idEndereco;
 
 	@Column(nullable = false)

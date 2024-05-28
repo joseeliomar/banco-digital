@@ -14,7 +14,6 @@ public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
 	private String senha;
 	private String telefone;
 	private String email;
-	private Long idEndereco;
 	private LocalDateTime dataHoraCadastro;
 	private LocalDateTime dataHoraAlteracao;
 	private String cpf;
@@ -23,14 +22,13 @@ public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
 	private String nomeCompletoMae;
 
 	public ContaDigitalPessoaFisicaInsercaoDto(String agencia, String conta, String senha, String telefone,
-			String email, Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cpf,
+			String email, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cpf,
 			String nomeCompleto, LocalDate dataNascimento, String nomeCompletoMae) {
 		this.agencia = agencia;
 		this.conta = conta;
 		this.senha = senha;
 		this.telefone = telefone;
 		this.email = email;
-		this.idEndereco = idEndereco;
 		this.dataHoraCadastro = dataHoraCadastro;
 		this.dataHoraAlteracao = dataHoraAlteracao;
 		this.cpf = cpf;
@@ -77,14 +75,6 @@ public class ContaDigitalPessoaFisicaInsercaoDto implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public Long getIdEndereco() {
-		return idEndereco;
-	}
-
-	public void setIdEndereco(Long idEndereco) {
-		this.idEndereco = idEndereco;
 	}
 
 	public LocalDateTime getDataHoraCadastro() {
