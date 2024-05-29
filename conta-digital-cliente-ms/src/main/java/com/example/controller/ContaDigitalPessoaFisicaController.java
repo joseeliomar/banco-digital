@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
+import com.example.dto.ContaDigitalPessoaFisicaAlteradaDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
+import com.example.dto.ContaDigitalPessoaFisicaInseridaDto;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.service.ContaDigitalPessoaFisicaService;
 import com.example.utils.Utils;
@@ -52,11 +54,11 @@ public class ContaDigitalPessoaFisicaController {
 	}
 	
 	@PutMapping("/")
-	public ResponseEntity<ContaDigitalPessoaFisica> alteraContaDigitalPessoaFisica(
+	public ResponseEntity<ContaDigitalPessoaFisicaAlteradaDto> alteraContaDigitalPessoaFisica(
 			@RequestBody ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaAlteracaoDto) {
 		ContaDigitalPessoaFisica contaDigitalPessoaFisica = contaDigitalPessoaFisicaService
 				.alteraContaDigitalPessoaFisica(contaDigitalPessoaFisicaAlteracaoDto);
-		return ResponseEntity.ok(contaDigitalPessoaFisica);
+		return ResponseEntity.ok(new ContaDigitalPessoaFisicaAlteradaDto(contaDigitalPessoaFisica));
 	}
 	
 	@DeleteMapping("/{cpf}")

@@ -64,6 +64,8 @@ class ContaDigitalPessoaFisicaServiceTest {
 	
 	private ContaDigitalPessoaFisica contaDigitalPessoaFisica1;
 	
+	private ContaDigitalPessoaFisica contaDigitalPessoaFisica2;
+	
 	private EnderecoDto enderecoDto;
 	
 	private Long codigoEnderecoExistente;
@@ -77,19 +79,26 @@ class ContaDigitalPessoaFisicaServiceTest {
 		given(enderecoFeignClient.buscaEndereco(codigoEnderecoExistente)).willReturn(enderecoDto);
 		
 		String cpf1 = "12345678901";
+		String cpf2 = "12345678902";
 		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto("1234567890", "0000000011", "12345678",
 				"19980001234", "fulano@email.com", null, null, cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
-		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", codigoEnderecoExistente, cpf1, "Fulano de Tal",
+		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
+				"19980001234", "fulano@email.com", null, null, null, cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
-		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", codigoEnderecoExistente, null, null, cpf1, "Fulano de Tal",
+		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("1234567890", "0000000011", "12345678",
+				"19980001234", "fulano@email.com", codigoEnderecoExistente, cpf2, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
+		
+		contaDigitalPessoaFisica2 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
+				"19980001234", "fulano@email.com", codigoEnderecoExistente, null, null, cpf2, "Fulano de Tal",
+				LocalDate.of(2001, 1, 1), "Fulana de Tal");
+		
 		
 		given(repository.findById(cpf1)).willReturn(Optional.of(contaDigitalPessoaFisica1));
+		given(repository.findById(cpf2)).willReturn(Optional.of(contaDigitalPessoaFisica2));
 	}
 
 	@DisplayName("Cria uma conta digital com sucesso quando nenhuma exceção for lançada e for retornado um objeto não nullo do tipo persistido")
@@ -533,7 +542,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 	@Test
 	void testAlteraContaDigital_WithSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNullo() {
 		// Given
-		given(repository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica1);
+		given(repository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica2);
 		
 		// When & Then
 		ContaDigitalPessoaFisica actual = assertDoesNotThrow(

@@ -1,33 +1,35 @@
-package com.example.controller;
+package com.example.dto;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.example.model.ContaDigitalPessoaFisica;
 
-public class ContaDigitalPessoaFisicaInseridaDto implements Serializable {
-	private static final long serialVersionUID = 1L;
-	
+public class ContaDigitalPessoaFisicaAlteradaDto {
+
 	private String agencia;
 	private String conta;
 	private String senha;
 	private String telefone;
 	private String email;
+	private Long idEndereco;
 	private LocalDateTime dataHoraCadastro;
 	private LocalDateTime dataHoraAlteracao;
 	private String cpf;
 	private String nomeCompleto;
 	private LocalDate dataNascimento;
 	private String nomeCompletoMae;
+	
+	public ContaDigitalPessoaFisicaAlteradaDto() {}
 
-	public ContaDigitalPessoaFisicaInseridaDto(ContaDigitalPessoaFisica contaDigitalPessoaFisica) {
+	public ContaDigitalPessoaFisicaAlteradaDto(ContaDigitalPessoaFisica contaDigitalPessoaFisica) {
 		this.agencia = contaDigitalPessoaFisica.getAgencia();
 		this.conta = contaDigitalPessoaFisica.getConta();
 		this.senha = contaDigitalPessoaFisica.getSenha();
 		this.telefone = contaDigitalPessoaFisica.getTelefone();
 		this.email = contaDigitalPessoaFisica.getEmail();
+		this.idEndereco = contaDigitalPessoaFisica.getIdEndereco();
 		this.dataHoraCadastro = contaDigitalPessoaFisica.getDataHoraCadastro();
 		this.dataHoraAlteracao = contaDigitalPessoaFisica.getDataHoraAlteracao();
 		this.cpf = contaDigitalPessoaFisica.getCpf();
@@ -54,6 +56,10 @@ public class ContaDigitalPessoaFisicaInseridaDto implements Serializable {
 
 	public String getEmail() {
 		return email;
+	}
+
+	public Long getIdEndereco() {
+		return idEndereco;
 	}
 
 	public LocalDateTime getDataHoraCadastro() {
@@ -93,7 +99,7 @@ public class ContaDigitalPessoaFisicaInseridaDto implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaDigitalPessoaFisicaInseridaDto other = (ContaDigitalPessoaFisicaInseridaDto) obj;
+		ContaDigitalPessoaFisicaAlteradaDto other = (ContaDigitalPessoaFisicaAlteradaDto) obj;
 		return Objects.equals(cpf, other.cpf);
 	}
 

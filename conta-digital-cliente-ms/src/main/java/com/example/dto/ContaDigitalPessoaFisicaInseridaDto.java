@@ -7,15 +7,14 @@ import java.util.Objects;
 
 import com.example.model.ContaDigitalPessoaFisica;
 
-public class ContaDigitalPessoaFisicaDTO1Busca implements Serializable {
-
+public class ContaDigitalPessoaFisicaInseridaDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String agencia;
 	private String conta;
+	private String senha;
 	private String telefone;
 	private String email;
-	private Long idEndereco;
 	private LocalDateTime dataHoraCadastro;
 	private LocalDateTime dataHoraAlteracao;
 	private String cpf;
@@ -23,20 +22,20 @@ public class ContaDigitalPessoaFisicaDTO1Busca implements Serializable {
 	private LocalDate dataNascimento;
 	private String nomeCompletoMae;
 	
-	public ContaDigitalPessoaFisicaDTO1Busca() {}
+	public ContaDigitalPessoaFisicaInseridaDto() {}
 
-	public ContaDigitalPessoaFisicaDTO1Busca(ContaDigitalPessoaFisica contaDigitalPessoaFisica) {
-		agencia = contaDigitalPessoaFisica.getAgencia();
-		conta = contaDigitalPessoaFisica.getConta();
-		telefone = contaDigitalPessoaFisica.getTelefone();
-		email = contaDigitalPessoaFisica.getEmail();
-		idEndereco = contaDigitalPessoaFisica.getIdEndereco();
-		dataHoraCadastro = contaDigitalPessoaFisica.getDataHoraCadastro();
-		dataHoraAlteracao = contaDigitalPessoaFisica.getDataHoraAlteracao();
-		cpf = contaDigitalPessoaFisica.getCpf();
-		nomeCompleto = contaDigitalPessoaFisica.getNomeCompleto();
-		dataNascimento = contaDigitalPessoaFisica.getDataNascimento();
-		nomeCompletoMae = contaDigitalPessoaFisica.getNomeCompletoMae();
+	public ContaDigitalPessoaFisicaInseridaDto(ContaDigitalPessoaFisica contaDigitalPessoaFisica) {
+		this.agencia = contaDigitalPessoaFisica.getAgencia();
+		this.conta = contaDigitalPessoaFisica.getConta();
+		this.senha = contaDigitalPessoaFisica.getSenha();
+		this.telefone = contaDigitalPessoaFisica.getTelefone();
+		this.email = contaDigitalPessoaFisica.getEmail();
+		this.dataHoraCadastro = contaDigitalPessoaFisica.getDataHoraCadastro();
+		this.dataHoraAlteracao = contaDigitalPessoaFisica.getDataHoraAlteracao();
+		this.cpf = contaDigitalPessoaFisica.getCpf();
+		this.nomeCompleto = contaDigitalPessoaFisica.getNomeCompleto();
+		this.dataNascimento = contaDigitalPessoaFisica.getDataNascimento();
+		this.nomeCompletoMae = contaDigitalPessoaFisica.getNomeCompletoMae();
 	}
 
 	public String getAgencia() {
@@ -47,16 +46,16 @@ public class ContaDigitalPessoaFisicaDTO1Busca implements Serializable {
 		return conta;
 	}
 
+	public String getSenha() {
+		return senha;
+	}
+
 	public String getTelefone() {
 		return telefone;
 	}
 
 	public String getEmail() {
 		return email;
-	}
-
-	public Long getIdEndereco() {
-		return idEndereco;
 	}
 
 	public LocalDateTime getDataHoraCadastro() {
@@ -96,7 +95,7 @@ public class ContaDigitalPessoaFisicaDTO1Busca implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaDigitalPessoaFisicaDTO1Busca other = (ContaDigitalPessoaFisicaDTO1Busca) obj;
+		ContaDigitalPessoaFisicaInseridaDto other = (ContaDigitalPessoaFisicaInseridaDto) obj;
 		return Objects.equals(cpf, other.cpf);
 	}
 
