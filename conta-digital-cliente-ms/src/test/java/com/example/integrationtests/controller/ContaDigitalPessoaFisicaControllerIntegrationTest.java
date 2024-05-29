@@ -118,10 +118,10 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 			+ "um objeto com os dados atualizados e o código de status 200")
 	@Order(2)
 	@Test
-	void testAlteraContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200() throws JsonMappingException, JsonProcessingException {
+	void testAlteraContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
+			throws JsonMappingException, JsonProcessingException {
 		String conteudoBodyResposta = given()
 					.spec(requestSpecification)
-					.contentType(ContentType.JSON)
 				.when()
 					.get("{cpf}", cpf1)
 				.then()
@@ -189,5 +189,17 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertEquals(novosDadosParaAlteracao.getNomeCompleto(), contaDigitalPessoaFisicaAlterada.getNomeCompleto());
 		assertEquals(novosDadosParaAlteracao.getDataNascimento(), contaDigitalPessoaFisicaAlterada.getDataNascimento());
 		assertEquals(novosDadosParaAlteracao.getNomeCompletoMae(), contaDigitalPessoaFisicaAlterada.getNomeCompletoMae());
+	}
+	
+	@DisplayName("Quando deleta conta digital para pessoa física com sucesso deve ser retornado o código de status 204")
+	@Order(3)
+	@Test
+	void testDeletaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
+		given()
+			.spec(requestSpecification)
+		.when()
+			.delete("{cpf}", cpf1)
+		.then()
+			.statusCode(204);
 	}
 }
