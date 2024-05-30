@@ -146,7 +146,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 	}
 	
 	@DisplayName("Quando busca conta digital para pessoa física sem sucesso "
-			+ "deve ser retornado o código de status 404 e sem conteúdo no body da resposta")
+			+ "deve ser retornado o código de status 404 e o body da resposta vazio")
 	@Test
 	void testBuscaContaDigitalPessoaFisica_SemSucesso_deveSerRetornadoCodigoStatus404SemConteudoBody()
 			throws Exception {
