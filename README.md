@@ -1,5 +1,5 @@
 # Banco-Digital (em processo de desenvolvimento).
-  - Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no para o meu portifólio de projetos aqui no GitHub.
+  - Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no meu portifólio de projetos aqui no GitHub.
   - Esse projeto está sendo construído com a arquitetura de microsserviços.
 
 # Requisitos funcionais
