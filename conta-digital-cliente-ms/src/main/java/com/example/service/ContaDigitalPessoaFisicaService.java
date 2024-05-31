@@ -16,7 +16,7 @@ import com.example.model.ContaDigitalPessoaFisica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 
 @Service
-public class ContaDigitalPessoaFisicaService {
+public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 	
 	@Autowired
 	private ContaDigitalPessoaFisicaRepository repository;
@@ -32,11 +32,11 @@ public class ContaDigitalPessoaFisicaService {
 		LocalDate dataNascimento = contaDigitalPessoaFisicaInsercaoDto.getDataNascimento();
 		String nomeCompletoMae = contaDigitalPessoaFisicaInsercaoDto.getNomeCompletoMae();
 		
-		validaAgencia(agencia);
-		validaConta(conta);
-		validaSenha(senha);
-		validaTelefone(telefone);
-		validaEmail(email);
+		super.validaAgencia(agencia);
+		super.validaConta(conta);
+		super.validaSenha(senha);
+		super.validaTelefone(telefone);
+		super.validaEmail(email);
 		validaCpf(cpf);
 		validaNomeCompleto(nomeCompleto);
 		validaDataNascimento(dataNascimento);
@@ -47,63 +47,6 @@ public class ContaDigitalPessoaFisicaService {
 		return repository.save(contaDigitalPessoaFisica);
 	}
 
-	private void validaAgencia(String agencia) {
-		if (agencia == null || agencia.isBlank()) {
-			throw new ValidacaoException("Agência não informada.", HttpStatus.BAD_REQUEST);
-		}
-		if (agencia.length() < 10) {
-			throw new ValidacaoException("Agência com menos de 10 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-		if (agencia.length() > 10) {
-			throw new ValidacaoException("Agência com mais de 10 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	private void validaConta(String conta) {
-		if (conta == null || conta.isBlank()) {
-			throw new ValidacaoException("Conta não informada.", HttpStatus.BAD_REQUEST);
-		}
-		if (conta.length() < 10) {
-			throw new ValidacaoException("Conta com menos de 10 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-		if (conta.length() > 10) {
-			throw new ValidacaoException("Conta com mais de 10 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	private void validaSenha(String senha) {
-		if (senha == null || senha.isBlank()) {
-			throw new ValidacaoException("Senha não informada.", HttpStatus.BAD_REQUEST);
-		}
-		if (senha.length() < 8) {
-			throw new ValidacaoException("Senha com menos de 8 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-		if (senha.length() > 16) {
-			throw new ValidacaoException("Senha com mais de 16 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	private void validaTelefone(String telefone) {
-		if (telefone == null || telefone.isBlank()) {
-			throw new ValidacaoException("Telefone não informado.", HttpStatus.BAD_REQUEST);
-		}
-		if (telefone.length() > 11) {
-			throw new ValidacaoException("Telefone com mais de 11 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	private void validaEmail(String email) {
-		if (email == null || email.isBlank()) {
-			throw new ValidacaoException("E-mail não informado.", HttpStatus.BAD_REQUEST);
-		}
-		if (!email.contains("@")) {
-			throw new ValidacaoException("E-mail informado sem o símbolo @ (arroba).", HttpStatus.BAD_REQUEST);
-		}
-		if (email.length() > 50) {
-			throw new ValidacaoException("E-mail com mais de 50 caracteres.", HttpStatus.BAD_REQUEST);
-		}
-	}
-	
 	private void validaCpf(String cpf) {
 		if (cpf == null || cpf.isBlank()) {
 			throw new ValidacaoException("CPF não informado.", HttpStatus.BAD_REQUEST);
@@ -140,17 +83,17 @@ public class ContaDigitalPessoaFisicaService {
 		}
 	}
 	
-	public ContaDigitalPessoaFisica alteraContaDigitalPessoaFisica(ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisica) {
-		String agencia = contaDigitalPessoaFisica.getAgencia();
-		String conta = contaDigitalPessoaFisica.getConta();
-		String senha = contaDigitalPessoaFisica.getSenha();
-		String telefone = contaDigitalPessoaFisica.getTelefone();
-		String email = contaDigitalPessoaFisica.getEmail();
-		Long idEndereco = contaDigitalPessoaFisica.getIdEndereco();
-		String cpf = contaDigitalPessoaFisica.getCpf();
-		String nomeCompleto = contaDigitalPessoaFisica.getNomeCompleto();
-		LocalDate dataNascimento = contaDigitalPessoaFisica.getDataNascimento();
-		String nomeCompletoMae = contaDigitalPessoaFisica.getNomeCompletoMae();
+	public ContaDigitalPessoaFisica alteraContaDigitalPessoaFisica(ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaAlteracaoDto) {
+		String agencia = contaDigitalPessoaFisicaAlteracaoDto.getAgencia();
+		String conta = contaDigitalPessoaFisicaAlteracaoDto.getConta();
+		String senha = contaDigitalPessoaFisicaAlteracaoDto.getSenha();
+		String telefone = contaDigitalPessoaFisicaAlteracaoDto.getTelefone();
+		String email = contaDigitalPessoaFisicaAlteracaoDto.getEmail();
+		Long idEndereco = contaDigitalPessoaFisicaAlteracaoDto.getIdEndereco();
+		String cpf = contaDigitalPessoaFisicaAlteracaoDto.getCpf();
+		String nomeCompleto = contaDigitalPessoaFisicaAlteracaoDto.getNomeCompleto();
+		LocalDate dataNascimento = contaDigitalPessoaFisicaAlteracaoDto.getDataNascimento();
+		String nomeCompletoMae = contaDigitalPessoaFisicaAlteracaoDto.getNomeCompletoMae();
 		
 		validaAgencia(agencia);
 		validaConta(conta);
@@ -187,7 +130,7 @@ public class ContaDigitalPessoaFisicaService {
 	}
 	
 	public ContaDigitalPessoaFisicaDTO1Busca buscaContaDigitalPeloCpfComRespostaSemSenha(String cpf) {
-		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = repository.findById(cpf);
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
 		
 		if (contaDigitalPessoaFisicaOptional.isPresent()) {
 			return new ContaDigitalPessoaFisicaDTO1Busca(contaDigitalPessoaFisicaOptional.get());

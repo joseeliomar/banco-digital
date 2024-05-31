@@ -36,9 +36,7 @@ import com.example.model.ContaDigitalPessoaFisica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 
 @ExtendWith(SpringExtension.class)
-class ContaDigitalPessoaFisicaServiceTest {
-
-	private static final String EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA = "A exceção do tipo esperado não foi lançada.";
+class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 
 	@TestConfiguration
 	static class BookingServiceTestConfiguration {
@@ -101,9 +99,9 @@ class ContaDigitalPessoaFisicaServiceTest {
 		given(repository.findById(cpf2)).willReturn(Optional.of(contaDigitalPessoaFisica2));
 	}
 
-	@DisplayName("Cria uma conta digital com sucesso quando nenhuma exceção for lançada e for retornado um objeto não nullo do tipo persistido")
+	@DisplayName("Cria uma conta digital com sucesso quando nenhuma exceção for lançada e for retornado um objeto não nulo do tipo persistido")
 	@Test
-	void testCriaContaDigital_WithSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNullo() {
+	void testCriaContaDigital_ComSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNullo() {
 		// Given
 		given(repository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica1);
 		
@@ -540,7 +538,7 @@ class ContaDigitalPessoaFisicaServiceTest {
 	
 	@DisplayName("Altera uma conta digital com sucesso quando nenhuma exceção for lançada e for retornado um objeto não nullo do tipo persistido")
 	@Test
-	void testAlteraContaDigital_WithSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNullo() {
+	void testAlteraContaDigital_ComSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNulo() {
 		// Given
 		given(repository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica2);
 		
@@ -879,11 +877,8 @@ class ContaDigitalPessoaFisicaServiceTest {
 	@Test
 	void testAlteraContaDigital_SemQueHajaContaCadastradaComCpfInformado_DeveSerLancadaExcecao() {
 		// Given
-		String cpfContaDigitalNaoCadastrada = "89815127312";
-		ContaDigitalPessoaFisicaAlteracaoDto contaDigitalNaoCadastrada = new ContaDigitalPessoaFisicaAlteracaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", codigoEnderecoExistente,
-				cpfContaDigitalNaoCadastrada, "Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
-		contaDigitalPessoaFisicaAlteracaoDto1 = contaDigitalNaoCadastrada;
+		String cpfSemContaDigitalAssociadoAEle = "89815127312";
+		contaDigitalPessoaFisicaAlteracaoDto1.setCpf(cpfSemContaDigitalAssociadoAEle);
 		String mensagemEsperada = "Não foi encontrada uma conta com o CPF informado.";
 
 		// When & Then
@@ -1130,11 +1125,6 @@ class ContaDigitalPessoaFisicaServiceTest {
 		assertNull(actual, () -> "O objeto retornado deve ser nulo.");
 	}
 
-	private void confirmaSeExcecaoLancadaContemMensagemEsperada(String mensagemEsperada, ValidacaoException exception) {
-		assertEquals(mensagemEsperada, exception.getMessage(),
-				() -> "A mensagem presente na exceção lançada está incorreta.");
-	}
-	
 	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital() {
 		return assertThrows(ValidacaoException.class,
 				() -> service.insereContaDigitalPessoaFisica(contaDigitalPessoaFisicaInsercaoDto1),
