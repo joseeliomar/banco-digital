@@ -19,6 +19,8 @@ public class ContaDigitalPessoaJuridicaDTO1Busca implements Serializable {
 	private LocalDateTime dataHoraAlteracao;
 	private String cnpj;
 	private String razaoSocial;
+	
+	public ContaDigitalPessoaJuridicaDTO1Busca() {}
 
 	public ContaDigitalPessoaJuridicaDTO1Busca(ContaDigitalPessoaJuridica contaDigitalPessoaJuridica) {
 		this.agencia = contaDigitalPessoaJuridica.getAgencia();

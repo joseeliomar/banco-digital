@@ -76,8 +76,6 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	@Test
 	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
-		cpf1 = "12345678901";
-
 		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
 				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", null, null, cpf1,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");

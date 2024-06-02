@@ -20,6 +20,8 @@ public class ContaDigitalPessoaJuridica extends ContaDigitalCliente {
 
 	@Column(name = "razao_social", nullable = false, length = 144)
 	private String razaoSocial;
+	
+	public ContaDigitalPessoaJuridica() {}
 
 	public ContaDigitalPessoaJuridica(String agencia, String conta, String senha, String telefone, String email,
 			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cnpj,
