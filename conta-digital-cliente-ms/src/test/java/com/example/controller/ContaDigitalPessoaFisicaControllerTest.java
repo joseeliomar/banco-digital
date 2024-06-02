@@ -39,7 +39,7 @@ import com.example.service.ContaDigitalPessoaFisicaService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest
+@WebMvcTest(controllers = ContaDigitalPessoaFisicaController.class)
 class ContaDigitalPessoaFisicaControllerTest {
 	
 	private static final String CAMINHO_BASE = "/contaDigitalPessoaFisica/";

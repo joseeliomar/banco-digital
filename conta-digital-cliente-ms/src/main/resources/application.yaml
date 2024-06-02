@@ -1,5 +1,12 @@
 server:
-  port: 8100 
+  port: 8100
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
 spring:
   application:
     name: conta-digital-cliente-ms
