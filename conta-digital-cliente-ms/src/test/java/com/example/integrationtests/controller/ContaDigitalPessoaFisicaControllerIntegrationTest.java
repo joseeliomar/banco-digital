@@ -77,7 +77,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", null, null, cpf1,
+				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", cpf1,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 
 		String localizacaoRecursoCriado = "http://localhost:" + TestConfigs.SERVER_PORT +  CAMINHO_BASE
@@ -237,7 +237,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String mensagemEsperada = "CPF não informado.";
 		
 		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", null, null, cpfNulo,
+				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", cpfNulo,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		String conteudoBodyResposta = given()

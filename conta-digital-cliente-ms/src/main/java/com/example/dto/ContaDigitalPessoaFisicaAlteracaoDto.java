@@ -20,8 +20,8 @@ public class ContaDigitalPessoaFisicaAlteracaoDto implements Serializable {
 	private String nomeCompletoMae;
 
 	public ContaDigitalPessoaFisicaAlteracaoDto(String agencia, String conta, String senha, String telefone,
-			String email, Long idEndereco, String cpf,
-			String nomeCompleto, LocalDate dataNascimento, String nomeCompletoMae) {
+			String email, Long idEndereco, String cpf, String nomeCompleto, LocalDate dataNascimento,
+			String nomeCompletoMae) {
 		this.agencia = agencia;
 		this.conta = conta;
 		this.senha = senha;
