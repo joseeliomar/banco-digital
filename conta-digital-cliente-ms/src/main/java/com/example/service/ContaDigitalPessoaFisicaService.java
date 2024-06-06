@@ -4,22 +4,18 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
+import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaFisica;
-import com.example.repository.ContaDigitalPessoaFisicaRepository;
 
 @Service
 public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
-	
-	@Autowired
-	private ContaDigitalPessoaFisicaRepository repository;
 	
 	public ContaDigitalPessoaFisica insereContaDigitalPessoaFisica(ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
 		String agencia = contaDigitalPessoaFisicaInsercaoDto.getAgencia();
@@ -34,20 +30,22 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		
 		super.validaAgencia(agencia);
 		super.validaConta(conta);
+		super.validaAgenciaContaInsercao(agencia, conta);
 		super.validaSenha(senha);
 		super.validaTelefone(telefone);
 		super.validaEmail(email);
-		validaCpf(cpf);
+		validaCpf(cpf, true);
 		validaNomeCompleto(nomeCompleto);
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
 		
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
-		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha, telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
-		return repository.save(contaDigitalPessoaFisica);
+		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha,
+				telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
+		return contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisica);
 	}
 
-	private void validaCpf(String cpf) {
+	private void validaCpf(String cpf, boolean isInsercaoContaDigital) {
 		if (cpf == null || cpf.isBlank()) {
 			throw new ValidacaoException("CPF não informado.", HttpStatus.BAD_REQUEST);
 		}
@@ -56,6 +54,14 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		}
 		if (cpf.length() > 11) {
 			throw new ValidacaoException("CPF com mais de 11 caracteres.", HttpStatus.BAD_REQUEST);
+		}
+		
+		if (isInsercaoContaDigital) {
+			Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
+			if (contaDigitalPessoaFisicaOptional.isPresent()) {
+				throw new ValidacaoException("Já existe uma conta digital cadastrada com o CPF " + cpf 
+						+ ".", HttpStatus.CONFLICT);
+			}
 		}
 	}
 	
@@ -97,10 +103,11 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		
 		validaAgencia(agencia);
 		validaConta(conta);
+		validaCpf(cpf, false);
+		validaAgenciaContaAlteracao(agencia, conta, new DocumentoCliente(cpf, TipoDocumento.CPF));
 		validaSenha(senha);
 		validaTelefone(telefone);
 		validaEmail(email);
-		validaCpf(cpf);
 		validaNomeCompleto(nomeCompleto);
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
@@ -122,11 +129,11 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		contaDigitalPessoaFisicaSalvaBancoDados.setNomeCompletoMae(nomeCompletoMae);
 		
 		contaDigitalPessoaFisicaSalvaBancoDados.setDataHoraAlteracao(LocalDateTime.now());
-		return repository.save(contaDigitalPessoaFisicaSalvaBancoDados);
+		return contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisicaSalvaBancoDados);
 	}
 
 	public Optional<ContaDigitalPessoaFisica> buscaContaDigitalPeloCpf(String cpf) {
-		return repository.findById(cpf);
+		return contaDigitalPessoaFisicaRepository.findById(cpf);
 	}
 	
 	public ContaDigitalPessoaFisicaDTO1Busca buscaContaDigitalPeloCpfComRespostaSemSenha(String cpf) {
@@ -139,16 +146,17 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		return null;
 	}
 
+	@Override
 	public Optional<ContaDigitalPessoaFisica> buscaContaDigitalPelaAgenciaConta(String agencia, String conta) {
-		return repository.findByAgenciaAndConta(agencia, conta);
+		return contaDigitalPessoaFisicaRepository.findByAgenciaAndConta(agencia, conta);
 	}
-
+	
 	public void removeContaDigitalPessoaFisica(String cpf) {
 		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
 		
 		ContaDigitalPessoaFisica contaDigitalPessoaFisicaSalvaBancoDados = contaDigitalPessoaFisicaOptional.orElseThrow(
 				() -> new ValidacaoException("Não foi encontrada uma conta com o CPF informado.", HttpStatus.BAD_REQUEST));
 		
-		repository.delete(contaDigitalPessoaFisicaSalvaBancoDados);
+		contaDigitalPessoaFisicaRepository.delete(contaDigitalPessoaFisicaSalvaBancoDados);
 	}
 }

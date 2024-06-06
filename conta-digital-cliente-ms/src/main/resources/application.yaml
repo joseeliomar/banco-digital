@@ -18,7 +18,7 @@ spring:
     password: abc@123456
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         '[format_sql]': true

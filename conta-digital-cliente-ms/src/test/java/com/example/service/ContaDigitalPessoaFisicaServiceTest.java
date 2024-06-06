@@ -33,7 +33,9 @@ import com.example.dto.EnderecoDto;
 import com.example.exception.ValidacaoException;
 import com.example.feignclient.EnderecoFeignClient;
 import com.example.model.ContaDigitalPessoaFisica;
+import com.example.model.ContaDigitalPessoaJuridica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
+import com.example.repository.ContaDigitalPessoaJuridicaRepository;
 
 @ExtendWith(SpringExtension.class)
 class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
@@ -51,7 +53,10 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	private ContaDigitalPessoaFisicaService service;
 	
 	@MockBean
-	private ContaDigitalPessoaFisicaRepository repository;
+	private ContaDigitalPessoaFisicaRepository contaDigitalPessoaFisicaRepository;
+	
+	@MockBean
+	private ContaDigitalPessoaJuridicaRepository contaDigitalPessoaJuridicaRepository;
 	
 	@MockBean
 	private EnderecoFeignClient enderecoFeignClient;
@@ -63,6 +68,10 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	private ContaDigitalPessoaFisica contaDigitalPessoaFisica1;
 	
 	private ContaDigitalPessoaFisica contaDigitalPessoaFisica2;
+	
+	private ContaDigitalPessoaFisica contaDigitalPessoaFisica3;
+	
+	private ContaDigitalPessoaJuridica contaDigitalPessoaJuridica1;
 	
 	private EnderecoDto enderecoDto;
 	
@@ -78,32 +87,76 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 		
 		String cpf1 = "12345678901";
 		String cpf2 = "12345678902";
-		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", cpf1, "Fulano de Tal",
+		String cpf3 = "12345678903";
+		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto("1234567890", "0000000011",
+				"12345678", "19980001234", "fulano@email.com", cpf1, "Fulano de Tal", LocalDate.of(2001, 1, 1),
+				"Fulana de Tal");
+		
+		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica(
+				contaDigitalPessoaFisicaInsercaoDto1.getAgencia(), 
+				contaDigitalPessoaFisicaInsercaoDto1.getConta(), 
+				contaDigitalPessoaFisicaInsercaoDto1.getSenha(),
+				contaDigitalPessoaFisicaInsercaoDto1.getTelefone(), 
+				contaDigitalPessoaFisicaInsercaoDto1.getEmail(), 
+				null, 
+				null, 
+				null, 
+				contaDigitalPessoaFisicaInsercaoDto1.getCpf(), 
+				contaDigitalPessoaFisicaInsercaoDto1.getNomeCompleto(),
+				contaDigitalPessoaFisicaInsercaoDto1.getDataNascimento(), 
+				contaDigitalPessoaFisicaInsercaoDto1.getNomeCompletoMae());
+		
+		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("1234567890", "0000000011",
+				"12345678", "19980001234", "fulano@email.com", codigoEnderecoExistente, cpf2, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
-		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", null, null, null, cpf1, "Fulano de Tal",
-				LocalDate.of(2001, 1, 1), "Fulana de Tal");
+		contaDigitalPessoaFisica2 = new ContaDigitalPessoaFisica(
+				contaDigitalPessoaFisicaAlteracaoDto1.getAgencia(), 
+				contaDigitalPessoaFisicaAlteracaoDto1.getConta(), 
+				contaDigitalPessoaFisicaAlteracaoDto1.getSenha(),
+				contaDigitalPessoaFisicaAlteracaoDto1.getTelefone(), 
+				contaDigitalPessoaFisicaAlteracaoDto1.getEmail(), 
+				contaDigitalPessoaFisicaAlteracaoDto1.getIdEndereco(), 
+				null, 
+				null, 
+				contaDigitalPessoaFisicaAlteracaoDto1.getCpf(), 
+				contaDigitalPessoaFisicaAlteracaoDto1.getNomeCompleto(),
+				contaDigitalPessoaFisicaAlteracaoDto1.getDataNascimento(), 
+				contaDigitalPessoaFisicaAlteracaoDto1.getNomeCompletoMae());
 		
-		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", codigoEnderecoExistente, cpf2, "Fulano de Tal",
-				LocalDate.of(2001, 1, 1), "Fulana de Tal");
+		contaDigitalPessoaFisica3 = new ContaDigitalPessoaFisica(
+				"0000000011", 
+				"1234567890", 
+				"654115897", 
+				"19980009999",
+				"email@email.com", 
+				codigoEnderecoExistente, 
+				null, 
+				null, 
+				cpf3, 
+				"Fulano de Tal",
+				LocalDate.of(1995, 1, 1), 
+				"Fulana de Tal");
 		
-		contaDigitalPessoaFisica2 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
-				"19980001234", "fulano@email.com", codigoEnderecoExistente, null, null, cpf2, "Fulano de Tal",
-				LocalDate.of(2001, 1, 1), "Fulana de Tal");
+		contaDigitalPessoaJuridica1 = new ContaDigitalPessoaJuridica(
+				"0000000011", "1234567890",
+				"12345678", "19980001234",
+				"fulano@email.com", 
+				null, 
+				null, 
+				null,
+				"12345678990001",
+				"Fábrica Tal");
 		
-		
-		given(repository.findById(cpf1)).willReturn(Optional.of(contaDigitalPessoaFisica1));
-		given(repository.findById(cpf2)).willReturn(Optional.of(contaDigitalPessoaFisica2));
+		given(contaDigitalPessoaFisicaRepository.findById(cpf2)).willReturn(Optional.of(contaDigitalPessoaFisica2));
 	}
 
-	@DisplayName("Cria uma conta digital com sucesso quando nenhuma exceção for lançada e for retornado um objeto não nulo do tipo persistido")
+	@DisplayName("Cria uma conta digital com sucesso quando nenhuma exceção for"
+			+ " lançada e for retornado um objeto não nulo do tipo persistido")
 	@Test
 	void testCriaContaDigital_ComSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNullo() {
 		// Given
-		given(repository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica1);
+		given(contaDigitalPessoaFisicaRepository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica1);
 		
 		// When & Then
 		ContaDigitalPessoaFisica actual = assertDoesNotThrow(
@@ -219,6 +272,28 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 		String contaCom11Caracteres = "12345678901";
 		contaDigitalPessoaFisicaInsercaoDto1.setConta(contaCom11Caracteres);
 		String mensagemEsperada = "Conta com mais de 10 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta criar conta digital com a agência e a conta de uma conta digital já cadastrada "
+			+ "deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComAgenciaContaUtilizadasContaDigitalJaCadastrada_DeveSerLancadaExcecao() {
+		// Given
+		String agencia = contaDigitalPessoaFisicaInsercaoDto1.getAgencia();
+		String conta = contaDigitalPessoaFisicaInsercaoDto1.getConta();
+		
+		contaDigitalPessoaFisica3.setAgencia(agencia);
+		contaDigitalPessoaFisica3.setConta(conta);
+		given(contaDigitalPessoaFisicaRepository.findByAgenciaAndConta(agencia, conta))
+				.willReturn(Optional.of(contaDigitalPessoaFisica3));
+
+		String mensagemEsperada = "Já existe uma conta digital cadastrada a agência " + agencia + " e a conta " + conta
+				+ ".";
 
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
@@ -436,6 +511,21 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
+	@DisplayName("Quando tenta criar conta digital com o CPF de uma conta digital já cadastrada deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComCpfContaDigitalJaCadastrada_DeveSerLancadaExcecao() {
+		// Given
+		String cpf = contaDigitalPessoaFisicaInsercaoDto1.getCpf();
+		given(contaDigitalPessoaFisicaRepository.findById(cpf)).willReturn(Optional.of(contaDigitalPessoaFisica1));
+		
+		String mensagemEsperada = "Já existe uma conta digital cadastrada com o CPF " + cpf + ".";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
 	@DisplayName("Quando tenta criar conta digital com o nome completo não informado (string nula) deve ser lançada uma exceção.")
 	@Test
 	void testCriaContaDigital_ComNomeCompletoNulo_DeveSerLancadaExcecao() {
@@ -540,7 +630,7 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	@Test
 	void testAlteraContaDigital_ComSucesso_NenhumaExcecaoLancadaRetornadoObjetoNaoNulo() {
 		// Given
-		given(repository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica2);
+		given(contaDigitalPessoaFisicaRepository.save(any(ContaDigitalPessoaFisica.class))).willReturn(contaDigitalPessoaFisica2);
 		
 		// When & Then
 		ContaDigitalPessoaFisica actual = assertDoesNotThrow(
@@ -656,6 +746,28 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 		String contaCom11Caracteres = "12345678901";
 		contaDigitalPessoaFisicaAlteracaoDto1.setConta(contaCom11Caracteres);
 		String mensagemEsperada = "Conta com mais de 10 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta alterar conta digital com a agência e a conta de uma outra conta digital já cadastrada "
+			+ "deve ser lançada uma exceção.")
+	@Test
+	void testAlteraContaDigital_ComAgenciaContaUtilizadasOutraContaDigitalJaCadastrada_DeveSerLancadaExcecao() {
+		// Given
+		String agencia = contaDigitalPessoaFisicaAlteracaoDto1.getAgencia();
+		String conta = contaDigitalPessoaFisicaAlteracaoDto1.getConta();
+		
+		contaDigitalPessoaFisica3.setAgencia(agencia);
+		contaDigitalPessoaFisica3.setConta(conta);
+		given(contaDigitalPessoaJuridicaRepository.findByAgenciaAndConta(agencia, conta))
+				.willReturn(Optional.of(contaDigitalPessoaJuridica1));
+
+		String mensagemEsperada = "Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta
+				+ ".";
 
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
@@ -887,6 +999,23 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
+	@DisplayName("Quando tenta alterar conta digital com o CPF de uma conta digital já cadastrada,"
+			+ " essa conta digital deve ser atualizada com os novos dados e não deve ser lançada uma exceção.")
+	@Test
+	void testAlteraContaDigital_ComCpfContaDigitalJaCadastrada_ContaDigitalDeveSerAtualizadaNaoDeveSerLancadaExcecao() {
+		// Given
+		String cpf = contaDigitalPessoaFisicaAlteracaoDto1.getCpf();
+		contaDigitalPessoaFisica3.setCpf(cpf);
+		given(contaDigitalPessoaFisicaRepository.findById(cpf)).willReturn(Optional.of(contaDigitalPessoaFisica3));
+		
+		// When & Then
+		assertDoesNotThrow(
+				() -> service.alteraContaDigitalPessoaFisica(contaDigitalPessoaFisicaAlteracaoDto1),
+				() -> "Não deve ser lançada nehuma exceção.");
+
+		verify(contaDigitalPessoaFisicaRepository, times(1)).save(any(ContaDigitalPessoaFisica.class));
+	}
+	
 	@DisplayName("Quando tenta alterar conta digital com o nome completo não informado (string nula) deve ser lançada uma exceção.")
 	@Test
 	void testAlteraContaDigital_ComNomeCompletoNulo_DeveSerLancadaExcecao() {
@@ -992,6 +1121,7 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	void testBuscaContaDigital_PeloCpfInformado_DeveSerRetornadaContaDigitalComMesmoCpf() {
 		// Given
 		String cpf = contaDigitalPessoaFisica1.getCpf();
+		given(contaDigitalPessoaFisicaRepository.findById(cpf)).willReturn(Optional.of(contaDigitalPessoaFisica1));
 		
 		// When
 		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = service.buscaContaDigitalPeloCpf(cpf);
@@ -1028,7 +1158,7 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 		// Given
 		String agencia = contaDigitalPessoaFisica1.getAgencia();
 		String conta = contaDigitalPessoaFisica1.getConta();
-		given(repository.findByAgenciaAndConta(agencia, conta)).willReturn(Optional.of(contaDigitalPessoaFisica1));
+		given(contaDigitalPessoaFisicaRepository.findByAgenciaAndConta(agencia, conta)).willReturn(Optional.of(contaDigitalPessoaFisica1));
 
 		// When
 		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = service
@@ -1073,18 +1203,19 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	@Test
 	void testRemocaoContaDigital_PeloCpf_DeveSerExecutadoMetodoDeleteDoRepository() {
 		String cpf = contaDigitalPessoaFisica1.getCpf();
-		willDoNothing().given(repository).delete(contaDigitalPessoaFisica1);
+		given(contaDigitalPessoaFisicaRepository.findById(cpf)).willReturn(Optional.of(contaDigitalPessoaFisica1));
+		willDoNothing().given(contaDigitalPessoaFisicaRepository).delete(contaDigitalPessoaFisica1);
 		
 		service.removeContaDigitalPessoaFisica(cpf);
 		
-		verify(repository, times(1)).delete(contaDigitalPessoaFisica1);
+		verify(contaDigitalPessoaFisicaRepository, times(1)).delete(contaDigitalPessoaFisica1);
 	}
 	
 	@DisplayName("Quando tenta remover conta digital com o CPF não informado (string nula) deve ser lançada uma exceção")
 	@Test
 	void testRemoveContaDigital_ComCpfNulo_DeveSerLancadaExcecao() {
 		String cpf = null;
-		willDoNothing().given(repository).delete(contaDigitalPessoaFisica1);
+		willDoNothing().given(contaDigitalPessoaFisicaRepository).delete(contaDigitalPessoaFisica1);
 		String mensagemEsperada = "Não foi encontrada uma conta com o CPF informado.";
 		
 		// When & Then
@@ -1098,7 +1229,7 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	@Test
 	void testBuscaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoDadosContaDigital() {
 		// Given
-		given(repository.findById(anyString())).willReturn(Optional.of(contaDigitalPessoaFisica1));
+		given(contaDigitalPessoaFisicaRepository.findById(anyString())).willReturn(Optional.of(contaDigitalPessoaFisica1));
 
 		// When
 		ContaDigitalPessoaFisicaDTO1Busca actual = assertDoesNotThrow(
@@ -1114,7 +1245,7 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	@Test
 	void testBuscaContaDigitalPessoaFisica_SemSucesso_DeveSerRetornadoObjetoDadosContaDigital() {
 		// Given
-		given(repository.findById(anyString())).willReturn(Optional.ofNullable(null));
+		given(contaDigitalPessoaFisicaRepository.findById(anyString())).willReturn(Optional.ofNullable(null));
 
 		// When
 		ContaDigitalPessoaFisicaDTO1Busca actual = assertDoesNotThrow(

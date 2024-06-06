@@ -12,4 +12,6 @@ public interface ContaDigitalPessoaJuridicaRepository extends JpaRepository<Cont
 
 	Optional<ContaDigitalPessoaJuridica> findByAgenciaAndConta(String agencia, String conta);
 
+	Optional<ContaDigitalPessoaJuridica> findByAgenciaAndContaAndCnpjNot(String agencia, String conta, String cnpj);
+
 }

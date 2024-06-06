@@ -1,10 +1,28 @@
 package com.example.service;
 
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
+import com.example.model.ContaDigitalCliente;
+import com.example.model.ContaDigitalPessoaFisica;
+import com.example.model.ContaDigitalPessoaJuridica;
+import com.example.repository.ContaDigitalPessoaFisicaRepository;
+import com.example.repository.ContaDigitalPessoaJuridicaRepository;
 
 public abstract class ContaDigitalService {
+	
+	@Autowired
+	protected ContaDigitalPessoaFisicaRepository contaDigitalPessoaFisicaRepository;
+	
+	@Autowired
+	protected ContaDigitalPessoaJuridicaRepository contaDigitalPessoaJuridicaRepository;
+	
+	public abstract Optional<? extends ContaDigitalCliente> buscaContaDigitalPelaAgenciaConta(String agencia,
+			String conta);
 
 	protected void validaAgencia(String agencia) {
 		if (agencia == null || agencia.isBlank()) {
@@ -27,6 +45,45 @@ public abstract class ContaDigitalService {
 		}
 		if (conta.length() > 10) {
 			throw new ValidacaoException("Conta com mais de 10 caracteres.", HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	protected void validaAgenciaContaInsercao(String agencia, String conta) {
+		var contaDigitalOptional = buscaContaDigitalPelaAgenciaConta(agencia, conta);
+		if (contaDigitalOptional.isPresent()) {
+			throw new ValidacaoException(
+					"Já existe uma conta digital cadastrada a agência " + agencia + " e a conta " + conta + ".",
+					HttpStatus.CONFLICT);
+		}
+	}
+	
+	
+	protected void validaAgenciaContaAlteracao(String agencia, String conta, DocumentoCliente documentoCliente) {
+		String numeroDocumento = documentoCliente.numeroDocumento();
+		TipoDocumento tipoDocumento = documentoCliente.TipoDocumento();
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional;
+		Optional<ContaDigitalPessoaJuridica> contaDigitalPessoaJuridicaOptional;
+
+		if (tipoDocumento == TipoDocumento.CPF) {
+			contaDigitalPessoaFisicaOptional = contaDigitalPessoaFisicaRepository
+					.findByAgenciaAndContaAndCpfNot(agencia, conta, numeroDocumento);
+
+			contaDigitalPessoaJuridicaOptional = contaDigitalPessoaJuridicaRepository.findByAgenciaAndConta(agencia,
+					conta);
+		} else if (tipoDocumento == TipoDocumento.CNPJ) {
+			contaDigitalPessoaFisicaOptional = contaDigitalPessoaFisicaRepository.findByAgenciaAndConta(agencia, conta);
+
+			contaDigitalPessoaJuridicaOptional = contaDigitalPessoaJuridicaRepository
+					.findByAgenciaAndContaAndCnpjNot(agencia, conta, numeroDocumento);
+		} else {
+			throw new ValidacaoException("O tipo de documento que foi informado está incorreto.",
+					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		if (contaDigitalPessoaFisicaOptional.isPresent() || contaDigitalPessoaJuridicaOptional.isPresent()) {
+			throw new ValidacaoException(
+					"Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta + ".",
+					HttpStatus.CONFLICT);
 		}
 	}
 	
@@ -62,4 +119,5 @@ public abstract class ContaDigitalService {
 			throw new ValidacaoException("E-mail com mais de 50 caracteres.", HttpStatus.BAD_REQUEST);
 		}
 	}
+	
 }

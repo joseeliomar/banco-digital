@@ -8,7 +8,7 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @MappedSuperclass
-abstract class ContaDigitalCliente {
+public abstract class ContaDigitalCliente {
 
 	@Column(nullable = false, length = 10)
 	private String agencia;
