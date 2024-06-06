@@ -3,11 +3,17 @@ package com.example.integrationtests.controller;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -28,6 +34,7 @@ import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaInseridaDto;
 import com.example.dto.DetalhesExcecaoDto;
 import com.example.integrationtests.testcontainers.ConfiguracaoAmbienteTestesParaUsoContainers;
+import com.example.model.ContaDigitalPessoaFisica;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -54,6 +61,10 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	
 	private String cpf1;
 	private String cpfSemContaDigitalAssociadoComEle;
+
+	private ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto1;
+
+	private ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaAlteracaoDto1;
 	
 	@BeforeAll
 	public void setup() {
@@ -67,7 +78,17 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				.build();
 		
 		cpf1 = "12345678901";
+		String cpf2 = "12345678902";
 		cpfSemContaDigitalAssociadoComEle = "99999999999"; // Não há nenhuma conta digital com esse CPF
+		
+		
+		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto(
+				"0000000011", "1234567890", "654115897", "19980009999", "email@email.com", cpf2,
+				"Fulano de Tal", LocalDate.of(1995, 1, 1), "Fulana de Tal");
+		
+		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("0000000011", "1234567890",
+				"654115897", "19980009999", "email@email.com", 2L, cpf2, "Fulano de Tal", LocalDate.of(1995, 1, 1),
+				"Fulana de Tal");
 	}
 	
 	@DisplayName("Quando insere conta digital para pessoa física com sucesso deve ser retornada "
@@ -219,7 +240,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	}
 	
 	@DisplayName("Quando deleta conta digital para pessoa física com sucesso deve ser retornado o código de status 204")
-	@Order(4)
+	@Order(6)
 	@Test
 	void testDeletaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
 		given()
@@ -230,7 +251,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 			.statusCode(204);
 	}
 	
-	@DisplayName("Quando insere conta digital para pessoa física sem sucesso não deve ser retornado o código de status 201")
+	@DisplayName("Quando não insere conta digital para pessoa física com sucesso não deve ser retornado o código de status 201")
 	@Test
 	void testInsereContaDigitalPessoaFisica_SemSucesso_NaoDeveSerRetornadoCodigoStatus201() throws JsonProcessingException, Exception {
 		String cpfNulo = null;
@@ -254,6 +275,68 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
 		
 		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
+	@DisplayName("Quando tenta inserir conta digital com o CPF de uma conta digital já cadastrada deve ser lançada uma exceção.")
+	@Test
+	@Order(4)
+	void testInsereContaDigital_ComCpfContaDigitalJaCadastrada_DeveSerLancadaExcecao() throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(cpf1);
+		String cpfContaDigitalCadastrada = contaDigitalCadastrada.getCpf();
+		contaDigitalPessoaFisicaInsercaoDto1.setCpf(cpfContaDigitalCadastrada);
+		String mensagemEsperada = "Já existe uma conta digital cadastrada com o CPF " + cpfContaDigitalCadastrada + ".";
+		
+		String conteudoBodyResposta = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaFisicaInsercaoDto1)
+			.when()
+				.post()
+			.then()
+				.extract()
+					.body()
+						.asString();
+		
+		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
+		
+		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
+	@DisplayName("Quando tenta alterar conta digital com o CPF de uma conta digital já cadastrada,"
+			+ " essa conta digital deve ser atualizada com os novos dados e não deve ser lançada uma exceção.")
+	@Test
+	@Order(5)
+	void testAlteraContaDigital_ComCpfContaDigitalJaCadastrada_ContaDigitalDeveSerAtualizadaNaoDeveSerLancadaExcecao()
+			throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(cpf1);
+		String cpfContaDigitalCadastrada = contaDigitalCadastrada.getCpf();
+		contaDigitalPessoaFisicaAlteracaoDto1.setCpf(cpfContaDigitalCadastrada);
+		
+		String conteudoBodyResposta = given()
+			.spec(requestSpecification).contentType(ContentType.JSON)
+			.body(contaDigitalPessoaFisicaAlteracaoDto1)
+		.when()
+			.put()
+		.then()
+			.statusCode(200)
+			.extract()
+				.body()
+					.asString();
+		
+		ContaDigitalPessoaFisicaAlteradaDto contaDigitalAlterada = objectMapper.readValue(conteudoBodyResposta,
+				ContaDigitalPessoaFisicaAlteradaDto.class);
+		
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getAgencia(), contaDigitalAlterada.getAgencia());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getConta(), contaDigitalAlterada.getConta());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getSenha(), contaDigitalAlterada.getSenha());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getTelefone(), contaDigitalAlterada.getTelefone());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getEmail(), contaDigitalAlterada.getEmail());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getIdEndereco(), contaDigitalAlterada.getIdEndereco());
+		assertEquals(contaDigitalCadastrada.getDataHoraCadastro(), contaDigitalAlterada.getDataHoraCadastro(),
+				() -> "A data e a hora devem permanecer as mesmas que antes da alteração");
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getCpf(), contaDigitalAlterada.getCpf());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getNomeCompleto(), contaDigitalAlterada.getNomeCompleto());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getDataNascimento(), contaDigitalAlterada.getDataNascimento());
+		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getNomeCompletoMae(), contaDigitalAlterada.getNomeCompletoMae());
 	}
 	
 	@DisplayName("Quando busca conta digital para pessoa física sem sucesso "
