@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,6 +38,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -47,6 +49,9 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	private static final String CAMINHO_BASE = "/contaDigitalPessoaJuridica/";
 
 	private RequestSpecification requestSpecification;
+	
+	@Autowired
+	private TestConfigs testConfigs;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -65,7 +70,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		
 		requestSpecification = new RequestSpecBuilder()
 				.setBasePath(CAMINHO_BASE)
-				.setPort(TestConfigs.SERVER_PORT)
+				.setPort(testConfigs.getServerPort())
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -80,8 +85,8 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 				"654115897", "19980009999", "email@email.com", 2L, CNPJ_2, "Fábrica Tal");
 	}
 	
-	@DisplayName("Quando insere conta digital para pessoa jurídica com sucesso deve ser retornada "
-			+ "a URI (localização do recurso criado) e o código de status 201")
+	@DisplayName("Quando insere conta digital para pessoa jurídica com sucesso deve ser retornado "
+			+ "o header Location e o código de status 201")
 	@Order(1)
 	@Test
 	void testInsereContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
@@ -89,25 +94,25 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011", "1234567890",
 				"12345678", "19980001234", "fulano@email.com", CNPJ_1, "Fábrica Tal");
 
-		String localizacaoRecursoCriado = "http://localhost:" + TestConfigs.SERVER_PORT +  CAMINHO_BASE
-				+ contaDigitalPessoaJuridicaInsercaoDto.getCnpj();
+		String sufixoLocalizacaoRecursoCriado = CAMINHO_BASE + contaDigitalPessoaJuridicaInsercaoDto.getCnpj(); // não contém a porta
 
-		String conteudoBodyResposta = given()
-					.spec(requestSpecification).contentType(ContentType.JSON)
-					.body(contaDigitalPessoaJuridicaInsercaoDto)
-				.when()
-					.post()
-				.then()
-					.statusCode(201)
-					.assertThat()
-						.header("Location", equalTo(localizacaoRecursoCriado))
-					.extract()
-						.body()
-							.asString();
+		Response response = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaJuridicaInsercaoDto)
+			.when()
+				.post();
+				
+		response.then().statusCode(201);
+				
+		String valorHeaderLocation = response.getHeader("Location");
+		String conteudoBodyResposta = response.asString();
 
 		ContaDigitalPessoaJuridicaInseridaDto contaDigitalPessoaJuridicaInserida = objectMapper
 				.readValue(conteudoBodyResposta, ContaDigitalPessoaJuridicaInseridaDto.class);
-
+		
+		assertNotNull(valorHeaderLocation);
+		assertTrue(valorHeaderLocation.endsWith(sufixoLocalizacaoRecursoCriado),
+				() -> "O valor presente no header Location não termina com o sufixo esperado.");
 		assertNotNull(contaDigitalPessoaJuridicaInserida);
 		assertNotNull(contaDigitalPessoaJuridicaInserida.getAgencia());
 		assertNotNull(contaDigitalPessoaJuridicaInserida.getConta());

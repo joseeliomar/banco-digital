@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDate;
 
@@ -39,6 +40,7 @@ import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -49,6 +51,9 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	private static final String CAMINHO_BASE = "/contaDigitalPessoaFisica/";
 
 	private RequestSpecification requestSpecification;
+	
+	@Autowired
+	private TestConfigs testConfigs;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
@@ -67,7 +72,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		
 		requestSpecification = new RequestSpecBuilder()
 				.setBasePath(CAMINHO_BASE)
-				.setPort(TestConfigs.SERVER_PORT)
+				.setPort(testConfigs.getServerPort())
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
@@ -84,8 +89,8 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				"Fulana de Tal");
 	}
 	
-	@DisplayName("Quando insere conta digital para pessoa física com sucesso deve ser retornada "
-			+ "a URI (localização do recurso criado) e o código de status 201")
+	@DisplayName("Quando insere conta digital para pessoa física com sucesso deve ser retornado "
+			+ "o header Location e o código de status 201")
 	@Order(1)
 	@Test
 	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
@@ -94,25 +99,25 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				"0000000011", "1234567890", "12345678", "19980001234", "fulano@email.com", CPF_1,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 
-		String localizacaoRecursoCriado = "http://localhost:" + TestConfigs.SERVER_PORT +  CAMINHO_BASE
-				+ contaDigitalPessoaFisicaInsercaoDto.getCpf();
+		String sufixoLocalizacaoRecursoCriado = CAMINHO_BASE + contaDigitalPessoaFisicaInsercaoDto.getCpf(); // não contém a porta
 
-		String conteudoBodyResposta = given()
-					.spec(requestSpecification).contentType(ContentType.JSON)
-					.body(contaDigitalPessoaFisicaInsercaoDto)
-				.when()
-					.post()
-				.then()
-					.statusCode(201)
-					.assertThat()
-						.header("Location", equalTo(localizacaoRecursoCriado))
-					.extract()
-						.body()
-							.asString();
+		Response response = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaFisicaInsercaoDto)
+			.when()
+				.post();
+		
+		response.then().statusCode(201);
+		
+		String valorHeaderLocation = response.getHeader("Location");
+		String conteudoBodyResposta = response.asString();
 
 		ContaDigitalPessoaFisicaInseridaDto contaDigitalPessoaFisicaInserida = objectMapper
 				.readValue(conteudoBodyResposta, ContaDigitalPessoaFisicaInseridaDto.class);
 
+		assertNotNull(valorHeaderLocation);
+		assertTrue(valorHeaderLocation.endsWith(sufixoLocalizacaoRecursoCriado),
+				() -> "O valor presente no header Location não termina com o sufixo esperado.");
 		assertNotNull(contaDigitalPessoaFisicaInserida);
 		assertNotNull(contaDigitalPessoaFisicaInserida.getAgencia());
 		assertNotNull(contaDigitalPessoaFisicaInserida.getConta());

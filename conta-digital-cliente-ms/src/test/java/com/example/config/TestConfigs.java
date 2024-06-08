@@ -1,6 +1,16 @@
 package com.example.config;
 
-public class TestConfigs {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
-	public static final int SERVER_PORT = 8888;
+@Component
+public class TestConfigs {
+	
+	@Autowired
+	private Environment environment;
+
+	public int getServerPort() {
+		return Integer.parseInt(environment.getProperty("local.server.port"));
+	}
 }
