@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -50,11 +51,16 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	private String cnpj;
-	private String cnpjSemContaDigitalAssociadoComEle;
+	private static final String CNPJ_1 = "12345678990001";
+	private static final String CNPJ_2 = "12345678990002";
+	private static final String CNPJ_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE = "99999999999999"; // Não há nenhuma conta digital com esse CNPJ
+	
+	private ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto1;
+
+	private ContaDigitalPessoaJuridicaAlteracaoDto contaDigitalPessoaJuridicaAlteracaoDto1;
 	
 	@BeforeAll
-	public void setup() {
+	public void setupAll() {
 		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
 		requestSpecification = new RequestSpecBuilder()
@@ -63,9 +69,15 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
+	}
+	
+	@BeforeEach
+	public void setup() {
+		contaDigitalPessoaJuridicaInsercaoDto1 = new ContaDigitalPessoaJuridicaInsercaoDto("0000000013", "1234567890",
+				"12345678", "19980001234", "fulano@email.com", CNPJ_2, "Fábrica Tal");
 		
-		cnpj = "12345678990001";
-		cnpjSemContaDigitalAssociadoComEle = "99999999999999"; // Não há nenhuma conta digital com esse CNPJ
+		contaDigitalPessoaJuridicaAlteracaoDto1 = new ContaDigitalPessoaJuridicaAlteracaoDto("0000000012", "1234567999",
+				"654115897", "19980009999", "email@email.com", 2L, CNPJ_2, "Fábrica Tal");
 	}
 	
 	@DisplayName("Quando insere conta digital para pessoa jurídica com sucesso deve ser retornada "
@@ -75,7 +87,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	void testInsereContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011", "1234567890",
-				"12345678", "19980001234", "fulano@email.com", cnpj, "Fábrica Tal");
+				"12345678", "19980001234", "fulano@email.com", CNPJ_1, "Fábrica Tal");
 
 		String localizacaoRecursoCriado = "http://localhost:" + TestConfigs.SERVER_PORT +  CAMINHO_BASE
 				+ contaDigitalPessoaJuridicaInsercaoDto.getCnpj();
@@ -125,7 +137,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	void testBuscaContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
 		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalPessoaJuridicaBuscadaBancoDados = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(
-				cnpj);
+				CNPJ_1);
 
 		assertNotNull(contaDigitalPessoaJuridicaBuscadaBancoDados);
 		assertNotNull(contaDigitalPessoaJuridicaBuscadaBancoDados.getAgencia());
@@ -149,7 +161,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	void testAlteraContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
 		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalPessoaJuridicaBuscadaBancoDados = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(
-				cnpj);
+				CNPJ_1);
 
 		String novaSenha = "123456@55", novoTelefone = "19980005555", novoEmail = "ciclano@email.com",
 				razaoSocial = "Fábrica A";
@@ -202,14 +214,136 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		assertEquals(novosDadosParaAlteracao.getRazaoSocial(), contaDigitalPessoaJuridicaAlterada.getRazaoSocial());
 	}
 	
-	@DisplayName("Quando deleta conta digital para pessoa jurídica com sucesso deve ser retornado o código de status 204")
+	@DisplayName("Quando tenta inserir conta digital com o CNPJ de uma conta digital já cadastrada deve ser lançada uma exceção.")
+	@Test
 	@Order(4)
+	void testInsereContaDigital_ComCnpjContaDigitalJaCadastrada_DeveSerLancadaExcecao() throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(CNPJ_1);
+		String cnpjContaDigitalCadastrada = contaDigitalCadastrada.getCnpj();
+		contaDigitalPessoaJuridicaInsercaoDto1.setCnpj(cnpjContaDigitalCadastrada);
+		String mensagemEsperada = "Já existe uma conta digital cadastrada com o CNPJ " + cnpjContaDigitalCadastrada + ".";
+		
+		String conteudoBodyResposta = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaJuridicaInsercaoDto1)
+			.when()
+				.post()
+			.then()
+				.extract()
+					.body()
+						.asString();
+		
+		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
+		
+		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
+	@DisplayName("Quando tenta alterar conta digital com o CNPJ de uma conta digital já cadastrada,"
+			+ " essa conta digital deve ser atualizada com os novos dados e não deve ser lançada uma exceção.")
+	@Test
+	@Order(5)
+	void testAlteraContaDigital_ComCnpjContaDigitalJaCadastrada_ContaDigitalDeveSerAtualizadaNaoDeveSerLancadaExcecao()
+			throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(CNPJ_1);
+		String cnpjContaDigitalCadastrada = contaDigitalCadastrada.getCnpj();
+		contaDigitalPessoaJuridicaAlteracaoDto1.setCnpj(cnpjContaDigitalCadastrada);
+		
+		String conteudoBodyResposta = given()
+			.spec(requestSpecification).contentType(ContentType.JSON)
+			.body(contaDigitalPessoaJuridicaAlteracaoDto1)
+		.when()
+			.put()
+		.then()
+			.statusCode(200)
+			.extract()
+				.body()
+					.asString();
+		
+		ContaDigitalPessoaJuridicaAlteradaDto contaDigitalAlterada = objectMapper.readValue(conteudoBodyResposta,
+				ContaDigitalPessoaJuridicaAlteradaDto.class);
+		
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getAgencia(), contaDigitalAlterada.getAgencia());
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getConta(), contaDigitalAlterada.getConta());
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getSenha(), contaDigitalAlterada.getSenha());
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getTelefone(), contaDigitalAlterada.getTelefone());
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getEmail(), contaDigitalAlterada.getEmail());
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getIdEndereco(), contaDigitalAlterada.getIdEndereco());
+		assertEquals(contaDigitalCadastrada.getDataHoraCadastro(), contaDigitalAlterada.getDataHoraCadastro(),
+				() -> "A data e a hora devem permanecer as mesmas que antes da alteração");
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getCnpj(), contaDigitalAlterada.getCnpj());
+		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getRazaoSocial(), contaDigitalAlterada.getRazaoSocial());
+	}
+	
+	@DisplayName("Quando tenta inserir conta digital com a agência e a conta de uma conta digital já cadastrada "
+			+ "deve ser lançada uma exceção.")
+	@Order(6)
+	@Test
+	void testInsereContaDigital_ComAgenciaContaUtilizadasContaDigitalJaCadastrada_DeveSerLancadaExcecao()
+			throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(CNPJ_1);
+		String agencia = contaDigitalCadastrada.getAgencia();
+		String conta = contaDigitalCadastrada.getConta();
+		
+		contaDigitalPessoaJuridicaInsercaoDto1.setAgencia(agencia);
+		contaDigitalPessoaJuridicaInsercaoDto1.setConta(conta);
+		
+		String mensagemEsperada = "Já existe uma conta digital cadastrada a agência " + agencia + " e a conta " + conta
+				+ ".";
+		
+		String conteudoBodyResposta = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaJuridicaInsercaoDto1)
+			.when()
+				.post()
+			.then()
+				.extract()
+					.body()
+						.asString();
+
+		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
+		
+		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
+	@DisplayName("Quando tenta alterar conta digital com a agência e a conta de uma outra conta digital já cadastrada "
+			+ "deve ser lançada uma exceção.")
+	@Order(7)
+	@Test
+	void testAlteraContaDigital_ComAgenciaContaUtilizadasOutraContaDigitalJaCadastrada_DeveSerLancadaExcecao()
+			throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(CNPJ_1);
+		String agencia = contaDigitalCadastrada.getAgencia();
+		String conta = contaDigitalCadastrada.getConta();
+		
+		contaDigitalPessoaJuridicaAlteracaoDto1.setAgencia(agencia);
+		contaDigitalPessoaJuridicaAlteracaoDto1.setConta(conta);
+		
+		String mensagemEsperada = "Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta
+				+ ".";
+		
+		String conteudoBodyResposta = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaJuridicaAlteracaoDto1)
+			.when()
+				.put()
+			.then()
+				.extract()
+					.body()
+						.asString();
+
+		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
+		
+		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
+	@DisplayName("Quando deleta conta digital para pessoa jurídica com sucesso deve ser retornado o código de status 204")
+	@Order(8)
 	@Test
 	void testDeletaContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
 		given()
 			.spec(requestSpecification)
 		.when()
-			.delete("{cnpj}", cnpj)
+			.delete("{cnpj}", CNPJ_1)
 		.then()
 			.statusCode(204);
 	}
@@ -247,7 +381,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		String conteudoBodyResposta = given()
 				.spec(requestSpecification)
 			.when()
-				.get("{cnpj}", cnpjSemContaDigitalAssociadoComEle)
+				.get("{cnpj}", CNPJ_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE)
 			.then()
 				.statusCode(404)
 			.extract()
@@ -264,7 +398,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		String mensagemEsperada = "E-mail informado sem o símbolo @ (arroba).";
 		
 		ContaDigitalPessoaJuridicaAlteracaoDto contaDigitalPessoaJuridicaComNovosDados = new ContaDigitalPessoaJuridicaAlteracaoDto(
-				"0000000011", "1234567890", "12345678", "19980001234", novoEmail, 1L, cnpj, "Fábrica Tal");
+				"0000000011", "1234567890", "12345678", "19980001234", novoEmail, 1L, CNPJ_1, "Fábrica Tal");
 		
 		String conteudoBodyResposta = given()
 				.spec(requestSpecification)
@@ -291,7 +425,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		String conteudoBodyResposta = given()
 			.spec(requestSpecification)
 		.when()
-			.delete("{cnpj}", cnpjSemContaDigitalAssociadoComEle)
+			.delete("{cnpj}", CNPJ_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE)
 		.then()
 			.assertThat().statusCode(not(equalTo(204)))
 		.extract()

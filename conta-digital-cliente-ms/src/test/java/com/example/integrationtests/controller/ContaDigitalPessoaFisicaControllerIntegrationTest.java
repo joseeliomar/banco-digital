@@ -3,19 +3,14 @@ package com.example.integrationtests.controller;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;
@@ -34,7 +29,6 @@ import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaInseridaDto;
 import com.example.dto.DetalhesExcecaoDto;
 import com.example.integrationtests.testcontainers.ConfiguracaoAmbienteTestesParaUsoContainers;
-import com.example.model.ContaDigitalPessoaFisica;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -59,15 +53,16 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	@Autowired
 	private ObjectMapper objectMapper;
 	
-	private String cpf1;
-	private String cpfSemContaDigitalAssociadoComEle;
+	private static final String CPF_1 = "12345678901";
+	private static final String CPF_2 = "12345678902";
+	private static final String CPF_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE = "99999999999"; // Não há nenhuma conta digital com esse CPF;
 
 	private ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto1;
 
 	private ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaAlteracaoDto1;
 	
 	@BeforeAll
-	public void setup() {
+	public void setupAll() {
 		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
 		requestSpecification = new RequestSpecBuilder()
@@ -76,18 +71,16 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
-		
-		cpf1 = "12345678901";
-		String cpf2 = "12345678902";
-		cpfSemContaDigitalAssociadoComEle = "99999999999"; // Não há nenhuma conta digital com esse CPF
-		
-		
+	}
+	
+	@BeforeEach
+	public void setup() {
 		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto(
-				"0000000011", "1234567890", "654115897", "19980009999", "email@email.com", cpf2,
+				"0000000013", "1234567890", "654115897", "19980009999", "email@email.com", CPF_2,
 				"Fulano de Tal", LocalDate.of(1995, 1, 1), "Fulana de Tal");
 		
-		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("0000000011", "1234567890",
-				"654115897", "19980009999", "email@email.com", 2L, cpf2, "Fulano de Tal", LocalDate.of(1995, 1, 1),
+		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("0000000012", "1234567999",
+				"654115897", "19980009999", "email@email.com", 2L, CPF_2, "Fulano de Tal", LocalDate.of(1995, 1, 1),
 				"Fulana de Tal");
 	}
 	
@@ -98,7 +91,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", cpf1,
+				"0000000011", "1234567890", "12345678", "19980001234", "fulano@email.com", CPF_1,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 
 		String localizacaoRecursoCriado = "http://localhost:" + TestConfigs.SERVER_PORT +  CAMINHO_BASE
@@ -153,7 +146,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	void testBuscaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisicaBuscadaBancoDados = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(
-				cpf1);
+				CPF_1);
 
 		assertNotNull(contaDigitalPessoaFisicaBuscadaBancoDados);
 		assertNotNull(contaDigitalPessoaFisicaBuscadaBancoDados.getAgencia());
@@ -179,7 +172,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	void testAlteraContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisicaBuscadaBancoDados = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(
-				cpf1);
+				CPF_1);
 
 		String novaSenha = "123456@55", novoTelefone = "19980005555", novoEmail = "ciclano@email.com",
 				novoNomeCompleto = "Ciclano de tal", novoNomeCompletoMae = "Ciclana de tal";
@@ -239,49 +232,11 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertEquals(novosDadosParaAlteracao.getNomeCompletoMae(), contaDigitalPessoaFisicaAlterada.getNomeCompletoMae());
 	}
 	
-	@DisplayName("Quando deleta conta digital para pessoa física com sucesso deve ser retornado o código de status 204")
-	@Order(6)
-	@Test
-	void testDeletaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
-		given()
-			.spec(requestSpecification)
-		.when()
-			.delete("{cpf}", cpf1)
-		.then()
-			.statusCode(204);
-	}
-	
-	@DisplayName("Quando não insere conta digital para pessoa física com sucesso não deve ser retornado o código de status 201")
-	@Test
-	void testInsereContaDigitalPessoaFisica_SemSucesso_NaoDeveSerRetornadoCodigoStatus201() throws JsonProcessingException, Exception {
-		String cpfNulo = null;
-		String mensagemEsperada = "CPF não informado.";
-		
-		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", cpfNulo,
-				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
-		
-		String conteudoBodyResposta = given()
-				.spec(requestSpecification).contentType(ContentType.JSON)
-				.body(contaDigitalPessoaFisicaInsercaoDto)
-			.when()
-				.post()
-			.then()
-				.assertThat().statusCode(not(equalTo(201)))
-				.extract()
-					.body()
-						.asString();
-		
-		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
-		
-		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
-	}
-	
 	@DisplayName("Quando tenta inserir conta digital com o CPF de uma conta digital já cadastrada deve ser lançada uma exceção.")
 	@Test
 	@Order(4)
 	void testInsereContaDigital_ComCpfContaDigitalJaCadastrada_DeveSerLancadaExcecao() throws JsonMappingException, JsonProcessingException {
-		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(cpf1);
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
 		String cpfContaDigitalCadastrada = contaDigitalCadastrada.getCpf();
 		contaDigitalPessoaFisicaInsercaoDto1.setCpf(cpfContaDigitalCadastrada);
 		String mensagemEsperada = "Já existe uma conta digital cadastrada com o CPF " + cpfContaDigitalCadastrada + ".";
@@ -307,7 +262,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	@Order(5)
 	void testAlteraContaDigital_ComCpfContaDigitalJaCadastrada_ContaDigitalDeveSerAtualizadaNaoDeveSerLancadaExcecao()
 			throws JsonMappingException, JsonProcessingException {
-		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(cpf1);
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
 		String cpfContaDigitalCadastrada = contaDigitalCadastrada.getCpf();
 		contaDigitalPessoaFisicaAlteracaoDto1.setCpf(cpfContaDigitalCadastrada);
 		
@@ -339,6 +294,106 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getNomeCompletoMae(), contaDigitalAlterada.getNomeCompletoMae());
 	}
 	
+	@DisplayName("Quando tenta inserir conta digital com a agência e a conta de uma conta digital já cadastrada "
+			+ "deve ser lançada uma exceção.")
+	@Order(6)
+	@Test
+	void testInsereContaDigital_ComAgenciaContaUtilizadasContaDigitalJaCadastrada_DeveSerLancadaExcecao()
+			throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
+		String agencia = contaDigitalCadastrada.getAgencia();
+		String conta = contaDigitalCadastrada.getConta();
+		
+		contaDigitalPessoaFisicaInsercaoDto1.setAgencia(agencia);
+		contaDigitalPessoaFisicaInsercaoDto1.setConta(conta);
+		
+		String mensagemEsperada = "Já existe uma conta digital cadastrada a agência " + agencia + " e a conta " + conta
+				+ ".";
+		
+		String conteudoBodyResposta = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaFisicaInsercaoDto1)
+			.when()
+				.post()
+			.then()
+				.extract()
+					.body()
+						.asString();
+
+		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
+		
+		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
+	@DisplayName("Quando tenta alterar conta digital com a agência e a conta de uma outra conta digital já cadastrada "
+			+ "deve ser lançada uma exceção.")
+	@Order(7)
+	@Test
+	void testAlteraContaDigital_ComAgenciaContaUtilizadasOutraContaDigitalJaCadastrada_DeveSerLancadaExcecao()
+			throws JsonMappingException, JsonProcessingException {
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
+		String agencia = contaDigitalCadastrada.getAgencia();
+		String conta = contaDigitalCadastrada.getConta();
+		
+		contaDigitalPessoaFisicaAlteracaoDto1.setAgencia(agencia);
+		contaDigitalPessoaFisicaAlteracaoDto1.setConta(conta);
+		
+		String mensagemEsperada = "Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta
+				+ ".";
+		
+		String conteudoBodyResposta = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaFisicaAlteracaoDto1)
+			.when()
+				.put()
+			.then()
+				.extract()
+					.body()
+						.asString();
+
+		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
+		
+		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
+	@DisplayName("Quando deleta conta digital para pessoa física com sucesso deve ser retornado o código de status 204")
+	@Order(8)
+	@Test
+	void testDeletaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
+		given()
+			.spec(requestSpecification)
+		.when()
+			.delete("{cpf}", CPF_1)
+		.then()
+			.statusCode(204);
+	}
+	
+	@DisplayName("Quando não insere conta digital para pessoa física com sucesso não deve ser retornado o código de status 201")
+	@Test
+	void testInsereContaDigitalPessoaFisica_SemSucesso_NaoDeveSerRetornadoCodigoStatus201() throws JsonProcessingException, Exception {
+		String cpfNulo = null;
+		String mensagemEsperada = "CPF não informado.";
+		
+		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
+				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", cpfNulo,
+				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
+		
+		String conteudoBodyResposta = given()
+				.spec(requestSpecification).contentType(ContentType.JSON)
+				.body(contaDigitalPessoaFisicaInsercaoDto)
+			.when()
+				.post()
+			.then()
+				.assertThat().statusCode(not(equalTo(201)))
+				.extract()
+					.body()
+						.asString();
+		
+		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
+		
+		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
+	}
+	
 	@DisplayName("Quando busca conta digital para pessoa física sem sucesso "
 			+ "deve ser retornado o código de status 404 e o body da resposta vazio")
 	@Test
@@ -347,7 +402,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String conteudoBodyResposta = given()
 				.spec(requestSpecification)
 			.when()
-				.get("{cpf}", cpfSemContaDigitalAssociadoComEle)
+				.get("{cpf}", CPF_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE)
 			.then()
 				.statusCode(404)
 			.extract()
@@ -364,7 +419,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String mensagemEsperada = "E-mail informado sem o símbolo @ (arroba).";
 		
 		ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaComNovosDados = new ContaDigitalPessoaFisicaAlteracaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", novoEmail, 1L, cpf1, "Fulano de Tal",
+				"1234567890", "0000000011", "12345678", "19980001234", novoEmail, 1L, CPF_1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		String conteudoBodyResposta = given()
@@ -392,7 +447,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String conteudoBodyResposta = given()
 			.spec(requestSpecification)
 		.when()
-			.delete("{cpf}", cpfSemContaDigitalAssociadoComEle)
+			.delete("{cpf}", CPF_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE)
 		.then()
 			.assertThat().statusCode(not(equalTo(204)))
 		.extract()
