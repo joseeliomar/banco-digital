@@ -50,6 +50,18 @@ public class Endereco implements Serializable {
 	@Column(nullable = true)
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime dataHoraAlteracao;
+	
+	public Endereco(String rua, int numero, String bairro, String municipio, UnidadeFederativa unidadeFederativa,
+			String cep, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao) {
+		this.rua = rua;
+		this.numero = numero;
+		this.bairro = bairro;
+		this.municipio = municipio;
+		this.unidadeFederativa = unidadeFederativa;
+		this.cep = cep;
+		this.dataHoraCadastro = dataHoraCadastro;
+		this.dataHoraAlteracao = dataHoraAlteracao;
+	}
 
 	public Long getId() {
 		return id;
