@@ -41,7 +41,7 @@ import com.example.repository.ContaDigitalPessoaJuridicaRepository;
 class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 
 	@TestConfiguration
-	static class BookingServiceTestConfiguration {
+	static class ContaDigitalPessoaFisicaServiceTestConfiguration {
 
         @Bean
         ContaDigitalPessoaFisicaService contaDigitalPessoaFisicaService() {
