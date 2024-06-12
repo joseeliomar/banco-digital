@@ -29,9 +29,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
-import com.example.dto.EnderecoDto;
 import com.example.exception.ValidacaoException;
-import com.example.feignclient.EnderecoFeignClient;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.model.ContaDigitalPessoaJuridica;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
@@ -58,9 +56,6 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	@MockBean
 	private ContaDigitalPessoaFisicaRepository contaDigitalPessoaFisicaRepository;
 	
-	@MockBean
-	private EnderecoFeignClient enderecoFeignClient;
-	
 	private ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto1;
 	
 	private ContaDigitalPessoaJuridicaAlteracaoDto contaDigitalPessoaJuridicaAlteracaoDto1;
@@ -73,17 +68,12 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	
 	private ContaDigitalPessoaFisica contaDigitalPessoaFisica1;
 	
-	private EnderecoDto enderecoDto;
-	
 	private Long codigoEnderecoExistente;
 	
 	@BeforeEach
 	void setup() {
 		// Given
 		codigoEnderecoExistente = 1L;
-		
-		enderecoDto = new EnderecoDto(codigoEnderecoExistente);
-		given(enderecoFeignClient.buscaEndereco(codigoEnderecoExistente)).willReturn(enderecoDto);
 		
 		String cnpj1 = "12345678990001";
 		String cnpj2 = "12345678990002";

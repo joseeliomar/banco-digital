@@ -18,8 +18,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 
 import com.example.config.TestConfigs;
 import com.example.dto.DetalhesExcecaoDto;
@@ -31,7 +29,6 @@ import com.example.dto.EnderecoInseridoDto;
 import com.example.enumeration.UnidadeFederativa;
 import com.example.integrationtests.testcontainers.ConfiguracaoAmbienteTestesParaUsoContainers;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
