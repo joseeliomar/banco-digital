@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import com.example.model.ContaDigitalPessoaJuridica;
 
-public class ContaDigitalPessoaJuridicaInseridaDto {
+public class EnderecoInseridoDto {
 
 	private String agencia;
 	private String conta;
@@ -17,9 +17,9 @@ public class ContaDigitalPessoaJuridicaInseridaDto {
 	private String cnpj;
 	private String razaoSocial;
 
-	public ContaDigitalPessoaJuridicaInseridaDto() {}
+	public EnderecoInseridoDto() {}
 
-	public ContaDigitalPessoaJuridicaInseridaDto(ContaDigitalPessoaJuridica contaDigitalPessoaJuridica) {
+	public EnderecoInseridoDto(ContaDigitalPessoaJuridica contaDigitalPessoaJuridica) {
 		this.agencia = contaDigitalPessoaJuridica.getAgencia();
 		this.conta = contaDigitalPessoaJuridica.getConta();
 		this.senha = contaDigitalPessoaJuridica.getSenha();
@@ -80,7 +80,7 @@ public class ContaDigitalPessoaJuridicaInseridaDto {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaDigitalPessoaJuridicaInseridaDto other = (ContaDigitalPessoaJuridicaInseridaDto) obj;
+		EnderecoInseridoDto other = (EnderecoInseridoDto) obj;
 		return Objects.equals(cnpj, other.cnpj);
 	}
 }

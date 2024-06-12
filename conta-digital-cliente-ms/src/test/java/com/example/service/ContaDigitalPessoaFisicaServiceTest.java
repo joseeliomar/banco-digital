@@ -1199,7 +1199,7 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	
 	// ---------------------------------------------------------- Remoção ----------------------------------------------------------
 	
-	@DisplayName("Na remoção da conta digital pelo CPF deve ser executado o metodo delete do repository")
+	@DisplayName("Na remoção da conta digital pelo CPF deve ser executado o método delete do repository")
 	@Test
 	void testRemocaoContaDigital_PeloCpf_DeveSerExecutadoMetodoDeleteDoRepository() {
 		String cpf = contaDigitalPessoaFisica1.getCpf();

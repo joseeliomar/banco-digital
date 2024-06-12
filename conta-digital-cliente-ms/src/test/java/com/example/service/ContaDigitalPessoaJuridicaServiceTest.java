@@ -1081,7 +1081,7 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	
 	// ---------------------------------------------------------- Remoção ----------------------------------------------------------
 	
-	@DisplayName("Na remoção da conta digital pelo CNPJ deve ser executado o metodo delete do repository")
+	@DisplayName("Na remoção da conta digital pelo CNPJ deve ser executado o método delete do repository")
 	@Test
 	void testRemocaoContaDigital_PeloCnpj_DeveSerExecutadoMetodoDeleteDoRepository() {
 		String cnpj = contaDigitalPessoaJuridica1.getCnpj();

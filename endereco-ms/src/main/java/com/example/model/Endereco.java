@@ -51,6 +51,9 @@ public class Endereco implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime dataHoraAlteracao;
 	
+	public Endereco() {
+	}
+	
 	public Endereco(String rua, int numero, String bairro, String municipio, UnidadeFederativa unidadeFederativa,
 			String cep, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao) {
 		this.rua = rua;

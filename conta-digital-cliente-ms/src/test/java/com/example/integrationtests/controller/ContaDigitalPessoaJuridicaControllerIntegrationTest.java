@@ -25,7 +25,7 @@ import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaAlteradaDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
-import com.example.dto.ContaDigitalPessoaJuridicaInseridaDto;
+import com.example.dto.EnderecoInseridoDto;
 import com.example.dto.DetalhesExcecaoDto;
 import com.example.integrationtests.testcontainers.ConfiguracaoAmbienteTestesParaUsoContainers;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -89,12 +89,12 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 			+ "o header Location e o código de status 201")
 	@Order(1)
 	@Test
-	void testInsereContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
+	void testInsereContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011", "1234567890",
 				"12345678", "19980001234", "fulano@email.com", CNPJ_1, "Fábrica Tal");
 
-		String sufixoLocalizacaoRecursoCriado = CAMINHO_BASE + contaDigitalPessoaJuridicaInsercaoDto.getCnpj(); // não contém a porta
+		String sufixoUriRecursoCriado = CAMINHO_BASE + contaDigitalPessoaJuridicaInsercaoDto.getCnpj(); // não contém a porta
 
 		Response response = given()
 				.spec(requestSpecification).contentType(ContentType.JSON)
@@ -107,11 +107,11 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		String valorHeaderLocation = response.getHeader("Location");
 		String conteudoBodyResposta = response.asString();
 
-		ContaDigitalPessoaJuridicaInseridaDto contaDigitalPessoaJuridicaInserida = objectMapper
-				.readValue(conteudoBodyResposta, ContaDigitalPessoaJuridicaInseridaDto.class);
+		EnderecoInseridoDto contaDigitalPessoaJuridicaInserida = objectMapper
+				.readValue(conteudoBodyResposta, EnderecoInseridoDto.class);
 		
 		assertNotNull(valorHeaderLocation);
-		assertTrue(valorHeaderLocation.endsWith(sufixoLocalizacaoRecursoCriado),
+		assertTrue(valorHeaderLocation.endsWith(sufixoUriRecursoCriado),
 				() -> "O valor presente no header Location não termina com o sufixo esperado.");
 		assertNotNull(contaDigitalPessoaJuridicaInserida);
 		assertNotNull(contaDigitalPessoaJuridicaInserida.getAgencia());

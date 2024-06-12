@@ -36,9 +36,8 @@ public class ContaDigitalPessoaFisicaController {
 				.insereContaDigitalPessoaFisica(contaDigitalPessoaFisicaInsercaoDto);
 		ContaDigitalPessoaFisicaInseridaDto contaDigitalPessoaFisicaInseridaDto = new ContaDigitalPessoaFisicaInseridaDto(
 				contaDigitalPessoaFisica);
-		URI localizacaoRecursoCriado = Utils
-				.obtemLocalizacaoRecursoCriado(contaDigitalPessoaFisicaInseridaDto.getCpf());
-		return ResponseEntity.created(localizacaoRecursoCriado).body(contaDigitalPessoaFisicaInseridaDto);
+		URI uriRecursoCriado = Utils.obtemUriRecursoCriado(contaDigitalPessoaFisicaInseridaDto.getCpf());
+		return ResponseEntity.created(uriRecursoCriado).body(contaDigitalPessoaFisicaInseridaDto);
 	}
 	
 	@GetMapping("/{cpf}")

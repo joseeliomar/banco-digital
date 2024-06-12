@@ -93,13 +93,13 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 			+ "o header Location e o código de status 201")
 	@Order(1)
 	@Test
-	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadaUriMaisCodigoStatus201()
+	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
 				"0000000011", "1234567890", "12345678", "19980001234", "fulano@email.com", CPF_1,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 
-		String sufixoLocalizacaoRecursoCriado = CAMINHO_BASE + contaDigitalPessoaFisicaInsercaoDto.getCpf(); // não contém a porta
+		String sufixoUriRecursoCriado = CAMINHO_BASE + contaDigitalPessoaFisicaInsercaoDto.getCpf(); // não contém a porta
 
 		Response response = given()
 				.spec(requestSpecification).contentType(ContentType.JSON)
@@ -116,7 +116,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				.readValue(conteudoBodyResposta, ContaDigitalPessoaFisicaInseridaDto.class);
 
 		assertNotNull(valorHeaderLocation);
-		assertTrue(valorHeaderLocation.endsWith(sufixoLocalizacaoRecursoCriado),
+		assertTrue(valorHeaderLocation.endsWith(sufixoUriRecursoCriado),
 				() -> "O valor presente no header Location não termina com o sufixo esperado.");
 		assertNotNull(contaDigitalPessoaFisicaInserida);
 		assertNotNull(contaDigitalPessoaFisicaInserida.getAgencia());

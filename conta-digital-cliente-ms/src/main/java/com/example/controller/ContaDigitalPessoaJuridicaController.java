@@ -17,7 +17,7 @@ import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaAlteradaDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
-import com.example.dto.ContaDigitalPessoaJuridicaInseridaDto;
+import com.example.dto.EnderecoInseridoDto;
 import com.example.model.ContaDigitalPessoaJuridica;
 import com.example.service.ContaDigitalPessoaJuridicaService;
 import com.example.utils.Utils;
@@ -30,15 +30,14 @@ public class ContaDigitalPessoaJuridicaController {
 	private ContaDigitalPessoaJuridicaService contaDigitalPessoaJuridicaService;
 
 	@PostMapping("/")
-	public ResponseEntity<ContaDigitalPessoaJuridicaInseridaDto> insereContaDigitalPessoaJuridica(
+	public ResponseEntity<EnderecoInseridoDto> insereContaDigitalPessoaJuridica(
 			@RequestBody ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto) {
 		ContaDigitalPessoaJuridica contaDigitalPessoaJuridica = contaDigitalPessoaJuridicaService
 				.insereContaDigitalPessoaJuridica(contaDigitalPessoaJuridicaInsercaoDto);
-		ContaDigitalPessoaJuridicaInseridaDto contaDigitalPessoaJuridicaInseridaDto = new ContaDigitalPessoaJuridicaInseridaDto(
+		EnderecoInseridoDto contaDigitalPessoaJuridicaInseridaDto = new EnderecoInseridoDto(
 				contaDigitalPessoaJuridica);
-		URI localizacaoRecursoCriado = Utils
-				.obtemLocalizacaoRecursoCriado(contaDigitalPessoaJuridicaInseridaDto.getCnpj());
-		return ResponseEntity.created(localizacaoRecursoCriado).body(contaDigitalPessoaJuridicaInseridaDto);
+		URI uriRecursoCriado = Utils.obtemUriRecursoCriado(contaDigitalPessoaJuridicaInseridaDto.getCnpj());
+		return ResponseEntity.created(uriRecursoCriado).body(contaDigitalPessoaJuridicaInseridaDto);
 	}
 	
 	@GetMapping("/{cnpj}")
