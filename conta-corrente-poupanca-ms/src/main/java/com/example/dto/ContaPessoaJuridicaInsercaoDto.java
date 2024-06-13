@@ -5,17 +5,17 @@ import java.util.Objects;
 
 import com.example.enumeration.TipoConta;
 
-public class ContaPessoaFisicaInsercaoDto implements Serializable {
+public class ContaPessoaJuridicaInsercaoDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private TipoConta tipoConta;
 	private double saldo;
-	private String cpf;
+	private String cnpj;
 
-	public ContaPessoaFisicaInsercaoDto(TipoConta tipoConta, double saldo, String cpf) {
+	public ContaPessoaJuridicaInsercaoDto(TipoConta tipoConta, double saldo, String cnpj) {
 		this.tipoConta = tipoConta;
 		this.saldo = saldo;
-		this.cpf = cpf;
+		this.cnpj = cnpj;
 	}
 
 	public TipoConta getTipoConta() {
@@ -34,17 +34,17 @@ public class ContaPessoaFisicaInsercaoDto implements Serializable {
 		this.saldo = saldo;
 	}
 
-	public String getCpf() {
-		return cpf;
+	public String getCnpj() {
+		return cnpj;
 	}
 
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cpf, saldo, tipoConta);
+		return Objects.hash(cnpj, saldo, tipoConta);
 	}
 
 	@Override
@@ -55,8 +55,9 @@ public class ContaPessoaFisicaInsercaoDto implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaPessoaFisicaInsercaoDto other = (ContaPessoaFisicaInsercaoDto) obj;
-		return Objects.equals(cpf, other.cpf) && Double.doubleToLongBits(saldo) == Double.doubleToLongBits(other.saldo)
+		ContaPessoaJuridicaInsercaoDto other = (ContaPessoaJuridicaInsercaoDto) obj;
+		return Objects.equals(cnpj, other.cnpj)
+				&& Double.doubleToLongBits(saldo) == Double.doubleToLongBits(other.saldo)
 				&& tipoConta == other.tipoConta;
 	}
 

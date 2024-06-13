@@ -3,13 +3,13 @@ package com.example.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class ContaPessoaFisicaAlteracaoDto implements Serializable {
+public class ContaPessoaJuridicaAlteracaoDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private double saldo;
 
-	public ContaPessoaFisicaAlteracaoDto(Long id, double saldo) {
+	public ContaPessoaJuridicaAlteracaoDto(Long id, double saldo) {
 		this.id = id;
 		this.saldo = saldo;
 	}
@@ -43,7 +43,7 @@ public class ContaPessoaFisicaAlteracaoDto implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaPessoaFisicaAlteracaoDto other = (ContaPessoaFisicaAlteracaoDto) obj;
+		ContaPessoaJuridicaAlteracaoDto other = (ContaPessoaJuridicaAlteracaoDto) obj;
 		return Objects.equals(id, other.id);
 	}
 

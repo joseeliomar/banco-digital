@@ -143,8 +143,6 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	/////
-	
 	@DisplayName("Quando tenta inseir uma conta com o CPF não informado (string nula) deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaFisica_ComCpfNulo_DeveSerLancadaExcecao() {
