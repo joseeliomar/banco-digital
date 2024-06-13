@@ -1,12 +1,16 @@
 package com.example.enumeration;
 
 public enum TipoConta {
-	CORRENTE("CORRENTE"),
-	POUPANCA("POUPANÇA");
+	CORRENTE("Corrente"),
+	POUPANCA("Poupança");
 	
-	String nome;
+	private String nome;
 
 	private TipoConta(String nome) {
 		this.nome = nome;
+	}
+
+	public String getNome() {
+		return nome;
 	}
 }
