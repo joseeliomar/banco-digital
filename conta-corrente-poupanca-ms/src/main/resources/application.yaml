@@ -1,0 +1,29 @@
+server:
+  port: 0
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: conta-corrente-poupanca-ms
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/conta_corrente_poupanca_ms?useTimezone=true&serverTimezone=UTC
+    username: dev
+    password: abc123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        '[format_sql]': true
+    show-sql: true
+
+eureka:
+    instance:
+      instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # id da instância da aplicação no servidor Eureka
