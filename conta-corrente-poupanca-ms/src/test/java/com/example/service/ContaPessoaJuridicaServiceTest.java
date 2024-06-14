@@ -285,7 +285,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		
 		// When & Then
 		ContaPessoaJuridicaBuscaDto1 actual = assertDoesNotThrow(
-				() -> contaPessoaJuridicaService.buscaContaDigitalCompleta(cnpj, tipoConta),
+				() -> contaPessoaJuridicaService.buscaContaCompleta(cnpj, tipoConta),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 		
 		assertNotNull(actual, () -> "Não foi encontrada uma conta com o CNPJ e o tipo de conta que foram informados.");
@@ -302,7 +302,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		
 		// When & Then
 		ContaPessoaJuridicaBuscaDto1 actual = assertDoesNotThrow(
-				() -> contaPessoaJuridicaService.buscaContaDigitalCompleta(cnpj, tipoConta),
+				() -> contaPessoaJuridicaService.buscaContaCompleta(cnpj, tipoConta),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 		
 		assertNull(actual, () -> "Não deveria ser retonada nenhuma conta.");
@@ -310,10 +310,10 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 	
 	@DisplayName("Quando tenta remover endereço com o ID não informado deve ser lançada uma exceção")
 	@Test
-	void testRemoveEndereco_ComIdNulo_DeveSerLancadaExcecao() {
+	void testRemoveContaPessoaFisica_ComIdNulo_DeveSerLancadaExcecao() {
 		Long id = null;
 		given(contaPessoaJuridicaRepository.findById(any())).willReturn(Optional.ofNullable(null));
-		String mensagemEsperada = "Não foi encontrado uma conta com o código informado.";
+		String mensagemEsperada = "Não foi encontrada uma conta com o código informado.";
 		
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoRemocaoContaPessoaJuridica(id);

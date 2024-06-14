@@ -8,6 +8,9 @@ public class ContaPessoaFisicaAlteracaoDto implements Serializable {
 
 	private Long id;
 	private double saldo;
+	
+	public ContaPessoaFisicaAlteracaoDto() {
+	}
 
 	public ContaPessoaFisicaAlteracaoDto(Long id, double saldo) {
 		this.id = id;

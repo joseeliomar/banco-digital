@@ -6,7 +6,7 @@ import java.util.Objects;
 import com.example.enumeration.TipoConta;
 import com.example.model.ContaPessoaFisica;
 
-public class ContaPessoaFisicaBuscaDto1 implements Serializable {
+public class ContaPessoaFisicaAlteradaDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -14,10 +14,10 @@ public class ContaPessoaFisicaBuscaDto1 implements Serializable {
 	private double saldo;
 	private String cpf;
 	
-	public ContaPessoaFisicaBuscaDto1() {
+	public ContaPessoaFisicaAlteradaDto() {
 	}
 
-	public ContaPessoaFisicaBuscaDto1(ContaPessoaFisica contaPessoaFisica) {
+	public ContaPessoaFisicaAlteradaDto(ContaPessoaFisica contaPessoaFisica) {
 		id = contaPessoaFisica.getId();
 		tipoConta = contaPessoaFisica.getTipoConta();
 		saldo = contaPessoaFisica.getSaldo();
@@ -53,7 +53,7 @@ public class ContaPessoaFisicaBuscaDto1 implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaPessoaFisicaBuscaDto1 other = (ContaPessoaFisicaBuscaDto1) obj;
+		ContaPessoaFisicaAlteradaDto other = (ContaPessoaFisicaAlteradaDto) obj;
 		return Objects.equals(id, other.id);
 	}
 

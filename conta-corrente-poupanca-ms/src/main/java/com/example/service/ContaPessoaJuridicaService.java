@@ -55,7 +55,7 @@ public class ContaPessoaJuridicaService extends ContaService {
 		return contaPessoaJuridicaRepository.findByCnpjAndTipoConta(cnpj, tipoConta);
 	}
 	
-	public ContaPessoaJuridicaBuscaDto1 buscaContaDigitalCompleta(String cnpj, TipoConta tipoConta) {
+	public ContaPessoaJuridicaBuscaDto1 buscaContaCompleta(String cnpj, TipoConta tipoConta) {
 		Optional<ContaPessoaJuridica> contaPessoaJuridicaOptional = buscaContaDigital(cnpj, tipoConta);
 		
 		if (contaPessoaJuridicaOptional.isPresent()) {
@@ -86,7 +86,7 @@ public class ContaPessoaJuridicaService extends ContaService {
 		Optional<ContaPessoaJuridica> enderecoOptional = contaPessoaJuridicaRepository.findById(idContaPessoaJuridica);
 		
 		ContaPessoaJuridica contaPessoaJuridicaSalvaBancoDados = enderecoOptional.orElseThrow(
-				() -> new ValidacaoException("Não foi encontrado uma conta com o código informado.", HttpStatus.BAD_REQUEST));
+				() -> new ValidacaoException("Não foi encontrada uma conta com o código informado.", HttpStatus.BAD_REQUEST));
 		
 		contaPessoaJuridicaRepository.delete(contaPessoaJuridicaSalvaBancoDados);
 	}

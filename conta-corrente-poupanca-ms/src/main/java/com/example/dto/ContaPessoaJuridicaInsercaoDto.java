@@ -11,6 +11,9 @@ public class ContaPessoaJuridicaInsercaoDto implements Serializable {
 	private TipoConta tipoConta;
 	private double saldo;
 	private String cnpj;
+	
+	public ContaPessoaJuridicaInsercaoDto() {
+	}
 
 	public ContaPessoaJuridicaInsercaoDto(TipoConta tipoConta, double saldo, String cnpj) {
 		this.tipoConta = tipoConta;

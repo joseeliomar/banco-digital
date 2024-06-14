@@ -4,24 +4,24 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import com.example.enumeration.TipoConta;
-import com.example.model.ContaPessoaFisica;
+import com.example.model.ContaPessoaJuridica;
 
-public class ContaPessoaFisicaBuscaDto1 implements Serializable {
+public class ContaPessoaJuridicaAlteradaDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
 	private TipoConta tipoConta;
 	private double saldo;
-	private String cpf;
-	
-	public ContaPessoaFisicaBuscaDto1() {
+	private String cnpj;
+
+	public ContaPessoaJuridicaAlteradaDto() {
 	}
 
-	public ContaPessoaFisicaBuscaDto1(ContaPessoaFisica contaPessoaFisica) {
-		id = contaPessoaFisica.getId();
-		tipoConta = contaPessoaFisica.getTipoConta();
-		saldo = contaPessoaFisica.getSaldo();
-		cpf = contaPessoaFisica.getCpf();
+	public ContaPessoaJuridicaAlteradaDto(ContaPessoaJuridica contaPessoaJuridica) {
+		id = contaPessoaJuridica.getId();
+		tipoConta = contaPessoaJuridica.getTipoConta();
+		saldo = contaPessoaJuridica.getSaldo();
+		cnpj = contaPessoaJuridica.getCnpj();
 	}
 
 	public Long getId() {
@@ -36,8 +36,8 @@ public class ContaPessoaFisicaBuscaDto1 implements Serializable {
 		return saldo;
 	}
 
-	public String getCpf() {
-		return cpf;
+	public String getCnpj() {
+		return cnpj;
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class ContaPessoaFisicaBuscaDto1 implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ContaPessoaFisicaBuscaDto1 other = (ContaPessoaFisicaBuscaDto1) obj;
+		ContaPessoaJuridicaAlteradaDto other = (ContaPessoaJuridicaAlteradaDto) obj;
 		return Objects.equals(id, other.id);
 	}
 

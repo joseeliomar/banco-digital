@@ -13,6 +13,9 @@ public class ContaPessoaJuridicaBuscaDto1 implements Serializable {
 	private TipoConta tipoConta;
 	private double saldo;
 	private String cnpj;
+	
+	public ContaPessoaJuridicaBuscaDto1() {
+	}
 
 	public ContaPessoaJuridicaBuscaDto1(ContaPessoaJuridica contaPessoaJuridica) {
 		id = contaPessoaJuridica.getId();

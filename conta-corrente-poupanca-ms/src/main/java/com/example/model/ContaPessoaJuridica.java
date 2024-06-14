@@ -10,6 +10,9 @@ public class ContaPessoaJuridica extends Conta {
 
 	@Column(length = 14)
 	private String cnpj;
+	
+	public ContaPessoaJuridica() {
+	}
 
 	public ContaPessoaJuridica(TipoConta tipoConta, double saldo, String cnpj) {
 		super(tipoConta, saldo);

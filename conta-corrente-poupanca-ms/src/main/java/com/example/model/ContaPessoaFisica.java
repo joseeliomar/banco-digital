@@ -10,7 +10,10 @@ public class ContaPessoaFisica extends Conta {
 
 	@Column(length = 11)
 	private String cpf;
-
+	
+	public ContaPessoaFisica() {
+	}
+	
 	public ContaPessoaFisica(TipoConta tipoConta, double saldo, String cpf) {
 		super(tipoConta, saldo);
 		this.cpf = cpf;

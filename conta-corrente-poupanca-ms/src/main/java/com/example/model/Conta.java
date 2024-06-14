@@ -25,6 +25,9 @@ public abstract class Conta {
 	
 	@Column(nullable = false)
 	protected double saldo;
+	
+	public Conta() {
+	}
 
 	public Conta(TipoConta tipoConta, double saldo) {
 		this.tipoConta = tipoConta;
