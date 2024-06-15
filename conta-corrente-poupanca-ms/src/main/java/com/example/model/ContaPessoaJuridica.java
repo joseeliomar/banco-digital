@@ -8,7 +8,7 @@ import jakarta.persistence.Entity;
 @Entity
 public class ContaPessoaJuridica extends Conta {
 
-	@Column(length = 14)
+	@Column(length = 14, nullable = false)
 	private String cnpj;
 	
 	public ContaPessoaJuridica() {

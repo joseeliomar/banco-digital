@@ -66,7 +66,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 
 	@DisplayName("Quando insere com sucesso uma conta do tipo CORRENTE, nenhuma exceção deve ser lançada")
 	@Test
-	void testInsereContaCorrentePessoaFisica_ComSucesso_NaoDeveSerLanacadaExcecao() {
+	void testInsereContaCorrentePessoaFisica_ComSucesso_NaoDeveSerLancadaExcecao() {
 		// Given
 		given(contaPessoaFisicaRepository.findByCpfAndTipoConta(anyString(), any(TipoConta.class)))
 				.willReturn(Optional.ofNullable(null));
@@ -83,7 +83,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 	
 	@DisplayName("Quando insere com sucesso uma conta do tipo POUPANÇA, nenhuma exceção deve ser lançada")
 	@Test
-	void testInsereContaPoupancaPessoaFisica_ComSucesso_NaoDeveSerLanacadaExcecao() {
+	void testInsereContaPoupancaPessoaFisica_ComSucesso_NaoDeveSerLancadaExcecao() {
 		// Given
 		TipoConta tipoConta = TipoConta.POUPANCA;
 		contaPessoaFisicaInsercaoDto.setTipoConta(tipoConta);
@@ -241,7 +241,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 	
 	@DisplayName("Quando altera com sucesso uma conta, nenhuma exceção deve ser lançada")
 	@Test
-	void testAlteraContaPessoaFisica_ComSucesso_NaoDeveSerLanacadaExcecao() {
+	void testAlteraContaPessoaFisica_ComSucesso_NaoDeveSerLancadaExcecao() {
 		// Given
 		double novoSaldo = 100;
 		contaPessoaFisicaAlteracaoDto.setSaldo(novoSaldo);
