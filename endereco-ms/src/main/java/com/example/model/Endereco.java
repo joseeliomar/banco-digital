@@ -43,11 +43,11 @@ public class Endereco implements Serializable {
 	@Column(nullable = false, length = 8)
 	private String cep;
 
-	@Column(nullable = false)
+	@Column(name = "data_hora_cadastro", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime dataHoraCadastro;
 
-	@Column(nullable = true)
+	@Column(name = "data_hora_alteracao", nullable = true)
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime dataHoraAlteracao;
 	

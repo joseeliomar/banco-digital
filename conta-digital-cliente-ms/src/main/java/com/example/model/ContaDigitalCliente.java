@@ -28,11 +28,11 @@ public abstract class ContaDigitalCliente {
 	@Column(nullable = true)
 	private Long idEndereco;
 
-	@Column(nullable = false)
+	@Column(name = "data_hora_cadastro", nullable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime dataHoraCadastro;
 
-	@Column(nullable = true)
+	@Column(name = "data_hora_alteracao", nullable = true)
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime dataHoraAlteracao;
 	

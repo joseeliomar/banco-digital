@@ -19,7 +19,7 @@ public abstract class Conta {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected Long id;
 	
-	@Column(name = "tipo_conta", nullable = false, length = 2)
+	@Column(name = "tipo_conta", nullable = false, length = 8)
 	@Enumerated(EnumType.STRING)
 	protected TipoConta tipoConta;
 	
