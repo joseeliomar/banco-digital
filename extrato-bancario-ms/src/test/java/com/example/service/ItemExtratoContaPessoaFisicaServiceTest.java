@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -112,7 +115,7 @@ public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaSer
 		// Given
 		String descricaoOperacaoNula = null;
 		itemExtratoContaPessoaFisicaInsercaoDto.setDescricaoOperacao(descricaoOperacaoNula);
-		String mensagemEsperada = "A descrição da operação foi não informada.";
+		String mensagemEsperada = "A descrição da operação não foi informada.";
 
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
@@ -127,7 +130,7 @@ public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaSer
 		// Given
 		String descricaoOperacaoEmBranco = "       ";
 		itemExtratoContaPessoaFisicaInsercaoDto.setDescricaoOperacao(descricaoOperacaoEmBranco);
-		String mensagemEsperada = "A descrição da operação foi não informada.";
+		String mensagemEsperada = "A descrição da operação não foi informada.";
 
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
@@ -135,11 +138,240 @@ public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaSer
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com o banco de destino não informado deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComBancoDestinoNulo_DeveSerLancadaExcecao() {
+		// Given
+		Banco bancoDestinoNulo = null;
+		itemExtratoContaPessoaFisicaInsercaoDto.setBancoDestino(bancoDestinoNulo);
+		String mensagemEsperada = "O banco de destino não foi informado.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a agência de destino não informada (string nula) deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComAgenciaDestinoNula_DeveSerLancadaExcecao() {
+		// Given
+		String agenciaDestinoNula = null;
+		itemExtratoContaPessoaFisicaInsercaoDto.setAgenciaDestino(agenciaDestinoNula);
+		String mensagemEsperada = "A agência de destino não foi informada.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a agência de destino não informada (string em branco) deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComAgenciaDestinoEmBranco_DeveSerLancadaExcecao() {
+		// Given
+		String agenciaDestinoEmBranco = "       ";
+		itemExtratoContaPessoaFisicaInsercaoDto.setAgenciaDestino(agenciaDestinoEmBranco);
+		String mensagemEsperada = "A agência de destino não foi informada.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a agência de destino com menos de 10 caracteres deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComAgenciaDestinoComMenos10Caracteres_DeveSerLancadaExcecao() {
+		// Given
+		String agenciaDestinoCom9Caracteres = "123456789";
+		itemExtratoContaPessoaFisicaInsercaoDto.setAgenciaDestino(agenciaDestinoCom9Caracteres);
+		String mensagemEsperada = "A agência de destino está com menos de 10 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a agência de destino com mais de 10 caracteres deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComAgenciaDestinoComMaisDezCaracteres_DeveSerLancadaExcecao() {
+		// Given
+		String agenciaDestinoCom11Caracteres = "12345678901";
+		itemExtratoContaPessoaFisicaInsercaoDto.setAgenciaDestino(agenciaDestinoCom11Caracteres);
+		String mensagemEsperada = "A agência de destino está com mais de 10 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a conta de destino não informada (string nula) deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComContaDestinoNula_DeveSerLancadaExcecao() {
+		// Given
+		String contaDestinoNula = null;
+		itemExtratoContaPessoaFisicaInsercaoDto.setContaDestino(contaDestinoNula);
+		String mensagemEsperada = "A conta de destino não foi informada.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a conta de destino não informada (string em branco) deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComContaDestinoEmBranco_DeveSerLancadaExcecao() {
+		// Given
+		String contaDestinoEmBranco = "       ";
+		itemExtratoContaPessoaFisicaInsercaoDto.setContaDestino(contaDestinoEmBranco);
+		String mensagemEsperada = "A conta de destino não foi informada.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a conta de destino com menos de 10 caracteres deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComContaDestinoComMenos10Caracteres_DeveSerLancadaExcecao() {
+		// Given
+		String contaDestinoCom9Caracteres = "123456789";
+		itemExtratoContaPessoaFisicaInsercaoDto.setContaDestino(contaDestinoCom9Caracteres);
+		String mensagemEsperada = "A conta de destino está com menos de 10 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com a conta de destino com mais de 10 caracteres deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComContaDestinoComMaisDezCaracteres_DeveSerLancadaExcecao() {
+		// Given
+		String contaDestinoCom11Caracteres = "12345678901";
+		itemExtratoContaPessoaFisicaInsercaoDto.setContaDestino(contaDestinoCom11Caracteres);
+		String mensagemEsperada = "A conta de destino está com mais de 10 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com o CPF do cliente não informado (string nula) deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComCpfClienteNulo_DeveSerLancadaExcecao() {
+		// Given
+		String cpfClienteNulo = null;
+		itemExtratoContaPessoaFisicaInsercaoDto.setCpfCliente(cpfClienteNulo);
+		String mensagemEsperada = "O CPF do cliente não foi informado.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com o CPF do cliente não informado (string em branco) deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComCpfClienteEmBranco_DeveSerLancadaExcecao() {
+		// Given
+		String cpfClienteEmBranco = "       ";
+		itemExtratoContaPessoaFisicaInsercaoDto.setCpfCliente(cpfClienteEmBranco);
+		String mensagemEsperada = "O CPF do cliente não foi informado.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com o CPF do cliente com menos de 11 caracteres deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComCpfClienteComMenos11Caracteres_DeveSerLancadaExcecao() {
+		// Given
+		String cpfClienteCom10Caracteres = "1234567890";
+		itemExtratoContaPessoaFisicaInsercaoDto.setCpfCliente(cpfClienteCom10Caracteres);
+		String mensagemEsperada = "O CPF do cliente está com menos de 11 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta inseir um item de extrato de conta de pessoa física"
+			+ " com o CPF do cliente com mais de 11 caracteres deve ser lançada uma exceção.")
+	@Test
+	void testInsereItemExtratoContaPessoaFisica_ComCpfClienteComMaisOnzeCaracteres_DeveSerLancadaExcecao() {
+		// Given
+		String cpfCom12Caracteres = "123456789012";
+		itemExtratoContaPessoaFisicaInsercaoDto.setCpfCliente(cpfCom12Caracteres);
+		String mensagemEsperada = "O CPF do cliente está com mais de 11 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Na remoção de um item de extrato de conta de pessoa física pelo código"
+			+ " deve ser executado o método delete do repository")
+	@Test
+	void testRemoveItemExtratoContaPessoaFisica_PeloId_DeveSerExecutadoMetodoDeleteDoRepository() {
+		Long idItemExtratoContaPessoaFisica = itemExtratoContaPessoaFisica1.getId();
+		given(itemExtratoContaPessoaFisicaRepository.findById(idItemExtratoContaPessoaFisica))
+				.willReturn(Optional.of(itemExtratoContaPessoaFisica1));
+		willDoNothing().given(itemExtratoContaPessoaFisicaRepository).delete(itemExtratoContaPessoaFisica1);
+
+		itemExtratoContaPessoaFisicaService.removeItemExtratoContaPessoaFisica(idItemExtratoContaPessoaFisica);
+
+		verify(itemExtratoContaPessoaFisicaRepository, times(1)).delete(itemExtratoContaPessoaFisica1);
+	}
+
+	@DisplayName("Quando tenta remover um item de extrato de conta de pessoa física com o código não informado (string nula) deve ser lançada uma exceção")
+	@Test
+	void testRemoveItemExtratoContaPessoaFisica_ComIdNulo_DeveSerLancadaExcecao() {
+		Long idItemExtratoContaPessoaFisicaNulo = null;
+		String mensagemEsperada = "Não foi encontrado um item de extrato de conta de pessoa física com o código informado.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoRemocaoItemExtratoContaPessoaFisica(
+				idItemExtratoContaPessoaFisicaNulo);
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+
 	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica() {
 		return assertThrows(ValidacaoException.class,
 				() -> itemExtratoContaPessoaFisicaService
 						.insereItemExtratoContaPessoaFisica(itemExtratoContaPessoaFisicaInsercaoDto),
 				() -> EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA);
 	}
-	
+
+	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoRemocaoItemExtratoContaPessoaFisica(
+			Long idItemExtratoContaPessoaFisica) {
+		return assertThrows(ValidacaoException.class,
+				() -> itemExtratoContaPessoaFisicaService
+						.removeItemExtratoContaPessoaFisica(idItemExtratoContaPessoaFisica),
+				() -> EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA);
+	}
 }

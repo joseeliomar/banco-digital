@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+import com.example.enumeration.DocumentoCliente;
 import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalCliente;

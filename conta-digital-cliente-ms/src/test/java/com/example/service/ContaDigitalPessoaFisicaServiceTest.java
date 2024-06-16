@@ -491,8 +491,8 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	@Test
 	void testCriaContaDigital_ComCpfComMaisOnzeCaracteres_DeveSerLancadaExcecao() {
 		// Given
-		String contaCom12Caracteres = "123456789012";
-		contaDigitalPessoaFisicaInsercaoDto1.setCpf(contaCom12Caracteres);
+		String cpfCom12Caracteres = "123456789012";
+		contaDigitalPessoaFisicaInsercaoDto1.setCpf(cpfCom12Caracteres);
 		String mensagemEsperada = "CPF com mais de 11 caracteres.";
 
 		// When & Then
@@ -1213,6 +1213,8 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
+	
+	// ---------------------------------------------------------- Busca ----------------------------------------------------------
 	
 	@DisplayName("Quando busca conta digital para pessoa física com sucesso "
 			+ "deve ser retornado um objeto com os dados da conta digital")

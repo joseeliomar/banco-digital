@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
+import com.example.enumeration.DocumentoCliente;
 import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaJuridica;

@@ -1,6 +1,4 @@
-package com.example.service;
-
-import com.example.enumeration.TipoDocumento;
+package com.example.enumeration;
 
 public record DocumentoCliente(String numeroDocumento, TipoDocumento TipoDocumento) {
 
