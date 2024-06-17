@@ -16,6 +16,9 @@ public class ItemExtratoContaPessoaFisicaInsercaoDto {
 	private String contaDestino;
 	private double valor;
 	private String cpfCliente;
+	
+	public ItemExtratoContaPessoaFisicaInsercaoDto() {
+	}
 
 	public ItemExtratoContaPessoaFisicaInsercaoDto(TipoConta tipoContaDonaExtrato, Operacao operacaoEfetuada,
 			String descricaoOperacao, Banco bancoDestino, String agenciaDestino, String contaDestino, double valor,

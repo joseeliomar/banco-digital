@@ -1,9 +1,11 @@
 package com.example.service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import com.example.dto.ItemExtratoContaPessoaFisicaInsercaoDto;
 import com.example.enumeration.Banco;
@@ -13,6 +15,7 @@ import com.example.exception.ValidacaoException;
 import com.example.model.ItemExtratoContaPessoaFisica;
 import com.example.repository.ItemExtratoContaPessoaFisicaRepository;
 
+@Service
 public class ItemExtratoContaPessoaFisicaService extends ItemExtratoContaService{
 	
 	@Autowired
@@ -37,9 +40,10 @@ public class ItemExtratoContaPessoaFisicaService extends ItemExtratoContaService
 		super.validaContaDestino(contaDestino);
 		validaCpfCliente(cpfCliente);
 		
+		LocalDateTime dataHoraCadastro = LocalDateTime.now();
 		ItemExtratoContaPessoaFisica novoItemExtratoContaPessoaFisica = new ItemExtratoContaPessoaFisica(
-				tipoContaDonaExtrato, operacaoEfetuada, descricaoOperacao, null, bancoDestino, agenciaDestino,
-				contaDestino, valor, cpfCliente);
+				tipoContaDonaExtrato, operacaoEfetuada, descricaoOperacao, dataHoraCadastro, bancoDestino,
+				agenciaDestino, contaDestino, valor, cpfCliente);
 		return itemExtratoContaPessoaFisicaRepository.save(novoItemExtratoContaPessoaFisica);
 	}
 	
