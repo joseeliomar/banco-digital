@@ -25,5 +25,5 @@ spring:
     show-sql: true
 
 eureka:
-    instance:
-      instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # id da instância da aplicação no servidor Eureka
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # id da instância da aplicação no servidor Eureka
