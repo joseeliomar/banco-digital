@@ -1,0 +1,17 @@
+server:
+  port: 0
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: deposito-ms
+
+eureka:
+    instance:
+      instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # id da instância da aplicação no servidor Eureka
