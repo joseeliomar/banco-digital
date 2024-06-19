@@ -13,6 +13,13 @@ public class ApiGatewayConfiguration {
 		return builder.routes()
 				.route(x -> x.path("/contaDigitalPessoaFisica/**").uri("lb://conta-digital-cliente-ms"))
 				.route(x -> x.path("/contaDigitalPessoaJuridica/**").uri("lb://conta-digital-cliente-ms"))
+				.route(x -> x.path("/contaPessoaFisica/**").uri("lb://conta-corrente-poupanca-ms"))
+				.route(x -> x.path("/contaPessoaJuridica/**").uri("lb://conta-corrente-poupanca-ms"))
+				.route(x -> x.path("/depositoContaCorrentePessoaFisica/**").uri("lb://deposito-ms"))
+				.route(x -> x.path("/depositoContaCorrentePessoaJuridica/**").uri("lb://deposito-ms"))
+				.route(x -> x.path("/endereco/**").uri("lb://endereco-ms"))
+				.route(x -> x.path("/itemExtratoContaPessoaFisica/**").uri("lb://extrato-bancario-ms"))
+				.route(x -> x.path("/itemExtratoContaPessoaJuridica/**").uri("lb://extrato-bancario-ms"))
 				.build();
     }
 }
