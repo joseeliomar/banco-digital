@@ -11,7 +11,14 @@ server:
 spring:
   application:
     name: deposito-ms
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            errorDecoder: com.example.openfeign.config.CustomErrorDecoder
 
 eureka:
   instance:
     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # id da instância da aplicação no servidor Eureka
+      

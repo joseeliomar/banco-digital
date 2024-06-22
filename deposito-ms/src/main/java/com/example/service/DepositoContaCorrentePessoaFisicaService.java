@@ -4,54 +4,105 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaPessoaFisicaBuscaDto1;
 import com.example.dto.DadosParaDepositoContaPessoaFisicaDto;
 import com.example.dto.ItemExtratoContaPessoaFisicaInsercaoDto;
-import com.example.enumeration.Banco;
 import com.example.enumeration.Operacao;
 import com.example.enumeration.TipoConta;
-import com.example.feignclient.ContaPessoaFisicaFeignClient;
-import com.example.feignclient.ItemExtratoContaPessoaFisicaFeignClient;
+import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
+import com.example.openfeign.feignclient.ContaDigitalClienteMsFeignClient;
+import com.example.openfeign.feignclient.ExtratoBancarioMsFeignClient;
 
 @Service
-public class DepositoService {
+public class DepositoContaCorrentePessoaFisicaService extends DepositoContaCorrenteService {
+	@Autowired
+	private ExtratoBancarioMsFeignClient extratoBancarioMsFeignClient;
+
+	@Autowired
+	private ContaCorrentePoupancaMsFeignClient contaPessoaFisicaFeignClient;
 	
-	private static final Banco ESSE_MESMO_BANCO = Banco.JBANK;
-
 	@Autowired
-	private ItemExtratoContaPessoaFisicaFeignClient itemExtratoContaPessoaFisicaFeignClient;
+	private ContaDigitalClienteMsFeignClient contaDigitalClienteMsFeignClient;
 
-	@Autowired
-	private ContaPessoaFisicaFeignClient contaPessoaFisicaFeignClient;
-
+	/**
+	 * Efetua depósito em uma conta corrente de pessoa física.
+	 * 
+	 * @param dadosParaDepositoDto Os dados para o depósito
+	 */
 	public void efetuaDepositoContaCorrentePessoaFisica(DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto) {
-		String cpfCliente = dadosParaDepositoDto.cpfCliente();
-		double valorDeposito = dadosParaDepositoDto.valorDeposito();
-		TipoConta contaCorrente = TipoConta.CORRENTE;
+		super.validaValorDeposito(dadosParaDepositoDto.valorDeposito());
 		
-		ResponseEntity<?> respostaBuscaContaPessoaFisica = contaPessoaFisicaFeignClient
-				.buscaContaPessoaFisica(cpfCliente, contaCorrente);
-		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = (ContaPessoaFisicaBuscaDto1) respostaBuscaContaPessoaFisica
-				.getBody();
+		atualizaSaldoContaCorrentePessoaFisica(dadosParaDepositoDto);
+		insereItemExtratoContaCorrentePessoaFisica(dadosParaDepositoDto);
+	}
 
-		double novoSaldoContaCorrente = contaCorrentePessoaFisica.getSaldo() + valorDeposito;
-		ContaPessoaFisicaAlteracaoDto contaCorrentePessoaFisicaParaAlteracao = new ContaPessoaFisicaAlteracaoDto(
-				contaCorrentePessoaFisica.getId(),
-				novoSaldoContaCorrente);
+	/**
+	 * Atualiza o saldo de uma conta corrente de pessoa física.
+	 * 
+	 * @param dadosParaDepositoDto Os dados para o depósito
+	 */
+	private void atualizaSaldoContaCorrentePessoaFisica(
+			DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto) {
+		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaCorrentePessoaFisica(dadosParaDepositoDto.cpfCliente());
 		
-		contaPessoaFisicaFeignClient.alteraContaPessoaFisica(contaCorrentePessoaFisicaParaAlteracao);
+		double novoSaldoContaCorrente = contaCorrentePessoaFisica.getSaldo() + dadosParaDepositoDto.valorDeposito();
 		
-		ItemExtratoContaPessoaFisicaInsercaoDto novoItemExtratoContaPessoaFisicaInsercaoDto = new ItemExtratoContaPessoaFisicaInsercaoDto(
-				contaCorrente,
+		contaPessoaFisicaFeignClient.alteraContaPessoaFisica(
+				new ContaPessoaFisicaAlteracaoDto(contaCorrentePessoaFisica.getId(), novoSaldoContaCorrente));
+	}
+
+	/**
+	 * Busca uma conta corrente de pessoa física.
+	 * 
+	 * @param cpfCliente O CPF do cliente
+	 * @return a conta corrente de pessoa física buscada.
+	 */
+	private ContaPessoaFisicaBuscaDto1 buscaContaCorrentePessoaFisica(String cpfCliente) {
+		ResponseEntity<ContaPessoaFisicaBuscaDto1> respostaBuscaContaPessoaFisica = contaPessoaFisicaFeignClient
+				.buscaContaPessoaFisica(cpfCliente, TipoConta.CORRENTE);
+		
+		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = respostaBuscaContaPessoaFisica.getBody();
+		return contaCorrentePessoaFisica;
+	}
+
+	/**
+	 * Insere novo item de extrato para uma conta corrente de pessoa física.
+	 * 
+	 * @param dadosParaDepositoDto Os dados para o depósito
+	 */
+	private void insereItemExtratoContaCorrentePessoaFisica(DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto) {
+		String cpfCliente = dadosParaDepositoDto.cpfCliente();
+		
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisica = buscaContaDigitalCliente(cpfCliente);
+		
+		var novoItemExtratoContaCorrentePessoaFisicaInsercaoDto = new ItemExtratoContaPessoaFisicaInsercaoDto(
+				TipoConta.CORRENTE,
 				Operacao.DEPOSITO,
 				Operacao.DEPOSITO.getDescricao(),
 				ESSE_MESMO_BANCO,
-				dadosParaDepositoDto.agenciaDestino(),
-				dadosParaDepositoDto.contaDestino(),
-				valorDeposito,
+				contaDigitalPessoaFisica.getAgencia(),
+				contaDigitalPessoaFisica.getConta(),
+				dadosParaDepositoDto.valorDeposito(),
 				cpfCliente);
-		itemExtratoContaPessoaFisicaFeignClient.insereItemExtratoContaPessoaFisica(novoItemExtratoContaPessoaFisicaInsercaoDto);
+		
+		extratoBancarioMsFeignClient
+				.insereItemExtratoContaPessoaFisica(novoItemExtratoContaCorrentePessoaFisicaInsercaoDto);
+	}
+
+	/**
+	 * Busca conta digital de cliente.
+	 * 
+	 * @param cpfCliente
+	 * @return a conta digital de cliente.
+	 */
+	private ContaDigitalPessoaFisicaDTO1Busca buscaContaDigitalCliente(String cpfCliente) {
+		ResponseEntity<ContaDigitalPessoaFisicaDTO1Busca> respostaBuscaContaDigitalPessoaFisica = contaDigitalClienteMsFeignClient
+				.buscaContaDigitalPessoaFisica(cpfCliente);
+		
+		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisica = respostaBuscaContaDigitalPessoaFisica.getBody();
+		return contaDigitalPessoaFisica;
 	}
 
 }

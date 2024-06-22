@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.dto.DadosParaDepositoContaPessoaFisicaDto;
-import com.example.service.DepositoService;
+import com.example.service.DepositoContaCorrentePessoaFisicaService;
 
 @RestController
 @RequestMapping("/depositoContaCorrentePessoaFisica")
 public class DepositoContaCorrentePessoaFisicaController {
 
 	@Autowired
-	private DepositoService depositoService;
+	private DepositoContaCorrentePessoaFisicaService depositoService;
 
 	@PostMapping("/")
 	public ResponseEntity<?> efetuaDepositoContaPessoaFisica(

@@ -441,6 +441,15 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
 	}
 	
+	/**
+	 * Busca uma conta de pessoa física pelo CPF e o tipo de conta.
+	 * 
+	 * @param cpf
+	 * @param tipoConta
+	 * @return a conta de pessoa física encontrada.
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 */
 	private ContaPessoaFisicaBuscaDto1 buscaContaPessoaFisicaPeloCpfTipoConta(String cpf, String tipoConta)
 			throws JsonProcessingException, JsonMappingException {
 		String conteudoBodyResposta = given()
