@@ -29,9 +29,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
+import com.example.dto.ContaPessoaJuridicaInsercaoDto;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.model.ContaDigitalPessoaJuridica;
+import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 import com.example.repository.ContaDigitalPessoaJuridicaRepository;
 
@@ -55,6 +57,9 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	
 	@MockBean
 	private ContaDigitalPessoaFisicaRepository contaDigitalPessoaFisicaRepository;
+	
+	@MockBean
+	private ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
 	
 	private ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto1;
 	
@@ -147,6 +152,8 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 				() -> service.insereContaDigitalPessoaJuridica(contaDigitalPessoaJuridicaInsercaoDto1),
 				() -> "Não deve ser lançada nehuma exceção.");
 
+		verify(contaCorrentePoupancaMsFeignClient, times(2))
+				.insereContaPessoaJuridica(any(ContaPessoaJuridicaInsercaoDto.class));
 		assertNotNull(actual, () -> "O objeto retornado do tipo " + ContaDigitalPessoaJuridica.class.getSimpleName()
 				+ " não pode ser nulo.");
 	}

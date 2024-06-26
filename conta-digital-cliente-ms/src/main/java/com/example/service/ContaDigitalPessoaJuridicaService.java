@@ -3,19 +3,26 @@ package com.example.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
+import com.example.dto.ContaPessoaJuridicaInsercaoDto;
 import com.example.enumeration.DocumentoCliente;
+import com.example.enumeration.TipoConta;
 import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaJuridica;
+import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
 
 @Service
 public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
+	
+	@Autowired
+	private ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
 	
 	public ContaDigitalPessoaJuridica insereContaDigitalPessoaJuridica(ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto) {
 		String agencia = contaDigitalPessoaJuridicaInsercaoDto.getAgencia();
@@ -38,7 +45,14 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
 		ContaDigitalPessoaJuridica contaDigitalPessoaJuridica = new ContaDigitalPessoaJuridica(agencia, conta, senha,
 				telefone, email, null, dataHoraCadastro, null, cnpj, razaoSocial);
-		return contaDigitalPessoaJuridicaRepository.save(contaDigitalPessoaJuridica);
+		var contaDigitalPessoaJuridicaCadastrada = contaDigitalPessoaJuridicaRepository.save(contaDigitalPessoaJuridica);
+		
+		var contaCorrentePessoaJuridica = new ContaPessoaJuridicaInsercaoDto(TipoConta.CORRENTE, 0.0, cnpj);
+		var contaPoupancaPessoaJuridica = new ContaPessoaJuridicaInsercaoDto(TipoConta.POUPANCA, 0.0, cnpj);
+		contaCorrentePoupancaMsFeignClient.insereContaPessoaJuridica(contaCorrentePessoaJuridica);
+		contaCorrentePoupancaMsFeignClient.insereContaPessoaJuridica(contaPoupancaPessoaJuridica);
+		
+		return contaDigitalPessoaJuridicaCadastrada;
 	}
 	
 	private void validaCnpj(String cnpj, boolean isInsercaoContaDigital) {

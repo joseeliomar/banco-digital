@@ -15,12 +15,13 @@ import com.example.service.DepositoContaCorrentePessoaJuridicaService;
 public class DepositoContaCorrentePessoaJuridicaController {
 
 	@Autowired
-	private DepositoContaCorrentePessoaJuridicaService depositoService;
+	private DepositoContaCorrentePessoaJuridicaService depositoContaCorrentePessoaJuridicaService;
 
 	@PostMapping("/")
 	public ResponseEntity<?> efetuaDepositoContaPessoaJuridica(
 			@RequestBody DadosParaDepositoContaPessoaJuridicaDto dadosParaDepositoContaPessoaJuridicaDto) {
-		depositoService.efetuaDepositoContaCorrentePessoaJuridica(dadosParaDepositoContaPessoaJuridicaDto);
+		depositoContaCorrentePessoaJuridicaService
+				.efetuaDepositoContaCorrentePessoaJuridica(dadosParaDepositoContaPessoaJuridicaDto);
 		return ResponseEntity.ok().build();
 	}
 }

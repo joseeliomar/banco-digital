@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 
-@FeignClient(name = "conta-corrente-poupanca-ms")
+@FeignClient(name = "conta-digital-cliente-ms")
 public interface ContaDigitalClienteMsFeignClient {
 	
 	@GetMapping("/contaDigitalPessoaFisica/{cpf}")

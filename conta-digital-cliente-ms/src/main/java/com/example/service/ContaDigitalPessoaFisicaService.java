@@ -4,19 +4,26 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
+import com.example.dto.ContaPessoaFisicaInsercaoDto;
 import com.example.enumeration.DocumentoCliente;
+import com.example.enumeration.TipoConta;
 import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaFisica;
+import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
 
 @Service
 public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
+	
+	@Autowired
+	private ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
 	
 	public ContaDigitalPessoaFisica insereContaDigitalPessoaFisica(ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
 		String agencia = contaDigitalPessoaFisicaInsercaoDto.getAgencia();
@@ -43,7 +50,14 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
 		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha,
 				telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
-		return contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisica);
+		var contaDigitalPessoaFisicaCadastrada = contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisica);
+		
+		var contaCorrentePessoaFisica = new ContaPessoaFisicaInsercaoDto(TipoConta.CORRENTE, 0.0, cpf);
+		var contaPoupancaPessoaFisica = new ContaPessoaFisicaInsercaoDto(TipoConta.POUPANCA, 0.0, cpf);
+		contaCorrentePoupancaMsFeignClient.insereContaPessoaFisica(contaCorrentePessoaFisica);
+		contaCorrentePoupancaMsFeignClient.insereContaPessoaFisica(contaPoupancaPessoaFisica);
+		
+		return contaDigitalPessoaFisicaCadastrada;
 	}
 
 	private void validaCpf(String cpf, boolean isInsercaoContaDigital) {
