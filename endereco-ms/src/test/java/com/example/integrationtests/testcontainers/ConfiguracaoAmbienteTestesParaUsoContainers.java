@@ -16,7 +16,7 @@ public class ConfiguracaoAmbienteTestesParaUsoContainers {
 
 	static class Initializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
 
-		static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.36");
+		static MySQLContainer<?> mysqlContainer = new MySQLContainer<>("mysql:8.0.37");
 		
 		private static void startContainers() {
 			Startables.deepStart(Stream.of(mysqlContainer)).join();

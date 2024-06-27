@@ -6,7 +6,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.3.1</version>
+		<version>3.3.0</version>
+		<!-- <version>3.3.1</version> -->
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.example</groupId>
@@ -14,7 +15,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>conta-digital-cliente-ms</name>
 	<description>Demo project for Spring Boot</description>
-	<url />
+	<!-- <url />
 	<licenses>
 		<license />
 	</licenses>
@@ -26,7 +27,7 @@
 		<developerConnection />
 		<tag />
 		<url />
-	</scm>
+	</scm> -->
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2023.0.2</spring-cloud.version>
