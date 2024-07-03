@@ -50,7 +50,7 @@ public class ContaPessoaFisicaController {
 	@GetMapping("/{cpf}/{tipoConta}")
 	public ResponseEntity<?> buscaContaPessoaFisica(@PathVariable String cpf, @PathVariable TipoConta tipoConta) {
 		ContaPessoaFisicaBuscaDto1 contaPessoaFisicaBuscaDto1 = contaPessoaFisicaService
-				.buscaContaCompleta(cpf, tipoConta);
+				.buscaContaPessoaFisicaCompleta(cpf, tipoConta);
 		
 		if (contaPessoaFisicaBuscaDto1 != null) {
 			return ResponseEntity.ok(contaPessoaFisicaBuscaDto1);

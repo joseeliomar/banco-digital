@@ -24,12 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
+import com.example.dto.ContaPessoaJuridicaBuscaDto1;
 import com.example.dto.ContaPessoaJuridicaInsercaoDto;
+import com.example.enumeration.TipoConta;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.model.ContaDigitalPessoaJuridica;
@@ -1083,10 +1086,26 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	void testRemocaoContaDigital_PeloCnpj_DeveSerExecutadoMetodoDeleteDoRepository() {
 		String cnpj = contaDigitalPessoaJuridica1.getCnpj();
 		given(contaDigitalPessoaJuridicaRepository.findById(cnpj)).willReturn(Optional.of(contaDigitalPessoaJuridica1));
+		
+		var contaCorrente = new ContaPessoaJuridicaBuscaDto1(123L, TipoConta.CORRENTE, 0, cnpj);
+		var contaPoupanca = new ContaPessoaJuridicaBuscaDto1(456L, TipoConta.POUPANCA, 0, cnpj);
+		
+		var respostaBuscaContaCorrente = ResponseEntity.ok(contaCorrente);
+		var respostaBuscaContaPoupanca = ResponseEntity.ok(contaPoupanca);
+		
+		given(contaCorrentePoupancaMsFeignClient.buscaContaPessoaJuridica(cnpj, TipoConta.CORRENTE))
+				.willReturn(respostaBuscaContaCorrente);
+		given(contaCorrentePoupancaMsFeignClient.buscaContaPessoaJuridica(cnpj, TipoConta.POUPANCA))
+				.willReturn(respostaBuscaContaPoupanca);
+		
 		willDoNothing().given(contaDigitalPessoaJuridicaRepository).delete(contaDigitalPessoaJuridica1);
 		
 		service.removeContaDigitalPessoaJuridica(cnpj);
 		
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).buscaContaPessoaJuridica(cnpj, TipoConta.CORRENTE);
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).buscaContaPessoaJuridica(cnpj, TipoConta.POUPANCA);
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).removeContaPessoaJuridica(contaCorrente.getId());
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).removeContaPessoaJuridica(contaPoupanca.getId());
 		verify(contaDigitalPessoaJuridicaRepository, times(1)).delete(contaDigitalPessoaJuridica1);
 	}
 	

@@ -5,11 +5,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.ContaDigitalPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
+import com.example.dto.ContaPessoaJuridicaBuscaDto1;
 import com.example.dto.ContaPessoaJuridicaInsercaoDto;
 import com.example.enumeration.DocumentoCliente;
 import com.example.enumeration.TipoConta;
@@ -147,6 +149,21 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 		ContaDigitalPessoaJuridica contaDigitalPessoaJuridicaSalvaBancoDados = contaDigitalPessoaJuridicaOptional.orElseThrow(
 				() -> new ValidacaoException("Não foi encontrada uma conta com o CNPJ informado.", HttpStatus.BAD_REQUEST));
 		
+		removeContaPessoaJuridica(cpnj, TipoConta.CORRENTE);
+		removeContaPessoaJuridica(cpnj, TipoConta.POUPANCA);
+		
 		contaDigitalPessoaJuridicaRepository.delete(contaDigitalPessoaJuridicaSalvaBancoDados);
 	}
+
+	private void removeContaPessoaJuridica(String cpnj, TipoConta tipoConta) {
+		ResponseEntity<ContaPessoaJuridicaBuscaDto1> respostaBuscaContaPessoaJuridica = contaCorrentePoupancaMsFeignClient
+				.buscaContaPessoaJuridica(cpnj, tipoConta);
+		
+		var contaPessoaJuridica = respostaBuscaContaPessoaJuridica.getBody();
+		
+		if (contaPessoaJuridica != null) {
+			contaCorrentePoupancaMsFeignClient.removeContaPessoaJuridica(contaPessoaJuridica.getId());
+		}
+	}
+	
 }

@@ -6,12 +6,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.dto.ContaPessoaFisicaInsercaoDto;
+import com.example.dto.ContaPessoaFisicaBuscaDto1;
 import com.example.enumeration.DocumentoCliente;
 import com.example.enumeration.TipoConta;
 import com.example.enumeration.TipoDocumento;
@@ -172,6 +174,20 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		ContaDigitalPessoaFisica contaDigitalPessoaFisicaSalvaBancoDados = contaDigitalPessoaFisicaOptional.orElseThrow(
 				() -> new ValidacaoException("Não foi encontrada uma conta com o CPF informado.", HttpStatus.BAD_REQUEST));
 		
+		removeContaPessoaFisica(cpf, TipoConta.CORRENTE);
+		removeContaPessoaFisica(cpf, TipoConta.POUPANCA);
+		
 		contaDigitalPessoaFisicaRepository.delete(contaDigitalPessoaFisicaSalvaBancoDados);
+	}
+	
+	private void removeContaPessoaFisica(String cpf, TipoConta tipoConta) {
+		ResponseEntity<ContaPessoaFisicaBuscaDto1> respostaBuscaContaPessoaFisica = contaCorrentePoupancaMsFeignClient
+				.buscaContaPessoaFisica(cpf, tipoConta);
+		
+		var contaPessoaFisica = respostaBuscaContaPessoaFisica.getBody();
+		
+		if (contaPessoaFisica != null) {
+			contaCorrentePoupancaMsFeignClient.removeContaPessoaFisica(contaPessoaFisica.getId());
+		}
 	}
 }

@@ -24,12 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
+import com.example.dto.ContaPessoaFisicaBuscaDto1;
 import com.example.dto.ContaPessoaFisicaInsercaoDto;
+import com.example.enumeration.TipoConta;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.model.ContaDigitalPessoaJuridica;
@@ -1201,10 +1204,26 @@ class ContaDigitalPessoaFisicaServiceTest extends ContaDigitalServiceTest {
 	void testRemocaoContaDigital_PeloCpf_DeveSerExecutadoMetodoDeleteDoRepository() {
 		String cpf = contaDigitalPessoaFisica1.getCpf();
 		given(contaDigitalPessoaFisicaRepository.findById(cpf)).willReturn(Optional.of(contaDigitalPessoaFisica1));
+		
+		var contaCorrente = new ContaPessoaFisicaBuscaDto1(123L, TipoConta.CORRENTE, 0, cpf);
+		var contaPoupanca = new ContaPessoaFisicaBuscaDto1(456L, TipoConta.POUPANCA, 0, cpf);
+		
+		var respostaBuscaContaCorrente = ResponseEntity.ok(contaCorrente);
+		var respostaBuscaContaPoupanca = ResponseEntity.ok(contaPoupanca);
+		
+		given(contaCorrentePoupancaMsFeignClient.buscaContaPessoaFisica(cpf, TipoConta.CORRENTE))
+				.willReturn(respostaBuscaContaCorrente);
+		given(contaCorrentePoupancaMsFeignClient.buscaContaPessoaFisica(cpf, TipoConta.POUPANCA))
+				.willReturn(respostaBuscaContaPoupanca);
+		
 		willDoNothing().given(contaDigitalPessoaFisicaRepository).delete(contaDigitalPessoaFisica1);
 		
 		service.removeContaDigitalPessoaFisica(cpf);
 		
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).buscaContaPessoaFisica(cpf, TipoConta.CORRENTE);
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).buscaContaPessoaFisica(cpf, TipoConta.POUPANCA);
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).removeContaPessoaFisica(contaCorrente.getId());
+		verify(contaCorrentePoupancaMsFeignClient, times(1)).removeContaPessoaFisica(contaPoupanca.getId());
 		verify(contaDigitalPessoaFisicaRepository, times(1)).delete(contaDigitalPessoaFisica1);
 	}
 	

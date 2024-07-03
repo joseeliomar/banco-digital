@@ -28,19 +28,23 @@ import com.example.dto.ContaDigitalPessoaFisicaAlteradaDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaInseridaDto;
+import com.example.dto.ContaPessoaFisicaBuscaDto1;
 import com.example.dto.DetalhesExcecaoDto;
+import com.example.enumeration.TipoConta;
 import com.example.integrationtests.testcontainers.ConfiguracaoAmbienteTestesParaUsoContainers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 
 @TestInstance(Lifecycle.PER_CLASS)
@@ -50,13 +54,18 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	
 	private static final String CAMINHO_BASE = "/contaDigitalPessoaFisica/";
 
-	private RequestSpecification requestSpecification;
+	private RequestSpecification requestSpecificationContaDigitalPessoaFisica;
+	
+	private RequestSpecification requestSpecificationContaPessoaFisica;
 	
 	@Autowired
 	private TestConfigs testConfigs;
 	
 	@Autowired
 	private ObjectMapper objectMapper;
+	
+	@Autowired
+	private MetodosEmComumIntegrationTest metodosEmComumIntegrationTest;
 	
 	private static final String CPF_1 = "12345678901";
 	private static final String CPF_2 = "12345678902";
@@ -70,11 +79,16 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	public void setupAll() {
 		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 		
-		requestSpecification = new RequestSpecBuilder()
+		RestAssured.filters(new RequestLoggingFilter(LogDetail.ALL), new ResponseLoggingFilter(LogDetail.ALL));
+		
+		requestSpecificationContaDigitalPessoaFisica = new RequestSpecBuilder()
 				.setBasePath(CAMINHO_BASE)
 				.setPort(testConfigs.getServerPort())
-				.addFilter(new RequestLoggingFilter(LogDetail.ALL))
-				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
+				.build();
+		
+		requestSpecificationContaPessoaFisica = new RequestSpecBuilder()
+				.setBasePath("/contaPessoaFisica/")
+				.setPort(metodosEmComumIntegrationTest.obterUmaPortaMicrosservico("conta-corrente-poupanca-ms"))
 				.build();
 	}
 	
@@ -102,7 +116,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String sufixoUriRecursoCriado = CAMINHO_BASE + contaDigitalPessoaFisicaInsercaoDto.getCpf(); // não contém a porta
 
 		Response response = given()
-				.spec(requestSpecification).contentType(ContentType.JSON)
+				.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
 				.body(contaDigitalPessoaFisicaInsercaoDto)
 			.when()
 				.post();
@@ -144,9 +158,33 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertEquals(contaDigitalPessoaFisicaInsercaoDto.getNomeCompletoMae(), contaDigitalPessoaFisicaInserida.getNomeCompletoMae());
 	}
 	
+	@DisplayName("Quando busca a conta corrente de pessoa física, conta esta que deveria ser inserida"
+			+ " com sucesso durante a inserção da conta digital, deve ser retornado um objeto não nulo"
+			+ " com os dados da conta corrente inserida")
+	@Order(2)
+	@Test
+	void testBuscaContaCorrentePessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosContaCorrente()
+			throws JsonMappingException, JsonProcessingException {
+		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaPessoaFisica(CPF_1, TipoConta.CORRENTE, 200);
+		
+		assertNotNull(contaCorrentePessoaFisica);
+	}
+	
+	@DisplayName("Quando busca a conta poupança de pessoa física, conta esta que deveria ser inserida"
+			+ " com sucesso durante a inserção da conta digital, deve ser retornado um objeto não nulo"
+			+ " com os dados da conta poupança inserida")
+	@Order(3)
+	@Test
+	void testBuscaContaPoupancaPessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosContaPoupanca()
+			throws JsonMappingException, JsonProcessingException {
+		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaPessoaFisica(CPF_1, TipoConta.POUPANCA, 200);
+		
+		assertNotNull(contaCorrentePessoaFisica);
+	}
+	
 	@DisplayName("Quando busca conta digital para pessoa física com sucesso deve ser retornado "
 			+ "um objeto com os dados da conta digital e o código de status 200")
-	@Order(2)
+	@Order(4)
 	@Test
 	void testBuscaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
@@ -172,7 +210,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 
 	@DisplayName("Quando altera conta digital para pessoa física com sucesso deve ser retornado "
 			+ "um objeto com os dados atualizados e o código de status 200")
-	@Order(3)
+	@Order(5)
 	@Test
 	void testAlteraContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
@@ -196,7 +234,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				novoNomeCompletoMae);
 
 		String conteudoBodyResposta = given()
-					.spec(requestSpecification)
+					.spec(requestSpecificationContaDigitalPessoaFisica)
 					.contentType(ContentType.JSON)
 					.body(novosDadosParaAlteracao)
 				.when()
@@ -239,7 +277,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	
 	@DisplayName("Quando tenta inserir conta digital com o CPF de uma conta digital já cadastrada deve ser lançada uma exceção.")
 	@Test
-	@Order(4)
+	@Order(6)
 	void testInsereContaDigital_ComCpfContaDigitalJaCadastrada_DeveSerLancadaExcecao() throws JsonMappingException, JsonProcessingException {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
 		String cpfContaDigitalCadastrada = contaDigitalCadastrada.getCpf();
@@ -247,7 +285,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String mensagemEsperada = "Já existe uma conta digital cadastrada com o CPF " + cpfContaDigitalCadastrada + ".";
 		
 		String conteudoBodyResposta = given()
-				.spec(requestSpecification).contentType(ContentType.JSON)
+				.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
 				.body(contaDigitalPessoaFisicaInsercaoDto1)
 			.when()
 				.post()
@@ -264,7 +302,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	@DisplayName("Quando tenta alterar conta digital com o CPF de uma conta digital já cadastrada,"
 			+ " essa conta digital deve ser atualizada com os novos dados e não deve ser lançada uma exceção.")
 	@Test
-	@Order(5)
+	@Order(7)
 	void testAlteraContaDigital_ComCpfContaDigitalJaCadastrada_ContaDigitalDeveSerAtualizadaNaoDeveSerLancadaExcecao()
 			throws JsonMappingException, JsonProcessingException {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
@@ -272,7 +310,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		contaDigitalPessoaFisicaAlteracaoDto1.setCpf(cpfContaDigitalCadastrada);
 		
 		String conteudoBodyResposta = given()
-			.spec(requestSpecification).contentType(ContentType.JSON)
+			.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
 			.body(contaDigitalPessoaFisicaAlteracaoDto1)
 		.when()
 			.put()
@@ -301,7 +339,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	
 	@DisplayName("Quando tenta inserir conta digital com a agência e a conta de uma conta digital já cadastrada "
 			+ "deve ser lançada uma exceção.")
-	@Order(6)
+	@Order(8)
 	@Test
 	void testInsereContaDigital_ComAgenciaContaUtilizadasContaDigitalJaCadastrada_DeveSerLancadaExcecao()
 			throws JsonMappingException, JsonProcessingException {
@@ -316,7 +354,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				+ ".";
 		
 		String conteudoBodyResposta = given()
-				.spec(requestSpecification).contentType(ContentType.JSON)
+				.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
 				.body(contaDigitalPessoaFisicaInsercaoDto1)
 			.when()
 				.post()
@@ -332,7 +370,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	
 	@DisplayName("Quando tenta alterar conta digital com a agência e a conta de uma outra conta digital já cadastrada "
 			+ "deve ser lançada uma exceção.")
-	@Order(7)
+	@Order(9)
 	@Test
 	void testAlteraContaDigital_ComAgenciaContaUtilizadasOutraContaDigitalJaCadastrada_DeveSerLancadaExcecao()
 			throws JsonMappingException, JsonProcessingException {
@@ -347,7 +385,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				+ ".";
 		
 		String conteudoBodyResposta = given()
-				.spec(requestSpecification).contentType(ContentType.JSON)
+				.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
 				.body(contaDigitalPessoaFisicaAlteracaoDto1)
 			.when()
 				.put()
@@ -362,15 +400,39 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	}
 	
 	@DisplayName("Quando deleta conta digital para pessoa física com sucesso deve ser retornado o código de status 204")
-	@Order(8)
+	@Order(10)
 	@Test
 	void testDeletaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
 		given()
-			.spec(requestSpecification)
+			.spec(requestSpecificationContaDigitalPessoaFisica)
 		.when()
 			.delete("{cpf}", CPF_1)
 		.then()
 			.statusCode(204);
+	}
+	
+	@DisplayName("Quando busca a conta corrente de pessoa física após a remoção da conta digital "
+			+ "deve ser retornado um objeto nulo, pois essa conta corrente deveria ter sido "
+			+ "removida junto com a conta digital do cliente")
+	@Order(11)
+	@Test
+	void testBuscaContaCorrentePessoaFisica_ComSucessoAposRemocaoContaDigital_DeveSerRetornadoObjetoNulo()
+			throws JsonMappingException, JsonProcessingException {
+		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaPessoaFisica(CPF_1, TipoConta.CORRENTE, 404);
+		
+		assertNull(contaCorrentePessoaFisica);
+	}
+	
+	@DisplayName("Quando busca a conta poupança de pessoa física após a remoção da conta digital "
+			+ "deve ser retornado um objeto nulo, pois essa conta poupança deveria ter sido "
+			+ "removida junto com a conta digital do cliente")
+	@Order(12)
+	@Test
+	void testBuscaContaPoupancaPessoaFisica_ComSucessoAposRemocaoContaDigital_DeveSerRetornadoObjetoNulo()
+			throws JsonMappingException, JsonProcessingException {
+		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaPessoaFisica(CPF_1, TipoConta.POUPANCA, 404);
+		
+		assertNull(contaCorrentePessoaFisica);
 	}
 	
 	@DisplayName("Quando não insere conta digital para pessoa física com sucesso não deve ser retornado o código de status 201")
@@ -384,7 +446,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		String conteudoBodyResposta = given()
-				.spec(requestSpecification).contentType(ContentType.JSON)
+				.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
 				.body(contaDigitalPessoaFisicaInsercaoDto)
 			.when()
 				.post()
@@ -405,7 +467,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	void testBuscaContaDigitalPessoaFisica_SemSucesso_deveSerRetornadoCodigoStatus404SemConteudoBody()
 			throws Exception {
 		String conteudoBodyResposta = given()
-				.spec(requestSpecification)
+				.spec(requestSpecificationContaDigitalPessoaFisica)
 			.when()
 				.get("{cpf}", CPF_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE)
 			.then()
@@ -428,7 +490,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		String conteudoBodyResposta = given()
-				.spec(requestSpecification)
+				.spec(requestSpecificationContaDigitalPessoaFisica)
 				.contentType(ContentType.JSON)
 				.body(contaDigitalPessoaFisicaComNovosDados)
 			.when()
@@ -450,7 +512,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String mensagemEsperada = "Não foi encontrada uma conta com o CPF informado.";
 		
 		String conteudoBodyResposta = given()
-			.spec(requestSpecification)
+			.spec(requestSpecificationContaDigitalPessoaFisica)
 		.when()
 			.delete("{cpf}", CPF_SEM_CONTA_DIGITAL_ASSOCIADO_COM_ELE)
 		.then()
@@ -464,10 +526,29 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
 	}
 	
+	private ContaPessoaFisicaBuscaDto1 buscaContaPessoaFisica(String cpf, TipoConta tipoConta,
+			int codigoStatusHttpEsperado) throws JsonProcessingException, JsonMappingException {
+		ValidatableResponse validatableResponse = given()
+					.spec(requestSpecificationContaPessoaFisica)
+				.when()
+					.get("{cpf}/{tipoConta}", cpf, tipoConta)
+				.then()
+					.statusCode(codigoStatusHttpEsperado);
+		
+		if (codigoStatusHttpEsperado == 404) {
+			return null;
+		}
+		
+		String conteudoBodyResposta = validatableResponse.extract().body().asString();
+		ContaPessoaFisicaBuscaDto1 contaPessoaFisica = objectMapper.readValue(conteudoBodyResposta,
+				ContaPessoaFisicaBuscaDto1.class);
+		return contaPessoaFisica;
+	}
+	
 	private ContaDigitalPessoaFisicaDTO1Busca buscaContaDigitalPessoaFisicaComSucessoPeloCpf(String cpf)
 			throws JsonProcessingException, JsonMappingException {
 		String conteudoBodyResposta = given()
-					.spec(requestSpecification)
+					.spec(requestSpecificationContaDigitalPessoaFisica)
 				.when()
 					.get("{cpf}", cpf)
 				.then()

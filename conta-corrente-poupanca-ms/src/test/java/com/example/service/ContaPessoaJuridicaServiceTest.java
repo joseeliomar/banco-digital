@@ -285,7 +285,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		
 		// When & Then
 		ContaPessoaJuridicaBuscaDto1 actual = assertDoesNotThrow(
-				() -> contaPessoaJuridicaService.buscaContaCompleta(cnpj, tipoConta),
+				() -> contaPessoaJuridicaService.buscaContaPessoaJuridicaCompleta(cnpj, tipoConta),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 		
 		assertNotNull(actual, () -> "Não foi encontrada uma conta com o CNPJ e o tipo de conta que foram informados.");
@@ -302,7 +302,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		
 		// When & Then
 		ContaPessoaJuridicaBuscaDto1 actual = assertDoesNotThrow(
-				() -> contaPessoaJuridicaService.buscaContaCompleta(cnpj, tipoConta),
+				() -> contaPessoaJuridicaService.buscaContaPessoaJuridicaCompleta(cnpj, tipoConta),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 		
 		assertNull(actual, () -> "Não deveria ser retonada nenhuma conta.");

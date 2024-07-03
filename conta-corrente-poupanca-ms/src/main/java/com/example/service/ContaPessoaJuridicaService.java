@@ -44,19 +44,19 @@ public class ContaPessoaJuridicaService extends ContaService {
 			throw new ValidacaoException("CNPJ com mais de 14 caracteres.", HttpStatus.BAD_REQUEST);
 		}
 		
-		Optional<ContaPessoaJuridica> contaDigitalPessoaJuridicaOptional = buscaContaDigital(cnpj, tipoConta);
+		Optional<ContaPessoaJuridica> contaDigitalPessoaJuridicaOptional = buscaContaPessoaJuridica(cnpj, tipoConta);
 		if (contaDigitalPessoaJuridicaOptional.isPresent()) {
 			throw new ValidacaoException("Já existe uma conta " + tipoConta.getNome().toLowerCase()
 					+ " cadastrada com o CNPJ " + cnpj + ".", HttpStatus.CONFLICT);
 		}
 	}
 
-	private Optional<ContaPessoaJuridica> buscaContaDigital(String cnpj, TipoConta tipoConta) {
+	private Optional<ContaPessoaJuridica> buscaContaPessoaJuridica(String cnpj, TipoConta tipoConta) {
 		return contaPessoaJuridicaRepository.findByCnpjAndTipoConta(cnpj, tipoConta);
 	}
 	
-	public ContaPessoaJuridicaBuscaDto1 buscaContaCompleta(String cnpj, TipoConta tipoConta) {
-		Optional<ContaPessoaJuridica> contaPessoaJuridicaOptional = buscaContaDigital(cnpj, tipoConta);
+	public ContaPessoaJuridicaBuscaDto1 buscaContaPessoaJuridicaCompleta(String cnpj, TipoConta tipoConta) {
+		Optional<ContaPessoaJuridica> contaPessoaJuridicaOptional = buscaContaPessoaJuridica(cnpj, tipoConta);
 		
 		if (contaPessoaJuridicaOptional.isPresent()) {
 			return new ContaPessoaJuridicaBuscaDto1(contaPessoaJuridicaOptional.get());

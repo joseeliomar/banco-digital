@@ -44,19 +44,19 @@ public class ContaPessoaFisicaService extends ContaService {
 			throw new ValidacaoException("CPF com mais de 11 caracteres.", HttpStatus.BAD_REQUEST);
 		}
 		
-		Optional<ContaPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigital(cpf, tipoConta);
+		Optional<ContaPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaPessoaFisica(cpf, tipoConta);
 		if (contaDigitalPessoaFisicaOptional.isPresent()) {
 			throw new ValidacaoException("Já existe uma conta " + tipoConta.getNome().toLowerCase()
 					+ " cadastrada com o CPF " + cpf + ".", HttpStatus.CONFLICT);
 		}
 	}
 
-	private Optional<ContaPessoaFisica> buscaContaDigital(String cpf, TipoConta tipoConta) {
+	private Optional<ContaPessoaFisica> buscaContaPessoaFisica(String cpf, TipoConta tipoConta) {
 		return contaPessoaFisicaRepository.findByCpfAndTipoConta(cpf, tipoConta);
 	}
 	
-	public ContaPessoaFisicaBuscaDto1 buscaContaCompleta(String cpf, TipoConta tipoConta) {
-		Optional<ContaPessoaFisica> contaPessoaFisicaOptional = buscaContaDigital(cpf, tipoConta);
+	public ContaPessoaFisicaBuscaDto1 buscaContaPessoaFisicaCompleta(String cpf, TipoConta tipoConta) {
+		Optional<ContaPessoaFisica> contaPessoaFisicaOptional = buscaContaPessoaFisica(cpf, tipoConta);
 		
 		if (contaPessoaFisicaOptional.isPresent()) {
 			return new ContaPessoaFisicaBuscaDto1(contaPessoaFisicaOptional.get());

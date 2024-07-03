@@ -16,4 +16,14 @@ public class Utils {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(idRecursoInserido).toUri();
 		return uri;
 	}
+	
+	/**
+	 * Retorna true se a string estiver nula ou vazia ou só com espaços em branco.
+	 * 
+	 * @param string
+	 * @return true se a string estiver nula ou vazia ou só com espaços em branco.
+	 */
+	public static boolean stringNulaVaziaOuEmBranco(String string) {
+		return (string == null || string.isBlank());
+	}
 }
