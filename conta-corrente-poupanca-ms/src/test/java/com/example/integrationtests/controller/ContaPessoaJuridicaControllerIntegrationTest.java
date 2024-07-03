@@ -85,7 +85,7 @@ class ContaPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAmbienteT
 	void testInsereContaCorrentePessoaJuridica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		TipoConta tipoConta = TipoConta.CORRENTE;
-		ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(tipoConta, 0, CNPJ_1);
+		ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(tipoConta, CNPJ_1);
 
 		ContaPessoaJuridicaInseridaDto contaPessoaJuridicaInserida = testaInsercaoBemSucedidaContaPessoaJuridica(
 				contaPessoaJuridicaInsercaoDto);
@@ -100,7 +100,7 @@ class ContaPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAmbienteT
 	void testInsereContaPoupancaPessoaJuridica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		TipoConta tipoConta = TipoConta.POUPANCA;
-		ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(tipoConta, 0, CNPJ_1);
+		ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(tipoConta, CNPJ_1);
 
 		ContaPessoaJuridicaInseridaDto contaPessoaJuridicaInserida = testaInsercaoBemSucedidaContaPessoaJuridica(
 				contaPessoaJuridicaInsercaoDto);
@@ -131,7 +131,7 @@ class ContaPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAmbienteT
 		
 		assertTrue(contaPessoaJuridicaInserida.getId() > 0);
 		assertEquals(contaPessoaJuridicaInsercaoDto.getTipoConta(), contaPessoaJuridicaInserida.getTipoConta());
-		assertEquals(contaPessoaJuridicaInsercaoDto.getSaldo(), contaPessoaJuridicaInserida.getSaldo());
+		assertEquals(0.0, contaPessoaJuridicaInserida.getSaldo());
 		assertEquals(contaPessoaJuridicaInsercaoDto.getCnpj(), contaPessoaJuridicaInserida.getCnpj());
 		return contaPessoaJuridicaInserida;
 	}
@@ -313,7 +313,7 @@ class ContaPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAmbienteT
 				+ " cadastrada com o CNPJ " + cnpjContaInserida + ".";
 		
 		ContaPessoaJuridicaInsercaoDto novaContaPessoaJuridicaParaInsercao = new ContaPessoaJuridicaInsercaoDto(
-				tipoContaContaInserida, 0, cnpjContaInserida);
+				tipoContaContaInserida, cnpjContaInserida);
 		
 		Response response = insereContaPessoaJuridica(novaContaPessoaJuridicaParaInsercao);
 		
@@ -358,7 +358,7 @@ class ContaPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAmbienteT
 		TipoConta tipoContaNulo = null;
 		String mensagemEsperada = "O tipo de conta não foi informado.";
 		
-		ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(tipoContaNulo, 0, CNPJ_1);
+		ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(tipoContaNulo, CNPJ_1);
 		
 		Response response = insereContaPessoaJuridica(contaPessoaJuridicaInsercaoDto);
 		ValidatableResponse then = response.then();

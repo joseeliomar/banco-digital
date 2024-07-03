@@ -85,7 +85,7 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 	void testInsereContaCorrentePessoaFisica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		TipoConta tipoConta = TipoConta.CORRENTE;
-		ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(tipoConta, 0, CPF_1);
+		ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(tipoConta, CPF_1);
 
 		ContaPessoaFisicaInseridaDto contaPessoaFisicaInserida = testaInsercaoBemSucedidaContaPessoaFisica(
 				contaPessoaFisicaInsercaoDto);
@@ -100,7 +100,7 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 	void testInsereContaPoupancaPessoaFisica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		TipoConta tipoConta = TipoConta.POUPANCA;
-		ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(tipoConta, 0, CPF_1);
+		ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(tipoConta, CPF_1);
 
 		ContaPessoaFisicaInseridaDto contaPessoaFisicaInserida = testaInsercaoBemSucedidaContaPessoaFisica(
 				contaPessoaFisicaInsercaoDto);
@@ -131,7 +131,7 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 		
 		assertTrue(contaPessoaFisicaInserida.getId() > 0);
 		assertEquals(contaPessoaFisicaInsercaoDto.getTipoConta(), contaPessoaFisicaInserida.getTipoConta());
-		assertEquals(contaPessoaFisicaInsercaoDto.getSaldo(), contaPessoaFisicaInserida.getSaldo());
+		assertEquals(0.0, contaPessoaFisicaInserida.getSaldo());
 		assertEquals(contaPessoaFisicaInsercaoDto.getCpf(), contaPessoaFisicaInserida.getCpf());
 		return contaPessoaFisicaInserida;
 	}
@@ -313,7 +313,7 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 				+ " cadastrada com o CPF " + cpfContaInserida + ".";
 		
 		ContaPessoaFisicaInsercaoDto novaContaPessoaFisicaParaInsercao = new ContaPessoaFisicaInsercaoDto(
-				tipoContaContaInserida, 0, cpfContaInserida);
+				tipoContaContaInserida, cpfContaInserida);
 		
 		Response response = insereContaPessoaFisica(novaContaPessoaFisicaParaInsercao);
 		
@@ -358,7 +358,7 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 		TipoConta tipoContaNulo = null;
 		String mensagemEsperada = "O tipo de conta não foi informado.";
 		
-		ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(tipoContaNulo, 0, CPF_1);
+		ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(tipoContaNulo, CPF_1);
 		
 		Response response = insereContaPessoaFisica(contaPessoaFisicaInsercaoDto);
 		ValidatableResponse then = response.then();

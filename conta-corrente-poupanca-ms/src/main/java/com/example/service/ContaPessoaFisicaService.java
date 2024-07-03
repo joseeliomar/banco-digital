@@ -22,14 +22,12 @@ public class ContaPessoaFisicaService extends ContaService {
 
 	public ContaPessoaFisica insereContaPessoaFisica(ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto) {
 		TipoConta tipoConta = contaPessoaFisicaInsercaoDto.getTipoConta();
-		double saldo = contaPessoaFisicaInsercaoDto.getSaldo();
 		String cpf = contaPessoaFisicaInsercaoDto.getCpf();
 		
 		super.validaTipoConta(tipoConta);
-		super.validaSaldo(saldo);
 		validaCpf(cpf, tipoConta);
 
-		ContaPessoaFisica contaPessoaFisica = new ContaPessoaFisica(tipoConta, saldo, cpf);
+		ContaPessoaFisica contaPessoaFisica = new ContaPessoaFisica(tipoConta, 0.0, cpf);
 		return contaPessoaFisicaRepository.save(contaPessoaFisica);
 	}
 

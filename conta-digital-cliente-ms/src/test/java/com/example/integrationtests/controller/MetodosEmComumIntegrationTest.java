@@ -28,7 +28,7 @@ public class MetodosEmComumIntegrationTest {
 
 		List<ServiceInstance> instancias = discoveryClient.getInstances(nomeMicrosservico);
 		if (instancias == null || instancias.isEmpty()) {
-			throw new RuntimeException("Não foi possível encontrar a instância do microsserviço " + nomeMicrosservico);
+			throw new RuntimeException("Não foi encontrada uma instância do microsserviço " + nomeMicrosservico);
 		}
 
 		ServiceInstance instanciaMicrosservico = instancias.get(0);

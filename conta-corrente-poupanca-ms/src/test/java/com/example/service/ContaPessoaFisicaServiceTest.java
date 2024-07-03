@@ -49,11 +49,11 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 	@BeforeEach
 	private void setup() {
 		// Given
-		contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(TipoConta.CORRENTE, 0, CPF_1);
+		contaPessoaFisicaInsercaoDto = new ContaPessoaFisicaInsercaoDto(TipoConta.CORRENTE, CPF_1);
 		
 		contaPessoaFisica1 = new ContaPessoaFisica(
 				contaPessoaFisicaInsercaoDto.getTipoConta(),
-				contaPessoaFisicaInsercaoDto.getSaldo(), 
+				0.0, 
 				contaPessoaFisicaInsercaoDto.getCpf());
 		
 		contaPessoaFisicaAlteracaoDto = new ContaPessoaFisicaAlteracaoDto(1L, 0);
@@ -101,7 +101,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		assertNotNull(actual);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o tipo de conta não informado deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o tipo de conta não informado deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaFisica_ComTipoContaNulo_DeveSerLancadaExcecao() {
 		// Given
@@ -115,35 +115,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com um saldo negativo deve ser lançada uma exceção.")
-	@Test
-	void testInsereContaPessoaFisica_ComSaldoNegativo_DeveSerLancadaExcecao() {
-		// Given
-		double saldoNegativo = -100;
-		contaPessoaFisicaInsercaoDto.setSaldo(saldoNegativo);
-		String mensagemEsperada = "O saldo inicial deve ser zero.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoContaPessoaFisica();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta inseir uma conta com um saldo positivo deve ser lançada uma exceção.")
-	@Test
-	void testInsereContaPessoaFisica_ComSaldoPositivo_DeveSerLancadaExcecao() {
-		// Given
-		double saldoPositivo = 100;
-		contaPessoaFisicaInsercaoDto.setSaldo(saldoPositivo);
-		String mensagemEsperada = "O saldo inicial deve ser zero.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoContaPessoaFisica();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta inseir uma conta com o CPF não informado (string nula) deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CPF não informado (string nula) deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaFisica_ComCpfNulo_DeveSerLancadaExcecao() {
 		// Given
@@ -157,7 +129,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o CPF não informado (string em branco) deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CPF não informado (string em branco) deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaFisica_ComCpfEmBranco_DeveSerLancadaExcecao() {
 		// Given
@@ -171,7 +143,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o CPF com menos de 11 caracteres deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CPF com menos de 11 caracteres deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaFisica_ComCpfComMenos11Caracteres_DeveSerLancadaExcecao() {
 		// Given
@@ -185,7 +157,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o CPF com mais de 11 caracteres deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CPF com mais de 11 caracteres deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaFisica_ComCpfComMaisOnzeCaracteres_DeveSerLancadaExcecao() {
 		// Given
@@ -199,7 +171,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta corrente com o CPF associado a conta corrente"
+	@DisplayName("Quando tenta inserir uma conta corrente com o CPF associado a conta corrente"
 			+ " já cadastrada deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaCorrentePessoaFisica_ComCpfContaCorrenteJaCadastrada_DeveSerLancadaExcecao() {
@@ -218,7 +190,7 @@ public class ContaPessoaFisicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta poupança com o CPF associado a conta poupança"
+	@DisplayName("Quando tenta inserir uma conta poupança com o CPF associado a conta poupança"
 			+ " já cadastrada deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPoupancaPessoaFisica_ComCpfContaPoupancaJaCadastrada_DeveSerLancadaExcecao() {

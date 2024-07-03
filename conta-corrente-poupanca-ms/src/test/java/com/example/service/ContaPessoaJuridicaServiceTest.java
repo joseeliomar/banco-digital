@@ -49,14 +49,14 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 	@BeforeEach
 	private void setup() {
 		// Given
-		contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(TipoConta.CORRENTE, 0, CNPJ_1);
+		contaPessoaJuridicaInsercaoDto = new ContaPessoaJuridicaInsercaoDto(TipoConta.CORRENTE, CNPJ_1);
 		
 		contaPessoaJuridica1 = new ContaPessoaJuridica(
 				contaPessoaJuridicaInsercaoDto.getTipoConta(),
-				contaPessoaJuridicaInsercaoDto.getSaldo(), 
+				0.0, 
 				contaPessoaJuridicaInsercaoDto.getCnpj());
 		
-		contaPessoaJuridicaAlteracaoDto = new ContaPessoaJuridicaAlteracaoDto(1L, 0);
+		contaPessoaJuridicaAlteracaoDto = new ContaPessoaJuridicaAlteracaoDto(1L, 0.0);
 		
 		contaPessoaJuridica2 = new ContaPessoaJuridica(
 				contaPessoaJuridicaInsercaoDto.getTipoConta(),
@@ -101,7 +101,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		assertNotNull(actual);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o tipo de conta não informado deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o tipo de conta não informado deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaJuridica_ComTipoContaNulo_DeveSerLancadaExcecao() {
 		// Given
@@ -115,35 +115,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com um saldo negativo deve ser lançada uma exceção.")
-	@Test
-	void testInsereContaPessoaJuridica_ComSaldoNegativo_DeveSerLancadaExcecao() {
-		// Given
-		double saldoNegativo = -100;
-		contaPessoaJuridicaInsercaoDto.setSaldo(saldoNegativo);
-		String mensagemEsperada = "O saldo inicial deve ser zero.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoContaPessoaJuridica();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta inseir uma conta com um saldo positivo deve ser lançada uma exceção.")
-	@Test
-	void testInsereContaPessoaJuridica_ComSaldoPositivo_DeveSerLancadaExcecao() {
-		// Given
-		double saldoPositivo = 100;
-		contaPessoaJuridicaInsercaoDto.setSaldo(saldoPositivo);
-		String mensagemEsperada = "O saldo inicial deve ser zero.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoContaPessoaJuridica();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta inseir uma conta com o CNPJ não informado (string nula) deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CNPJ não informado (string nula) deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaJuridica_ComCnpjNulo_DeveSerLancadaExcecao() {
 		// Given
@@ -157,7 +129,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o CNPJ não informado (string em branco) deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CNPJ não informado (string em branco) deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaJuridica_ComCnpjEmBranco_DeveSerLancadaExcecao() {
 		// Given
@@ -171,7 +143,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o CNPJ com menos de 14 caracteres deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CNPJ com menos de 14 caracteres deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaJuridica_ComCnpjComMenos14Caracteres_DeveSerLancadaExcecao() {
 		// Given
@@ -185,7 +157,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta com o CNPJ com mais de 14 caracteres deve ser lançada uma exceção.")
+	@DisplayName("Quando tenta inserir uma conta com o CNPJ com mais de 14 caracteres deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPessoaJuridica_ComCnpjComMais14Caracteres_DeveSerLancadaExcecao() {
 		// Given
@@ -199,7 +171,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta corrente com o CNPJ associado a conta corrente"
+	@DisplayName("Quando tenta inserir uma conta corrente com o CNPJ associado a conta corrente"
 			+ " já cadastrada deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaCorrentePessoaJuridica_ComCnpjContaCorrenteJaCadastrada_DeveSerLancadaExcecao() {
@@ -218,7 +190,7 @@ public class ContaPessoaJuridicaServiceTest extends ContaServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta inseir uma conta poupança com o CNPJ associado a conta poupança"
+	@DisplayName("Quando tenta inserir uma conta poupança com o CNPJ associado a conta poupança"
 			+ " já cadastrada deve ser lançada uma exceção.")
 	@Test
 	void testInsereContaPoupancaPessoaJuridica_ComCnpjContaPoupancaJaCadastrada_DeveSerLancadaExcecao() {

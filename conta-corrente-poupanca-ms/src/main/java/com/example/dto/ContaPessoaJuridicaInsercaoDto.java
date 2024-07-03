@@ -9,15 +9,13 @@ public class ContaPessoaJuridicaInsercaoDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private TipoConta tipoConta;
-	private double saldo;
 	private String cnpj;
-	
+
 	public ContaPessoaJuridicaInsercaoDto() {
 	}
 
-	public ContaPessoaJuridicaInsercaoDto(TipoConta tipoConta, double saldo, String cnpj) {
+	public ContaPessoaJuridicaInsercaoDto(TipoConta tipoConta, String cnpj) {
 		this.tipoConta = tipoConta;
-		this.saldo = saldo;
 		this.cnpj = cnpj;
 	}
 
@@ -27,14 +25,6 @@ public class ContaPessoaJuridicaInsercaoDto implements Serializable {
 
 	public void setTipoConta(TipoConta tipoConta) {
 		this.tipoConta = tipoConta;
-	}
-
-	public double getSaldo() {
-		return saldo;
-	}
-
-	public void setSaldo(double saldo) {
-		this.saldo = saldo;
 	}
 
 	public String getCnpj() {
@@ -47,7 +37,7 @@ public class ContaPessoaJuridicaInsercaoDto implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cnpj, saldo, tipoConta);
+		return Objects.hash(cnpj, tipoConta);
 	}
 
 	@Override
@@ -59,9 +49,7 @@ public class ContaPessoaJuridicaInsercaoDto implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ContaPessoaJuridicaInsercaoDto other = (ContaPessoaJuridicaInsercaoDto) obj;
-		return Objects.equals(cnpj, other.cnpj)
-				&& Double.doubleToLongBits(saldo) == Double.doubleToLongBits(other.saldo)
-				&& tipoConta == other.tipoConta;
+		return Objects.equals(cnpj, other.cnpj) && tipoConta == other.tipoConta;
 	}
 
 }

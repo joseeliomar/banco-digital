@@ -9,12 +9,10 @@ public class ContaPessoaFisicaInsercaoDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private TipoConta tipoConta;
-	private double saldo;
 	private String cpf;
 
-	public ContaPessoaFisicaInsercaoDto(TipoConta tipoConta, double saldo, String cpf) {
+	public ContaPessoaFisicaInsercaoDto(TipoConta tipoConta, String cpf) {
 		this.tipoConta = tipoConta;
-		this.saldo = saldo;
 		this.cpf = cpf;
 	}
 
@@ -24,14 +22,6 @@ public class ContaPessoaFisicaInsercaoDto implements Serializable {
 
 	public void setTipoConta(TipoConta tipoConta) {
 		this.tipoConta = tipoConta;
-	}
-
-	public double getSaldo() {
-		return saldo;
-	}
-
-	public void setSaldo(double saldo) {
-		this.saldo = saldo;
 	}
 
 	public String getCpf() {
@@ -44,7 +34,7 @@ public class ContaPessoaFisicaInsercaoDto implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cpf, saldo, tipoConta);
+		return Objects.hash(cpf, tipoConta);
 	}
 
 	@Override
@@ -56,8 +46,7 @@ public class ContaPessoaFisicaInsercaoDto implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ContaPessoaFisicaInsercaoDto other = (ContaPessoaFisicaInsercaoDto) obj;
-		return Objects.equals(cpf, other.cpf) && Double.doubleToLongBits(saldo) == Double.doubleToLongBits(other.saldo)
-				&& tipoConta == other.tipoConta;
+		return Objects.equals(cpf, other.cpf) && tipoConta == other.tipoConta;
 	}
 
 }

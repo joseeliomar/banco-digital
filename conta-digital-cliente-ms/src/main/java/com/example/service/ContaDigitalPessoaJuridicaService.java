@@ -49,8 +49,8 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 				telefone, email, null, dataHoraCadastro, null, cnpj, razaoSocial);
 		var contaDigitalPessoaJuridicaCadastrada = contaDigitalPessoaJuridicaRepository.save(contaDigitalPessoaJuridica);
 		
-		var contaCorrentePessoaJuridica = new ContaPessoaJuridicaInsercaoDto(TipoConta.CORRENTE, 0.0, cnpj);
-		var contaPoupancaPessoaJuridica = new ContaPessoaJuridicaInsercaoDto(TipoConta.POUPANCA, 0.0, cnpj);
+		var contaCorrentePessoaJuridica = new ContaPessoaJuridicaInsercaoDto(TipoConta.CORRENTE, cnpj);
+		var contaPoupancaPessoaJuridica = new ContaPessoaJuridicaInsercaoDto(TipoConta.POUPANCA, cnpj);
 		contaCorrentePoupancaMsFeignClient.insereContaPessoaJuridica(contaCorrentePessoaJuridica);
 		contaCorrentePoupancaMsFeignClient.insereContaPessoaJuridica(contaPoupancaPessoaJuridica);
 		

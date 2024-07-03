@@ -22,14 +22,12 @@ public class ContaPessoaJuridicaService extends ContaService {
 	
 	public ContaPessoaJuridica insereContaPessoaJuridica(ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto) {
 		TipoConta tipoConta = contaPessoaJuridicaInsercaoDto.getTipoConta();
-		double saldo = contaPessoaJuridicaInsercaoDto.getSaldo();
 		String cnpj = contaPessoaJuridicaInsercaoDto.getCnpj();
 		
 		super.validaTipoConta(tipoConta);
-		super.validaSaldo(saldo);
 		validaCnpj(cnpj, tipoConta);
 
-		ContaPessoaJuridica contaPessoaJuridica = new ContaPessoaJuridica(tipoConta, saldo, cnpj);
+		ContaPessoaJuridica contaPessoaJuridica = new ContaPessoaJuridica(tipoConta, 0.0, cnpj);
 		return contaPessoaJuridicaRepository.save(contaPessoaJuridica);
 	}
 

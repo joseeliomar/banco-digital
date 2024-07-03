@@ -54,8 +54,8 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 				telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
 		var contaDigitalPessoaFisicaCadastrada = contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisica);
 		
-		var contaCorrentePessoaFisica = new ContaPessoaFisicaInsercaoDto(TipoConta.CORRENTE, 0.0, cpf);
-		var contaPoupancaPessoaFisica = new ContaPessoaFisicaInsercaoDto(TipoConta.POUPANCA, 0.0, cpf);
+		var contaCorrentePessoaFisica = new ContaPessoaFisicaInsercaoDto(TipoConta.CORRENTE, cpf);
+		var contaPoupancaPessoaFisica = new ContaPessoaFisicaInsercaoDto(TipoConta.POUPANCA, cpf);
 		contaCorrentePoupancaMsFeignClient.insereContaPessoaFisica(contaCorrentePessoaFisica);
 		contaCorrentePoupancaMsFeignClient.insereContaPessoaFisica(contaPoupancaPessoaFisica);
 		
