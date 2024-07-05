@@ -49,6 +49,8 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
 		
+		// criar atributo para o digito verificador da conta
+		
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
 		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha,
 				telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
