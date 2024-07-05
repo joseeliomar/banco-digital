@@ -1,6 +1,7 @@
 package com.example.integrationtests.controller;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -55,12 +56,67 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 				.build();
 	}
 
-	@DisplayName("Quando busca conta corrente com sucesso deve ser retornado um objeto com os dados da conta"
-			+ " e o código de status 200")
-	@Order(3)
+	@DisplayName("Quando tenta gerar os dados da conta com sucesso devem ser retornados os"
+			+ " dados da conta e o código de status 200")
+	@Order(1)
 	@Test
-	void testBuscaContaCorrentePessoaFisica_ComSucesso_DeveSerRetornadoObjetoComDadosAtualizadosMaisCodigoStatus200()
+	void testGeraDadosConta_ComSucesso_DevemSerRetornadosDadosContaMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
+		var numeroContaExperado = "00000000001";
+		var digitoVerificadorContaExperado = 7;
+		testaGeracaoDadosConta(numeroContaExperado, digitoVerificadorContaExperado);
+	}
+
+	@DisplayName("Quando tenta gerar os dados de outra conta com sucesso devem ser retornados os"
+			+ " dados dessa conta e o código de status 200")
+	@Order(2)
+	@Test
+	void testGeraDadosOutraConta_ComSucesso_DevemSerRetornadosDadosContaMaisCodigoStatus200()
+			throws JsonMappingException, JsonProcessingException {
+		var numeroContaExperado = "00000000002";
+		var digitoVerificadorContaExperado = 3;
+		testaGeracaoDadosConta(numeroContaExperado, digitoVerificadorContaExperado);
+	}
+
+	/**
+	 * Testa a geração dos dados da conta.
+	 * 
+	 * @param numeroContaExperado
+	 * @param digitoVerificadorContaExperado
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 */
+	private void testaGeracaoDadosConta(String numeroContaExperado, int digitoVerificadorContaExperado)
+			throws JsonProcessingException, JsonMappingException {
+		DadosContaDto dadosConta = geraDadosConta();
+		verificaDadosContaRetornados(numeroContaExperado, digitoVerificadorContaExperado, dadosConta);
+	}
+	
+	/**
+	 * Verifica os dados da conta retornados.
+	 * 
+	 * @param numeroContaExperado
+	 * @param digitoVerificadorContaExperado
+	 * @param dadosConta
+	 */
+	private void verificaDadosContaRetornados(String numeroContaExperado, int digitoVerificadorContaExperado,
+			DadosContaDto dadosConta) {
+		assertNotNull(dadosConta);
+		assertNotNull(dadosConta.numeroConta());
+		assertNotNull(dadosConta.digitoVerificadorConta());
+
+		assertEquals(numeroContaExperado, dadosConta.numeroConta());
+		assertEquals(digitoVerificadorContaExperado, dadosConta.digitoVerificadorConta());
+	}
+
+	/**
+	 * Busca os dados da conta.
+	 * 
+	 * @return Os dados da conta
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 */
+	private DadosContaDto geraDadosConta() throws JsonProcessingException, JsonMappingException {
 		String conteudoBodyResposta = given()
 					.spec(requestSpecification)
 				.when()
@@ -71,10 +127,7 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 							.body()
 								.asString();
 
-		DadosContaDto actual = objectMapper.readValue(conteudoBodyResposta, DadosContaDto.class);
-		
-		assertNotNull(actual);
-		assertNotNull(actual.numeroConta());
-		assertNotNull(actual.digitoVerificadorConta());
+		DadosContaDto dadosContaDto = objectMapper.readValue(conteudoBodyResposta, DadosContaDto.class);
+		return dadosContaDto;
 	}
 }

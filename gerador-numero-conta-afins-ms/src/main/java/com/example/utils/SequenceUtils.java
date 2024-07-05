@@ -14,7 +14,6 @@ public class SequenceUtils {
 	@PersistenceContext
     private EntityManager entityManager;
 	
-	@Transactional
     public void criaSequence(String nomeSequence, long startWith, long incrementBy, long minValue, long maxValue, long cache) {
         String createSequenceSQL = "CREATE SEQUENCE " + nomeSequence +
                 " START WITH " + startWith + 
@@ -28,7 +27,7 @@ public class SequenceUtils {
 	
 	public boolean existeSequence(String nomeSequence) {
 		Query query = entityManager
-				.createNativeQuery("SELECT s FROM pg_sequences s WHERE s.sequencename = :nomeSequence");
+				.createNativeQuery("SELECT 1 FROM pg_sequences s WHERE s.sequencename = :nomeSequence");
 	    query.setParameter("nomeSequence", nomeSequence);
 
 	    return !query.getResultList().isEmpty();

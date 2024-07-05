@@ -21,7 +21,6 @@ public class ContaService {
 	 */
 	public DadosContaDto geraDadosConta() {
 		String numeroContaComZerosEsquerda = geraNumeroConta();
-		
 		int digitoVerificadorConta = geraDigitoVerificadorContaComAlgoritmoModulo11(numeroContaComZerosEsquerda);
 		
 		return new DadosContaDto(numeroContaComZerosEsquerda, digitoVerificadorConta);
@@ -34,12 +33,12 @@ public class ContaService {
 	 * @return O número da conta com zeros à esquerda.
 	 */
 	private String geraNumeroConta() {
-		String nomeSequence = "numeroConta";
-		
+		String nomeSequence = "numero_conta";
 		criaSequence(nomeSequence);
-		
 		return Utils
-				.insereZerosEsquerdaNumeroInformado(sequenceUtils.obtemProximoValorDaSequence(nomeSequence), 11);
+				.insereZerosEsquerdaNumeroInformado(
+						sequenceUtils.obtemProximoValorDaSequence(nomeSequence),
+						11);
 	}
 
 	/**

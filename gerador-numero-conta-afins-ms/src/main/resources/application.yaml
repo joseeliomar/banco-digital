@@ -12,9 +12,9 @@ spring:
   application:
     name: gerador-numero-conta-afins-ms
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/gerador_numero_conta_afins_ms?useTimezone=true&serverTimezone=UTC
-    username: dev
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/gerador_numero_conta_afins_ms
+    username: postgres
     password: abc123456
   jpa:
     hibernate:
