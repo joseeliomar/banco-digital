@@ -20,6 +20,7 @@ public class ApiGatewayConfiguration {
 				.route(x -> x.path("/endereco/**").uri("lb://endereco-ms"))
 				.route(x -> x.path("/itemExtratoContaPessoaFisica/**").uri("lb://extrato-bancario-ms"))
 				.route(x -> x.path("/itemExtratoContaPessoaJuridica/**").uri("lb://extrato-bancario-ms"))
+				.route(x -> x.path("/geradorNumeroContaAfins/**").uri("lb://gerador-numero-conta-afins-ms"))
 				.build();
     }
 }
