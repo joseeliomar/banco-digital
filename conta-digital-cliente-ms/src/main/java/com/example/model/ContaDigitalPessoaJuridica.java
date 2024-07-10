@@ -25,8 +25,9 @@ public class ContaDigitalPessoaJuridica extends ContaDigitalCliente {
 
 	public ContaDigitalPessoaJuridica(String agencia, String conta, String senha, String telefone, String email,
 			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cnpj,
-			String razaoSocial) {
-		super(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, dataHoraAlteracao);
+			String razaoSocial, int digitoVerificadorConta) {
+		super(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, dataHoraAlteracao,
+				digitoVerificadorConta);
 		this.cnpj = cnpj;
 		this.razaoSocial = razaoSocial;
 	}

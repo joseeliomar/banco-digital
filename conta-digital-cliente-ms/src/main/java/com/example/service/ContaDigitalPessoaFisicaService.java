@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,24 +11,21 @@ import org.springframework.stereotype.Service;
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
-import com.example.dto.ContaPessoaFisicaInsercaoDto;
 import com.example.dto.ContaPessoaFisicaBuscaDto1;
+import com.example.dto.ContaPessoaFisicaInsercaoDto;
 import com.example.enumeration.DocumentoCliente;
 import com.example.enumeration.TipoConta;
 import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaFisica;
-import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
+import com.example.openfeign.feignclient.dto.DadosContaDto;
 
 @Service
 public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 	
-	@Autowired
-	private ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
-	
-	public ContaDigitalPessoaFisica insereContaDigitalPessoaFisica(ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
+	public ContaDigitalPessoaFisica insereContaDigitalPessoaFisica(
+			ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
 		String agencia = contaDigitalPessoaFisicaInsercaoDto.getAgencia();
-		String conta = contaDigitalPessoaFisicaInsercaoDto.getConta();
 		String senha = contaDigitalPessoaFisicaInsercaoDto.getSenha();
 		String telefone = contaDigitalPessoaFisicaInsercaoDto.getTelefone();
 		String email = contaDigitalPessoaFisicaInsercaoDto.getEmail();
@@ -38,9 +34,14 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		LocalDate dataNascimento = contaDigitalPessoaFisicaInsercaoDto.getDataNascimento();
 		String nomeCompletoMae = contaDigitalPessoaFisicaInsercaoDto.getNomeCompletoMae();
 		
+		DadosContaDto dadosContaDto = geraDadosConta();
+		String numeroConta = dadosContaDto.numeroConta();
+		int digitoVerificadorConta = dadosContaDto.digitoVerificadorConta();
+		
 		super.validaAgencia(agencia);
-		super.validaConta(conta);
-		super.validaAgenciaContaInsercao(agencia, conta);
+		super.validaConta(numeroConta);
+		super.validaDigitoVerificadorConta(digitoVerificadorConta);
+		super.validaAgenciaContaInsercao(agencia, numeroConta);
 		super.validaSenha(senha);
 		super.validaTelefone(telefone);
 		super.validaEmail(email);
@@ -49,11 +50,10 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		validaDataNascimento(dataNascimento);
 		validaNomeCompletoMae(nomeCompletoMae);
 		
-		// criar atributo para o digito verificador da conta
-		
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
-		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, senha,
-				telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae);
+		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, numeroConta, senha,
+				telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae,
+				digitoVerificadorConta);
 		var contaDigitalPessoaFisicaCadastrada = contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisica);
 		
 		var contaCorrentePessoaFisica = new ContaPessoaFisicaInsercaoDto(TipoConta.CORRENTE, cpf);
@@ -108,9 +108,9 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		}
 	}
 	
-	public ContaDigitalPessoaFisica alteraContaDigitalPessoaFisica(ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaAlteracaoDto) {
+	public ContaDigitalPessoaFisica alteraContaDigitalPessoaFisica(
+			ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaAlteracaoDto) {
 		String agencia = contaDigitalPessoaFisicaAlteracaoDto.getAgencia();
-		String conta = contaDigitalPessoaFisicaAlteracaoDto.getConta();
 		String senha = contaDigitalPessoaFisicaAlteracaoDto.getSenha();
 		String telefone = contaDigitalPessoaFisicaAlteracaoDto.getTelefone();
 		String email = contaDigitalPessoaFisicaAlteracaoDto.getEmail();
@@ -121,9 +121,7 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		String nomeCompletoMae = contaDigitalPessoaFisicaAlteracaoDto.getNomeCompletoMae();
 		
 		validaAgencia(agencia);
-		validaConta(conta);
 		validaCpf(cpf, false);
-		validaAgenciaContaAlteracao(agencia, conta, new DocumentoCliente(cpf, TipoDocumento.CPF));
 		validaSenha(senha);
 		validaTelefone(telefone);
 		validaEmail(email);
@@ -137,8 +135,10 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 				.orElseThrow(
 						() -> new ValidacaoException("Não foi encontrada uma conta com o CPF informado.", HttpStatus.BAD_REQUEST));
 		
+		String conta = contaDigitalPessoaFisicaSalvaBancoDados.getConta();
+		validaAgenciaContaAlteracao(agencia, conta, new DocumentoCliente(cpf, TipoDocumento.CPF));
+		
 		contaDigitalPessoaFisicaSalvaBancoDados.setAgencia(agencia);
-		contaDigitalPessoaFisicaSalvaBancoDados.setConta(conta);
 		contaDigitalPessoaFisicaSalvaBancoDados.setSenha(senha);
 		contaDigitalPessoaFisicaSalvaBancoDados.setTelefone(telefone);
 		contaDigitalPessoaFisicaSalvaBancoDados.setEmail(email);

@@ -27,7 +27,7 @@ import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaDigitalPessoaJuridicaInsercaoDto;
 import com.example.dto.ContaPessoaJuridicaBuscaDto1;
 import com.example.dto.DetalhesExcecaoDto;
-import com.example.dto.EnderecoInseridoDto;
+import com.example.dto.ContaDigitalPessoaJuridicaInseridaDto;
 import com.example.enumeration.TipoConta;
 import com.example.integrationtests.testcontainers.ConfiguracaoAmbienteTestesParaUsoContainers;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -92,10 +92,10 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	
 	@BeforeEach
 	public void setup() {
-		contaDigitalPessoaJuridicaInsercaoDto1 = new ContaDigitalPessoaJuridicaInsercaoDto("0000000013", "1234567890",
+		contaDigitalPessoaJuridicaInsercaoDto1 = new ContaDigitalPessoaJuridicaInsercaoDto("0000000013",
 				"12345678", "19980001234", "fulano@email.com", CNPJ_2, "Fábrica Tal");
 		
-		contaDigitalPessoaJuridicaAlteracaoDto1 = new ContaDigitalPessoaJuridicaAlteracaoDto("0000000012", "1234567999",
+		contaDigitalPessoaJuridicaAlteracaoDto1 = new ContaDigitalPessoaJuridicaAlteracaoDto("0000000012",
 				"654115897", "19980009999", "email@email.com", 2L, CNPJ_2, "Fábrica Tal");
 	}
 	
@@ -105,8 +105,8 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	@Test
 	void testInsereContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
-		ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011", "1234567890",
-				"12345678", "19980001234", "fulano@email.com", CNPJ_1, "Fábrica Tal");
+		ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto = new ContaDigitalPessoaJuridicaInsercaoDto(
+				"0000000011", "12345678", "19980001234", "fulano@email.com", CNPJ_1, "Fábrica Tal");
 
 		String sufixoUriRecursoCriado = CAMINHO_BASE + contaDigitalPessoaJuridicaInsercaoDto.getCnpj(); // não contém a porta
 
@@ -121,8 +121,8 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		String valorHeaderLocation = response.getHeader("Location");
 		String conteudoBodyResposta = response.asString();
 
-		EnderecoInseridoDto contaDigitalPessoaJuridicaInserida = objectMapper
-				.readValue(conteudoBodyResposta, EnderecoInseridoDto.class);
+		ContaDigitalPessoaJuridicaInseridaDto contaDigitalPessoaJuridicaInserida = objectMapper
+				.readValue(conteudoBodyResposta, ContaDigitalPessoaJuridicaInseridaDto.class);
 		
 		assertNotNull(valorHeaderLocation);
 		assertTrue(valorHeaderLocation.endsWith(sufixoUriRecursoCriado),
@@ -141,7 +141,6 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		assertNotNull(contaDigitalPessoaJuridicaInserida.getRazaoSocial());
 		
 		assertEquals(contaDigitalPessoaJuridicaInsercaoDto.getAgencia(), contaDigitalPessoaJuridicaInserida.getAgencia());
-		assertEquals(contaDigitalPessoaJuridicaInsercaoDto.getConta(), contaDigitalPessoaJuridicaInserida.getConta());
 		assertEquals(contaDigitalPessoaJuridicaInsercaoDto.getSenha(), contaDigitalPessoaJuridicaInserida.getSenha());
 		assertEquals(contaDigitalPessoaJuridicaInsercaoDto.getTelefone(), contaDigitalPessoaJuridicaInserida.getTelefone());
 		assertEquals(contaDigitalPessoaJuridicaInsercaoDto.getEmail(), contaDigitalPessoaJuridicaInserida.getEmail());
@@ -211,7 +210,6 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		Long idEndereco = 1L;
 		ContaDigitalPessoaJuridicaAlteracaoDto novosDadosParaAlteracao = new ContaDigitalPessoaJuridicaAlteracaoDto(
 				contaDigitalPessoaJuridicaBuscadaBancoDados.getAgencia(), 
-				contaDigitalPessoaJuridicaBuscadaBancoDados.getConta(), 
 				novaSenha, 
 				novoTelefone, 
 				novoEmail, 
@@ -247,7 +245,6 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		assertNotNull(contaDigitalPessoaJuridicaAlterada.getRazaoSocial());
 		
 		assertEquals(novosDadosParaAlteracao.getAgencia(), contaDigitalPessoaJuridicaAlterada.getAgencia());
-		assertEquals(novosDadosParaAlteracao.getConta(), contaDigitalPessoaJuridicaAlterada.getConta());
 		assertEquals(novosDadosParaAlteracao.getSenha(), contaDigitalPessoaJuridicaAlterada.getSenha());
 		assertEquals(novosDadosParaAlteracao.getTelefone(), contaDigitalPessoaJuridicaAlterada.getTelefone());
 		assertEquals(novosDadosParaAlteracao.getEmail(), contaDigitalPessoaJuridicaAlterada.getEmail());
@@ -306,7 +303,6 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 				ContaDigitalPessoaJuridicaAlteradaDto.class);
 		
 		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getAgencia(), contaDigitalAlterada.getAgencia());
-		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getConta(), contaDigitalAlterada.getConta());
 		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getSenha(), contaDigitalAlterada.getSenha());
 		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getTelefone(), contaDigitalAlterada.getTelefone());
 		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getEmail(), contaDigitalAlterada.getEmail());
@@ -317,70 +313,8 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		assertEquals(contaDigitalPessoaJuridicaAlteracaoDto1.getRazaoSocial(), contaDigitalAlterada.getRazaoSocial());
 	}
 	
-	@DisplayName("Quando tenta inserir conta digital com a agência e a conta de uma conta digital já cadastrada "
-			+ "deve ser lançada uma exceção.")
-	@Order(8)
-	@Test
-	void testInsereContaDigital_ComAgenciaContaUtilizadasContaDigitalJaCadastrada_DeveSerLancadaExcecao()
-			throws JsonMappingException, JsonProcessingException {
-		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(CNPJ_1);
-		String agencia = contaDigitalCadastrada.getAgencia();
-		String conta = contaDigitalCadastrada.getConta();
-		
-		contaDigitalPessoaJuridicaInsercaoDto1.setAgencia(agencia);
-		contaDigitalPessoaJuridicaInsercaoDto1.setConta(conta);
-		
-		String mensagemEsperada = "Já existe uma conta digital cadastrada a agência " + agencia + " e a conta " + conta
-				+ ".";
-		
-		String conteudoBodyResposta = given()
-				.spec(requestSpecificationContaDigitalPessoaJuridica).contentType(ContentType.JSON)
-				.body(contaDigitalPessoaJuridicaInsercaoDto1)
-			.when()
-				.post()
-			.then()
-				.extract()
-					.body()
-						.asString();
-
-		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
-		
-		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
-	}
-	
-	@DisplayName("Quando tenta alterar conta digital com a agência e a conta de uma outra conta digital já cadastrada "
-			+ "deve ser lançada uma exceção.")
-	@Order(9)
-	@Test
-	void testAlteraContaDigital_ComAgenciaContaUtilizadasOutraContaDigitalJaCadastrada_DeveSerLancadaExcecao()
-			throws JsonMappingException, JsonProcessingException {
-		ContaDigitalPessoaJuridicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaJuridicaComSucessoPeloCnpj(CNPJ_1);
-		String agencia = contaDigitalCadastrada.getAgencia();
-		String conta = contaDigitalCadastrada.getConta();
-		
-		contaDigitalPessoaJuridicaAlteracaoDto1.setAgencia(agencia);
-		contaDigitalPessoaJuridicaAlteracaoDto1.setConta(conta);
-		
-		String mensagemEsperada = "Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta
-				+ ".";
-		
-		String conteudoBodyResposta = given()
-				.spec(requestSpecificationContaDigitalPessoaJuridica).contentType(ContentType.JSON)
-				.body(contaDigitalPessoaJuridicaAlteracaoDto1)
-			.when()
-				.put()
-			.then()
-				.extract()
-					.body()
-						.asString();
-
-		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
-		
-		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
-	}
-	
 	@DisplayName("Quando deleta conta digital para pessoa jurídica com sucesso deve ser retornado o código de status 204")
-	@Order(10)
+	@Order(8)
 	@Test
 	void testDeletaContaDigitalPessoaJuridica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
 		given()
@@ -406,7 +340,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 	@DisplayName("Quando busca a conta poupança de pessoa jurídica após a remoção da conta digital "
 			+ "deve ser retornado um objeto nulo, pois essa conta poupança deveria ter sido "
 			+ "removida junto com a conta digital do cliente")
-	@Order(12)
+	@Order(9)
 	@Test
 	void testBuscaContaPoupancaPessoaJuridica_ComSucessoAposRemocaoContaDigital_DeveSerRetornadoObjetoNulo()
 			throws JsonMappingException, JsonProcessingException {
@@ -421,8 +355,8 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		String cnpjNulo = null;
 		String mensagemEsperada = "CNPJ não informado.";
 		
-		ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto = new ContaDigitalPessoaJuridicaInsercaoDto("0000000022", "1234567999",
-				"12345678", "19980001234", "ciclano@email.com", cnpjNulo, "Fábrica Tal");
+		ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto = new ContaDigitalPessoaJuridicaInsercaoDto(
+				"0000000022", "12345678", "19980001234", "ciclano@email.com", cnpjNulo, "Fábrica Tal");
 		
 		String conteudoBodyResposta = given()
 				.spec(requestSpecificationContaDigitalPessoaJuridica).contentType(ContentType.JSON)
@@ -465,7 +399,7 @@ class ContaDigitalPessoaJuridicaControllerIntegrationTest extends ConfiguracaoAm
 		String mensagemEsperada = "E-mail informado sem o símbolo @ (arroba).";
 		
 		ContaDigitalPessoaJuridicaAlteracaoDto contaDigitalPessoaJuridicaComNovosDados = new ContaDigitalPessoaJuridicaAlteracaoDto(
-				"0000000011", "1234567890", "12345678", "19980001234", novoEmail, 1L, CNPJ_1, "Fábrica Tal");
+				"0000000011", "12345678", "19980001234", novoEmail, 1L, CNPJ_1, "Fábrica Tal");
 		
 		String conteudoBodyResposta = given()
 				.spec(requestSpecificationContaDigitalPessoaJuridica)

@@ -63,12 +63,12 @@ public class ContaDigitalPessoaJuridicaControllerTest {
 	public void setup() {
 		cnpj1 = "12345678990001";
 		
-		contaDigitalPessoaJuridicaInsercaoDto1 = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011", "1234567890",
+		contaDigitalPessoaJuridicaInsercaoDto1 = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011",
 				"12345678", "19980001234", "fulano@email.com", cnpj1, "Fábrica Tal");
 		
 		contaDigitalPessoaJuridica1 = new ContaDigitalPessoaJuridica(
 				contaDigitalPessoaJuridicaInsercaoDto1.getAgencia(), 
-				contaDigitalPessoaJuridicaInsercaoDto1.getConta(),
+				"0000000001",
 				contaDigitalPessoaJuridicaInsercaoDto1.getSenha(), 
 				contaDigitalPessoaJuridicaInsercaoDto1.getTelefone(),
 				contaDigitalPessoaJuridicaInsercaoDto1.getEmail(), 
@@ -76,11 +76,11 @@ public class ContaDigitalPessoaJuridicaControllerTest {
 				null, 
 				null,
 				contaDigitalPessoaJuridicaInsercaoDto1.getCnpj(),
-				contaDigitalPessoaJuridicaInsercaoDto1.getRazaoSocial());
+				contaDigitalPessoaJuridicaInsercaoDto1.getRazaoSocial(),
+				2);
 		
 		contaDigitalPessoaJuridicaAlteracaoDto1 = new ContaDigitalPessoaJuridicaAlteracaoDto(
 				contaDigitalPessoaJuridicaInsercaoDto1.getAgencia(), 
-				contaDigitalPessoaJuridicaInsercaoDto1.getConta(), 
 				contaDigitalPessoaJuridicaInsercaoDto1.getSenha(),
 				contaDigitalPessoaJuridicaInsercaoDto1.getTelefone(), 
 				contaDigitalPessoaJuridicaInsercaoDto1.getEmail(), 

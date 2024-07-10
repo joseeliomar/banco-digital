@@ -9,9 +9,10 @@ import com.example.model.ContaDigitalPessoaJuridica;
 public class ContaDigitalPessoaJuridicaDTO1Busca implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private String agencia;
 	private String conta;
+	private int digitoVerificadorConta;
 	private String telefone;
 	private String email;
 	private Long idEndereco;
@@ -19,12 +20,14 @@ public class ContaDigitalPessoaJuridicaDTO1Busca implements Serializable {
 	private LocalDateTime dataHoraAlteracao;
 	private String cnpj;
 	private String razaoSocial;
-	
-	public ContaDigitalPessoaJuridicaDTO1Busca() {}
+
+	public ContaDigitalPessoaJuridicaDTO1Busca() {
+	}
 
 	public ContaDigitalPessoaJuridicaDTO1Busca(ContaDigitalPessoaJuridica contaDigitalPessoaJuridica) {
 		this.agencia = contaDigitalPessoaJuridica.getAgencia();
 		this.conta = contaDigitalPessoaJuridica.getConta();
+		this.digitoVerificadorConta = contaDigitalPessoaJuridica.getDigitoVerificadorConta();
 		this.telefone = contaDigitalPessoaJuridica.getTelefone();
 		this.email = contaDigitalPessoaJuridica.getEmail();
 		this.idEndereco = contaDigitalPessoaJuridica.getIdEndereco();
@@ -40,6 +43,10 @@ public class ContaDigitalPessoaJuridicaDTO1Busca implements Serializable {
 
 	public String getConta() {
 		return conta;
+	}
+
+	public int getDigitoVerificadorConta() {
+		return digitoVerificadorConta;
 	}
 
 	public String getTelefone() {

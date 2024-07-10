@@ -8,7 +8,6 @@ public class ContaDigitalPessoaJuridicaAlteracaoDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String agencia;
-	private String conta;
 	private String senha;
 	private String telefone;
 	private String email;
@@ -16,10 +15,9 @@ public class ContaDigitalPessoaJuridicaAlteracaoDto implements Serializable {
 	private String cnpj;
 	private String razaoSocial;
 
-	public ContaDigitalPessoaJuridicaAlteracaoDto(String agencia, String conta, String senha, String telefone,
+	public ContaDigitalPessoaJuridicaAlteracaoDto(String agencia, String senha, String telefone,
 			String email, Long idEndereco, String cnpj, String razaoSocial) {
 		this.agencia = agencia;
-		this.conta = conta;
 		this.senha = senha;
 		this.telefone = telefone;
 		this.email = email;
@@ -34,14 +32,6 @@ public class ContaDigitalPessoaJuridicaAlteracaoDto implements Serializable {
 
 	public void setAgencia(String agencia) {
 		this.agencia = agencia;
-	}
-
-	public String getConta() {
-		return conta;
-	}
-
-	public void setConta(String conta) {
-		this.conta = conta;
 	}
 
 	public String getSenha() {

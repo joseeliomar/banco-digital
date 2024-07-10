@@ -11,6 +11,7 @@ public class ContaDigitalPessoaFisicaDTO1Busca implements Serializable {
 	
 	private String agencia;
 	private String conta;
+	private int digitoVerificadorConta;
 	private String telefone;
 	private String email;
 	private Long idEndereco;
@@ -29,6 +30,10 @@ public class ContaDigitalPessoaFisicaDTO1Busca implements Serializable {
 
 	public String getConta() {
 		return conta;
+	}
+	
+	public int getDigitoVerificadorConta() {
+		return digitoVerificadorConta;
 	}
 
 	public String getTelefone() {

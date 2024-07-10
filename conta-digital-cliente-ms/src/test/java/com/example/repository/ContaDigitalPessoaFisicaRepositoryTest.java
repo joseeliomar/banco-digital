@@ -27,11 +27,11 @@ class ContaDigitalPessoaFisicaRepositoryTest extends ConfiguracaoAmbienteTestesP
 	void testDeveObterContaDigitalPessoaFisicaComSucesso() {
 		// Given
 		String agencia = "1234567890";
-		String conta = "0000000011";
+		String conta = "0000000001";
 
 		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, conta, "12345678",
 				"19980001234", "fulano@email.com", 1L, LocalDateTime.now(), null, "12345678901", "Fulano de Tal",
-				LocalDate.of(2001, 1, 1), "Fulana de Tal");
+				LocalDate.of(2001, 1, 1), "Fulana de Tal", 2);
 
 		contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisica);
 

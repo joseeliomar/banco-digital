@@ -35,10 +35,11 @@ public class ContaService {
 	private String geraNumeroConta() {
 		String nomeSequence = "numero_conta";
 		criaSequence(nomeSequence);
+		int quantidadeTotalDigitosDesejada = 10;
 		return Utils
 				.insereZerosEsquerdaNumeroInformado(
 						sequenceUtils.obtemProximoValorDaSequence(nomeSequence),
-						11);
+						quantidadeTotalDigitosDesejada);
 	}
 
 	/**
@@ -48,7 +49,7 @@ public class ContaService {
 	 */
 	private void criaSequence(String nomeSequence) {
 		if (!sequenceUtils.existeSequence(nomeSequence)) {
-			long startWith = 1l, incrementBy = 1l, minValue = 1l, maxValue = 99999999999l, cache = 10l;
+			long startWith = 1l, incrementBy = 1l, minValue = 1l, maxValue = 9999999999l, cache = 10l;
 			sequenceUtils.criaSequence(nomeSequence, startWith, incrementBy, minValue, maxValue, cache);
 		}
 	}
@@ -68,12 +69,12 @@ public class ContaService {
 			throw new RuntimeException("A string informada não possuí apenas números.");
 		}
 		
-		if (numeroConta.length() != 11) {
-			throw new RuntimeException("O número da conta deve ter 11 digítos.");
+		if (numeroConta.length() != 10) {
+			throw new RuntimeException("O número da conta deve ter 10 digítos.");
 		}
 		
 		int soma = 0;
-		int[] pesos = { 8, 2, 5, 1, 9, 3, 6, 4, 7, 9, 4};
+		int[] pesos = { 8, 2, 5, 1, 9, 3, 6, 4, 7, 9};
 
 		for (int i = 0; i < numeroConta.length(); i++) {
 			int umDigitoNumeroConta = Character.getNumericValue(numeroConta.charAt(i));

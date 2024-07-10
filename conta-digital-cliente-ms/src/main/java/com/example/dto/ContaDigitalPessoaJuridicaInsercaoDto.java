@@ -8,17 +8,15 @@ public class ContaDigitalPessoaJuridicaInsercaoDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String agencia;
-	private String conta;
 	private String senha;
 	private String telefone;
 	private String email;
 	private String cnpj;
 	private String razaoSocial;
 
-	public ContaDigitalPessoaJuridicaInsercaoDto(String agencia, String conta, String senha, String telefone,
+	public ContaDigitalPessoaJuridicaInsercaoDto(String agencia, String senha, String telefone,
 			String email, String cnpj, String razaoSocial) {
 		this.agencia = agencia;
-		this.conta = conta;
 		this.senha = senha;
 		this.telefone = telefone;
 		this.email = email;
@@ -32,14 +30,6 @@ public class ContaDigitalPessoaJuridicaInsercaoDto implements Serializable {
 
 	public void setAgencia(String agencia) {
 		this.agencia = agencia;
-	}
-
-	public String getConta() {
-		return conta;
-	}
-
-	public void setConta(String conta) {
-		this.conta = conta;
 	}
 
 	public String getSenha() {

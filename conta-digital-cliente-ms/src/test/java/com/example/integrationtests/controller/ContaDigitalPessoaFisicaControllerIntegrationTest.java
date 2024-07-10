@@ -95,10 +95,10 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	@BeforeEach
 	public void setup() {
 		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto(
-				"0000000013", "1234567890", "654115897", "19980009999", "email@email.com", CPF_2,
+				"0000000013", "654115897", "19980009999", "email@email.com", CPF_2,
 				"Fulano de Tal", LocalDate.of(1995, 1, 1), "Fulana de Tal");
 		
-		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("0000000012", "1234567999",
+		contaDigitalPessoaFisicaAlteracaoDto1 = new ContaDigitalPessoaFisicaAlteracaoDto("0000000012",
 				"654115897", "19980009999", "email@email.com", 2L, CPF_2, "Fulano de Tal", LocalDate.of(1995, 1, 1),
 				"Fulana de Tal");
 	}
@@ -110,7 +110,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	void testInsereContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoHeaderLocationMaisCodigoStatus201()
 			throws JsonProcessingException, Exception {
 		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
-				"0000000011", "1234567890", "12345678", "19980001234", "fulano@email.com", CPF_1,
+				"0000000011", "12345678", "19980001234", "fulano@email.com", CPF_1,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 
 		String sufixoUriRecursoCriado = CAMINHO_BASE + contaDigitalPessoaFisicaInsercaoDto.getCpf(); // não contém a porta
@@ -148,7 +148,6 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertNotNull(contaDigitalPessoaFisicaInserida.getNomeCompletoMae());
 		
 		assertEquals(contaDigitalPessoaFisicaInsercaoDto.getAgencia(), contaDigitalPessoaFisicaInserida.getAgencia());
-		assertEquals(contaDigitalPessoaFisicaInsercaoDto.getConta(), contaDigitalPessoaFisicaInserida.getConta());
 		assertEquals(contaDigitalPessoaFisicaInsercaoDto.getSenha(), contaDigitalPessoaFisicaInserida.getSenha());
 		assertEquals(contaDigitalPessoaFisicaInsercaoDto.getTelefone(), contaDigitalPessoaFisicaInserida.getTelefone());
 		assertEquals(contaDigitalPessoaFisicaInsercaoDto.getEmail(), contaDigitalPessoaFisicaInserida.getEmail());
@@ -223,7 +222,6 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		LocalDate novaDataNascimento = LocalDate.of(2002, 1, 1);
 		ContaDigitalPessoaFisicaAlteracaoDto novosDadosParaAlteracao = new ContaDigitalPessoaFisicaAlteracaoDto(
 				contaDigitalPessoaFisicaBuscadaBancoDados.getAgencia(), 
-				contaDigitalPessoaFisicaBuscadaBancoDados.getConta(), 
 				novaSenha, 
 				novoTelefone, 
 				novoEmail, 
@@ -263,7 +261,6 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertNotNull(contaDigitalPessoaFisicaAlterada.getNomeCompletoMae());
 		
 		assertEquals(novosDadosParaAlteracao.getAgencia(), contaDigitalPessoaFisicaAlterada.getAgencia());
-		assertEquals(novosDadosParaAlteracao.getConta(), contaDigitalPessoaFisicaAlterada.getConta());
 		assertEquals(novosDadosParaAlteracao.getSenha(), contaDigitalPessoaFisicaAlterada.getSenha());
 		assertEquals(novosDadosParaAlteracao.getTelefone(), contaDigitalPessoaFisicaAlterada.getTelefone());
 		assertEquals(novosDadosParaAlteracao.getEmail(), contaDigitalPessoaFisicaAlterada.getEmail());
@@ -324,7 +321,6 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 				ContaDigitalPessoaFisicaAlteradaDto.class);
 		
 		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getAgencia(), contaDigitalAlterada.getAgencia());
-		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getConta(), contaDigitalAlterada.getConta());
 		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getSenha(), contaDigitalAlterada.getSenha());
 		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getTelefone(), contaDigitalAlterada.getTelefone());
 		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getEmail(), contaDigitalAlterada.getEmail());
@@ -337,70 +333,8 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		assertEquals(contaDigitalPessoaFisicaAlteracaoDto1.getNomeCompletoMae(), contaDigitalAlterada.getNomeCompletoMae());
 	}
 	
-	@DisplayName("Quando tenta inserir conta digital com a agência e a conta de uma conta digital já cadastrada "
-			+ "deve ser lançada uma exceção.")
-	@Order(8)
-	@Test
-	void testInsereContaDigital_ComAgenciaContaUtilizadasContaDigitalJaCadastrada_DeveSerLancadaExcecao()
-			throws JsonMappingException, JsonProcessingException {
-		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
-		String agencia = contaDigitalCadastrada.getAgencia();
-		String conta = contaDigitalCadastrada.getConta();
-		
-		contaDigitalPessoaFisicaInsercaoDto1.setAgencia(agencia);
-		contaDigitalPessoaFisicaInsercaoDto1.setConta(conta);
-		
-		String mensagemEsperada = "Já existe uma conta digital cadastrada a agência " + agencia + " e a conta " + conta
-				+ ".";
-		
-		String conteudoBodyResposta = given()
-				.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
-				.body(contaDigitalPessoaFisicaInsercaoDto1)
-			.when()
-				.post()
-			.then()
-				.extract()
-					.body()
-						.asString();
-
-		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
-		
-		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
-	}
-	
-	@DisplayName("Quando tenta alterar conta digital com a agência e a conta de uma outra conta digital já cadastrada "
-			+ "deve ser lançada uma exceção.")
-	@Order(9)
-	@Test
-	void testAlteraContaDigital_ComAgenciaContaUtilizadasOutraContaDigitalJaCadastrada_DeveSerLancadaExcecao()
-			throws JsonMappingException, JsonProcessingException {
-		ContaDigitalPessoaFisicaDTO1Busca contaDigitalCadastrada = buscaContaDigitalPessoaFisicaComSucessoPeloCpf(CPF_1);
-		String agencia = contaDigitalCadastrada.getAgencia();
-		String conta = contaDigitalCadastrada.getConta();
-		
-		contaDigitalPessoaFisicaAlteracaoDto1.setAgencia(agencia);
-		contaDigitalPessoaFisicaAlteracaoDto1.setConta(conta);
-		
-		String mensagemEsperada = "Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta
-				+ ".";
-		
-		String conteudoBodyResposta = given()
-				.spec(requestSpecificationContaDigitalPessoaFisica).contentType(ContentType.JSON)
-				.body(contaDigitalPessoaFisicaAlteracaoDto1)
-			.when()
-				.put()
-			.then()
-				.extract()
-					.body()
-						.asString();
-
-		DetalhesExcecaoDto detalhesExcecaoDto = objectMapper.readValue(conteudoBodyResposta, DetalhesExcecaoDto.class);
-		
-		assertEquals(mensagemEsperada, detalhesExcecaoDto.error());
-	}
-	
 	@DisplayName("Quando deleta conta digital para pessoa física com sucesso deve ser retornado o código de status 204")
-	@Order(10)
+	@Order(8)
 	@Test
 	void testDeletaContaDigitalPessoaFisica_ComSucesso_DeveSerRetornadoCodigoStatus204() {
 		given()
@@ -414,7 +348,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	@DisplayName("Quando busca a conta corrente de pessoa física após a remoção da conta digital "
 			+ "deve ser retornado um objeto nulo, pois essa conta corrente deveria ter sido "
 			+ "removida junto com a conta digital do cliente")
-	@Order(11)
+	@Order(9)
 	@Test
 	void testBuscaContaCorrentePessoaFisica_ComSucessoAposRemocaoContaDigital_DeveSerRetornadoObjetoNulo()
 			throws JsonMappingException, JsonProcessingException {
@@ -426,7 +360,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 	@DisplayName("Quando busca a conta poupança de pessoa física após a remoção da conta digital "
 			+ "deve ser retornado um objeto nulo, pois essa conta poupança deveria ter sido "
 			+ "removida junto com a conta digital do cliente")
-	@Order(12)
+	@Order(10)
 	@Test
 	void testBuscaContaPoupancaPessoaFisica_ComSucessoAposRemocaoContaDigital_DeveSerRetornadoObjetoNulo()
 			throws JsonMappingException, JsonProcessingException {
@@ -442,7 +376,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String mensagemEsperada = "CPF não informado.";
 		
 		ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto = new ContaDigitalPessoaFisicaInsercaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", "fulano@email.com", cpfNulo,
+				"0000000011", "12345678", "19980001234", "fulano@email.com", cpfNulo,
 				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		String conteudoBodyResposta = given()
@@ -486,7 +420,7 @@ class ContaDigitalPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbi
 		String mensagemEsperada = "E-mail informado sem o símbolo @ (arroba).";
 		
 		ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaComNovosDados = new ContaDigitalPessoaFisicaAlteracaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", novoEmail, 1L, CPF_1, "Fulano de Tal",
+				"1234567890", "12345678", "19980001234", novoEmail, 1L, CPF_1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		String conteudoBodyResposta = given()

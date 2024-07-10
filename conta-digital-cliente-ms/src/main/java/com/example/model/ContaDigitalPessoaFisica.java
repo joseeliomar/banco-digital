@@ -37,8 +37,9 @@ public class ContaDigitalPessoaFisica extends ContaDigitalCliente {
 
 	public ContaDigitalPessoaFisica(String agencia, String conta, String senha, String telefone, String email,
 			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao, String cpf,
-			String nomeCompleto, LocalDate dataNascimento, String nomeCompletoMae) {
-		super(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, dataHoraAlteracao);
+			String nomeCompleto, LocalDate dataNascimento, String nomeCompletoMae, int digitoVerificadorConta) {
+		super(agencia, conta, senha, telefone, email, idEndereco, dataHoraCadastro, dataHoraAlteracao,
+				digitoVerificadorConta);
 		this.cpf = cpf;
 		this.nomeCompleto = nomeCompleto;
 		this.dataNascimento = dataNascimento;

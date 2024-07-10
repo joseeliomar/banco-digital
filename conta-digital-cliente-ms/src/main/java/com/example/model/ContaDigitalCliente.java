@@ -16,6 +16,9 @@ public abstract class ContaDigitalCliente {
 	@Column(nullable = false, length = 10)
 	private String conta;
 
+	@Column(nullable = false, length = 10)
+	private int digitoVerificadorConta;
+
 	@Column(nullable = false, length = 16)
 	private String senha;
 
@@ -35,12 +38,13 @@ public abstract class ContaDigitalCliente {
 	@Column(name = "data_hora_alteracao", nullable = true)
 	@Temporal(TemporalType.TIMESTAMP)
 	private LocalDateTime dataHoraAlteracao;
-	
+
 	public ContaDigitalCliente() {
 	}
 
 	public ContaDigitalCliente(String agencia, String conta, String senha, String telefone, String email,
-			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao) {
+			Long idEndereco, LocalDateTime dataHoraCadastro, LocalDateTime dataHoraAlteracao,
+			int digitoVerificadorConta) {
 		this.agencia = agencia;
 		this.conta = conta;
 		this.senha = senha;
@@ -65,6 +69,14 @@ public abstract class ContaDigitalCliente {
 
 	public void setConta(String conta) {
 		this.conta = conta;
+	}
+
+	public int getDigitoVerificadorConta() {
+		return digitoVerificadorConta;
+	}
+
+	public void setDigitoVerificadorConta(int digitoVerificadorConta) {
+		this.digitoVerificadorConta = digitoVerificadorConta;
 	}
 
 	public String getSenha() {

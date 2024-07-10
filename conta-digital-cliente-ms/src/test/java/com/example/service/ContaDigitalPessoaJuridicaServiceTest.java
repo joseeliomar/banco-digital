@@ -37,6 +37,8 @@ import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.model.ContaDigitalPessoaJuridica;
 import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
+import com.example.openfeign.feignclient.GeradorNumeroContaAfinsMsFeignClient;
+import com.example.openfeign.feignclient.dto.DadosContaDto;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 import com.example.repository.ContaDigitalPessoaJuridicaRepository;
 
@@ -64,6 +66,9 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	@MockBean
 	private ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
 	
+	@MockBean
+	private GeradorNumeroContaAfinsMsFeignClient geradorNumeroContaAfinsMsFeignClient;
+	
 	private ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto1;
 	
 	private ContaDigitalPessoaJuridicaAlteracaoDto contaDigitalPessoaJuridicaAlteracaoDto1;
@@ -78,6 +83,8 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	
 	private Long codigoEnderecoExistente;
 	
+	private String numeroConta = "1234567890";
+	
 	@BeforeEach
 	void setup() {
 		// Given
@@ -86,12 +93,12 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 		String cnpj1 = "12345678990001";
 		String cnpj2 = "12345678990002";
 		String cpf1 = "12345678903";
-		contaDigitalPessoaJuridicaInsercaoDto1 = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011", "1234567890",
+		contaDigitalPessoaJuridicaInsercaoDto1 = new ContaDigitalPessoaJuridicaInsercaoDto("0000000011",
 				"12345678", "19980001234", "fulano@email.com", cnpj1, "Fábrica Tal");
 				
 		contaDigitalPessoaJuridica1 = new ContaDigitalPessoaJuridica(
 				contaDigitalPessoaJuridicaInsercaoDto1.getAgencia(), 
-				contaDigitalPessoaJuridicaInsercaoDto1.getConta(),
+				numeroConta,
 				contaDigitalPessoaJuridicaInsercaoDto1.getSenha(), 
 				contaDigitalPessoaJuridicaInsercaoDto1.getTelefone(),
 				contaDigitalPessoaJuridicaInsercaoDto1.getEmail(), 
@@ -99,14 +106,15 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 				null, 
 				null,
 				contaDigitalPessoaJuridicaInsercaoDto1.getCnpj(),
-				contaDigitalPessoaJuridicaInsercaoDto1.getRazaoSocial());
+				contaDigitalPessoaJuridicaInsercaoDto1.getRazaoSocial(),
+				1);
 		
-		contaDigitalPessoaJuridicaAlteracaoDto1 = new ContaDigitalPessoaJuridicaAlteracaoDto("0000000011", "1234567890",
+		contaDigitalPessoaJuridicaAlteracaoDto1 = new ContaDigitalPessoaJuridicaAlteracaoDto("0000000011",
 				"12345678", "19980001234", "fulano@email.com", codigoEnderecoExistente, cnpj2, "Fábrica Tal");
 		
 		contaDigitalPessoaJuridica2 = new ContaDigitalPessoaJuridica(
 				contaDigitalPessoaJuridicaAlteracaoDto1.getAgencia(),
-				contaDigitalPessoaJuridicaAlteracaoDto1.getConta(), 
+				numeroConta,
 				contaDigitalPessoaJuridicaAlteracaoDto1.getSenha(),
 				contaDigitalPessoaJuridicaAlteracaoDto1.getTelefone(),
 				contaDigitalPessoaJuridicaAlteracaoDto1.getEmail(),
@@ -114,7 +122,8 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 				null, 
 				null,
 				contaDigitalPessoaJuridicaAlteracaoDto1.getCnpj(),
-				contaDigitalPessoaJuridicaAlteracaoDto1.getRazaoSocial());
+				contaDigitalPessoaJuridicaAlteracaoDto1.getRazaoSocial(),
+				1);
 		
 		contaDigitalPessoaJuridica3 = new ContaDigitalPessoaJuridica(
 				"0000000011", "1234567890",
@@ -124,7 +133,8 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 				null, 
 				null,
 				"12345678990001",
-				"Fábrica Tal");
+				"Fábrica Tal",
+				1);
 		
 		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica(
 				"0000000011", 
@@ -138,9 +148,15 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 				cpf1, 
 				"Fulano de Tal",
 				LocalDate.of(1995, 1, 1), 
-				"Fulana de Tal");
+				"Fulana de Tal",
+				1);
 		
-		given(contaDigitalPessoaJuridicaRepository.findById(contaDigitalPessoaJuridicaAlteracaoDto1.getCnpj())).willReturn(Optional.of(contaDigitalPessoaJuridica2));
+		given(contaDigitalPessoaJuridicaRepository.findById(contaDigitalPessoaJuridicaAlteracaoDto1.getCnpj()))
+				.willReturn(Optional.of(contaDigitalPessoaJuridica2));
+		
+		var digitoVerificadorConta = 2;
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(numeroConta, digitoVerificadorConta)));
 	}
 
 	@DisplayName("Cria uma conta digital com sucesso quando nenhuma exceção for "
@@ -222,7 +238,8 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	void testCriaContaDigital_ComContaNula_DeveSerLancadaExcecao() {
 		// Given
 		String contaNula = null;
-		contaDigitalPessoaJuridicaInsercaoDto1.setConta(contaNula);
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(contaNula, 2)));
 		String mensagemEsperada = "Conta não informada.";
 
 		// When & Then
@@ -236,7 +253,8 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	void testCriaContaDigital_ComContaEmBranco_DeveSerLancadaExcecao() {
 		// Given
 		String contaEmBranco = "       ";
-		contaDigitalPessoaJuridicaInsercaoDto1.setConta(contaEmBranco);
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(contaEmBranco, 2)));
 		String mensagemEsperada = "Conta não informada.";
 
 		// When & Then
@@ -250,7 +268,8 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	void testCriaContaDigital_ComContaComMenos10Caracteres_DeveSerLancadaExcecao() {
 		// Given
 		String contaCom9Caracteres = "123456789";
-		contaDigitalPessoaJuridicaInsercaoDto1.setConta(contaCom9Caracteres);
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(contaCom9Caracteres, 2)));
 		String mensagemEsperada = "Conta com menos de 10 caracteres.";
 
 		// When & Then
@@ -264,8 +283,44 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	void testCriaContaDigital_ComContaComMaisDezCaracteres_DeveSerLancadaExcecao() {
 		// Given
 		String contaCom11Caracteres = "12345678901";
-		contaDigitalPessoaJuridicaInsercaoDto1.setConta(contaCom11Caracteres);
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(contaCom11Caracteres, 2)));
 		String mensagemEsperada = "Conta com mais de 10 caracteres.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta criar uma conta digital com o digíto verificador da conta sendo"
+			+ " um número com mais de um digíto deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComDigitoVerificadorContaSendoUmNumeroComMaisUmDigito_DeveSerLancadaExcecao() {
+		// Given
+		int digitoVerificadorConta = 11;
+		String contaCom11Caracteres = "1234567890";
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(contaCom11Caracteres, digitoVerificadorConta)));
+		String mensagemEsperada = "O digíto verificador da conta é formado por apenas um digíto,"
+				+ " porém foi informado um número que possuí mais de um digíto.";
+
+		// When & Then
+		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
+
+		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
+	}
+	
+	@DisplayName("Quando tenta criar uma conta digital com digíto verificador zero,"
+			+ " deve ser lançada uma exceção.")
+	@Test
+	void testCriaContaDigital_ComDigitoVerificadorZero_DeveSerLancadaExcecao() {
+		// Given
+		int digitoVerificadorConta = 0;
+		String contaCom11Caracteres = "1234567890";
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(contaCom11Caracteres, digitoVerificadorConta)));
+		String mensagemEsperada = "O digíto verificador da conta não pode ser zero.";
 
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoCriacaoContaDigital();
@@ -279,7 +334,9 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	void testCriaContaDigital_ComAgenciaContaUtilizadasContaDigitalJaCadastrada_DeveSerLancadaExcecao() {
 		// Given
 		String agencia = contaDigitalPessoaJuridicaInsercaoDto1.getAgencia();
-		String conta = contaDigitalPessoaJuridicaInsercaoDto1.getConta();
+		String conta = "1234567890";
+		given(geradorNumeroContaAfinsMsFeignClient.geraDadosConta())
+				.willReturn(ResponseEntity.ok(new DadosContaDto(conta, 2)));
 		
 		contaDigitalPessoaJuridica3.setAgencia(agencia);
 		contaDigitalPessoaJuridica3.setConta(conta);
@@ -637,77 +694,20 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
 	
-	@DisplayName("Quando tenta alterar conta digital com a conta não informada (string nula) deve ser lançada uma exceção.")
-	@Test
-	void testAlteraContaDigital_ComContaNula_DeveSerLancadaExcecao() {
-		// Given
-		String contaNula = null;
-		contaDigitalPessoaJuridicaAlteracaoDto1.setConta(contaNula);
-		String mensagemEsperada = "Conta não informada.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-
-	@DisplayName("Quando tenta alterar conta digital com a conta não informada (string em branco) deve ser lançada uma exceção.")
-	@Test
-	void testAlteraContaDigital_ComContaEmBranco_DeveSerLancadaExcecao() {
-		// Given
-		String contaEmBranco = "       ";
-		contaDigitalPessoaJuridicaAlteracaoDto1.setConta(contaEmBranco);
-		String mensagemEsperada = "Conta não informada.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta alterar conta digital com a conta com menos de 10 caracteres deve ser lançada uma exceção.")
-	@Test
-	void testAlteraContaDigital_ComContaComMenos10Caracteres_DeveSerLancadaExcecao() {
-		// Given
-		String contaCom9Caracteres = "123456789";
-		contaDigitalPessoaJuridicaAlteracaoDto1.setConta(contaCom9Caracteres);
-		String mensagemEsperada = "Conta com menos de 10 caracteres.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
-	@DisplayName("Quando tenta alterar conta digital com a conta com mais de 10 caracteres deve ser lançada uma exceção.")
-	@Test
-	void testAlteraContaDigital_ComContaComMaisDezCaracteres_DeveSerLancadaExcecao() {
-		// Given
-		String contaCom11Caracteres = "12345678901";
-		contaDigitalPessoaJuridicaAlteracaoDto1.setConta(contaCom11Caracteres);
-		String mensagemEsperada = "Conta com mais de 10 caracteres.";
-
-		// When & Then
-		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();
-
-		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
-	}
-	
 	@DisplayName("Quando tenta alterar conta digital com a agência e a conta de uma outra conta digital já cadastrada "
 			+ "deve ser lançada uma exceção.")
 	@Test
 	void testAlteraContaDigital_ComAgenciaContaUtilizadasOutraContaDigitalJaCadastrada_DeveSerLancadaExcecao() {
 		// Given
 		String agencia = contaDigitalPessoaJuridicaAlteracaoDto1.getAgencia();
-		String conta = contaDigitalPessoaJuridicaAlteracaoDto1.getConta();
 		
 		contaDigitalPessoaJuridica3.setAgencia(agencia);
-		contaDigitalPessoaJuridica3.setConta(conta);
-		given(contaDigitalPessoaFisicaRepository.findByAgenciaAndConta(agencia, conta))
+		contaDigitalPessoaJuridica3.setConta(numeroConta);
+		given(contaDigitalPessoaFisicaRepository.findByAgenciaAndConta(agencia, numeroConta))
 				.willReturn(Optional.of(contaDigitalPessoaFisica1));
 
-		String mensagemEsperada = "Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta
-				+ ".";
+		String mensagemEsperada = "Já existe uma outra conta digital cadastrada com a agência " + agencia
+				+ " e a conta " + numeroConta + ".";
 
 		// When & Then
 		ValidacaoException exception = confirmaSeSeraLancadaExcecaoTipoEsperadoAlteracaoContaDigital();

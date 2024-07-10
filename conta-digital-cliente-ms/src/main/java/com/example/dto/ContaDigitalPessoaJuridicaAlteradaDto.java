@@ -9,6 +9,7 @@ public class ContaDigitalPessoaJuridicaAlteradaDto {
 	
 	private String agencia;
 	private String conta;
+	private int digitoVerificadorConta;
 	private String senha;
 	private String telefone;
 	private String email;
@@ -23,6 +24,7 @@ public class ContaDigitalPessoaJuridicaAlteradaDto {
 	public ContaDigitalPessoaJuridicaAlteradaDto(ContaDigitalPessoaJuridica contaDigitalPessoaJuridica) {
 		this.agencia = contaDigitalPessoaJuridica.getAgencia();
 		this.conta = contaDigitalPessoaJuridica.getConta();
+		this.digitoVerificadorConta = contaDigitalPessoaJuridica.getDigitoVerificadorConta();
 		this.senha = contaDigitalPessoaJuridica.getSenha();
 		this.telefone = contaDigitalPessoaJuridica.getTelefone();
 		this.email = contaDigitalPessoaJuridica.getEmail();
@@ -39,6 +41,10 @@ public class ContaDigitalPessoaJuridicaAlteradaDto {
 
 	public String getConta() {
 		return conta;
+	}
+	
+	public int getDigitoVerificadorConta() {
+		return digitoVerificadorConta;
 	}
 
 	public String getSenha() {

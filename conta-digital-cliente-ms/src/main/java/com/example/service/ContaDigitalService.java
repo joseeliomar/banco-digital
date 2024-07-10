@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.example.enumeration.DocumentoCliente;
 import com.example.enumeration.TipoDocumento;
@@ -11,6 +12,9 @@ import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalCliente;
 import com.example.model.ContaDigitalPessoaFisica;
 import com.example.model.ContaDigitalPessoaJuridica;
+import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
+import com.example.openfeign.feignclient.GeradorNumeroContaAfinsMsFeignClient;
+import com.example.openfeign.feignclient.dto.DadosContaDto;
 import com.example.repository.ContaDigitalPessoaFisicaRepository;
 import com.example.repository.ContaDigitalPessoaJuridicaRepository;
 
@@ -21,6 +25,12 @@ public abstract class ContaDigitalService {
 	
 	@Autowired
 	protected ContaDigitalPessoaJuridicaRepository contaDigitalPessoaJuridicaRepository;
+	
+	@Autowired
+	protected ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
+	
+	@Autowired
+	private GeradorNumeroContaAfinsMsFeignClient geradorNumeroContaAfinsMsFeignClient;
 	
 	public abstract Optional<? extends ContaDigitalCliente> buscaContaDigitalPelaAgenciaConta(String agencia,
 			String conta);
@@ -49,6 +59,16 @@ public abstract class ContaDigitalService {
 		}
 	}
 	
+	protected void validaDigitoVerificadorConta(int digitoVerificadorConta) {
+		if (String.valueOf(digitoVerificadorConta).length() != 1) {
+			throw new ValidacaoException("O digíto verificador da conta é formado por apenas um digíto,"
+					+ " porém foi informado um número que possuí mais de um digíto.", HttpStatus.BAD_REQUEST);
+		}
+		if (digitoVerificadorConta == 0) {
+			throw new ValidacaoException("O digíto verificador da conta não pode ser zero.", HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 	protected void validaAgenciaContaInsercao(String agencia, String conta) {
 		var contaDigitalOptional = buscaContaDigitalPelaAgenciaConta(agencia, conta);
 		if (contaDigitalOptional.isPresent()) {
@@ -57,7 +77,6 @@ public abstract class ContaDigitalService {
 					HttpStatus.CONFLICT);
 		}
 	}
-	
 	
 	protected void validaAgenciaContaAlteracao(String agencia, String conta, DocumentoCliente documentoCliente) {
 		String numeroDocumento = documentoCliente.numeroDocumento();
@@ -83,7 +102,7 @@ public abstract class ContaDigitalService {
 
 		if (contaDigitalPessoaFisicaOptional.isPresent() || contaDigitalPessoaJuridicaOptional.isPresent()) {
 			throw new ValidacaoException(
-					"Já existe uma outra conta digital cadastrada a agência " + agencia + " e a conta " + conta + ".",
+					"Já existe uma outra conta digital cadastrada com a agência " + agencia + " e a conta " + conta + ".",
 					HttpStatus.CONFLICT);
 		}
 	}
@@ -121,4 +140,9 @@ public abstract class ContaDigitalService {
 		}
 	}
 	
+	protected DadosContaDto geraDadosConta() {
+		ResponseEntity<DadosContaDto> respostaMetodoGeraDadosConta = geradorNumeroContaAfinsMsFeignClient.geraDadosConta();
+		DadosContaDto dadosContaDto = respostaMetodoGeraDadosConta.getBody();
+		return dadosContaDto;
+	}
 }

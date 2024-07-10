@@ -3,7 +3,6 @@ package com.example.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -18,26 +17,28 @@ import com.example.enumeration.TipoConta;
 import com.example.enumeration.TipoDocumento;
 import com.example.exception.ValidacaoException;
 import com.example.model.ContaDigitalPessoaJuridica;
-import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
+import com.example.openfeign.feignclient.dto.DadosContaDto;
 
 @Service
 public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 	
-	@Autowired
-	private ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
-	
-	public ContaDigitalPessoaJuridica insereContaDigitalPessoaJuridica(ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto) {
+	public ContaDigitalPessoaJuridica insereContaDigitalPessoaJuridica(
+			ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto) {
 		String agencia = contaDigitalPessoaJuridicaInsercaoDto.getAgencia();
-		String conta = contaDigitalPessoaJuridicaInsercaoDto.getConta();
 		String senha = contaDigitalPessoaJuridicaInsercaoDto.getSenha();
 		String telefone = contaDigitalPessoaJuridicaInsercaoDto.getTelefone();
 		String email = contaDigitalPessoaJuridicaInsercaoDto.getEmail();
 		String cnpj = contaDigitalPessoaJuridicaInsercaoDto.getCnpj();
 		String razaoSocial = contaDigitalPessoaJuridicaInsercaoDto.getRazaoSocial();
 		
+		DadosContaDto dadosContaDto = super.geraDadosConta();
+		String numeroConta = dadosContaDto.numeroConta();
+		int digitoVerificadorConta = dadosContaDto.digitoVerificadorConta();
+		
 		super.validaAgencia(agencia);
-		super.validaConta(conta);
-		super.validaAgenciaContaInsercao(agencia, conta);
+		super.validaConta(numeroConta);
+		super.validaDigitoVerificadorConta(digitoVerificadorConta);
+		super.validaAgenciaContaInsercao(agencia, numeroConta);
 		super.validaSenha(senha);
 		super.validaTelefone(telefone);
 		super.validaEmail(email);
@@ -45,8 +46,8 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 		validaRazaoSocial(razaoSocial);
 		
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
-		ContaDigitalPessoaJuridica contaDigitalPessoaJuridica = new ContaDigitalPessoaJuridica(agencia, conta, senha,
-				telefone, email, null, dataHoraCadastro, null, cnpj, razaoSocial);
+		ContaDigitalPessoaJuridica contaDigitalPessoaJuridica = new ContaDigitalPessoaJuridica(agencia, numeroConta, senha,
+				telefone, email, null, dataHoraCadastro, null, cnpj, razaoSocial, digitoVerificadorConta);
 		var contaDigitalPessoaJuridicaCadastrada = contaDigitalPessoaJuridicaRepository.save(contaDigitalPessoaJuridica);
 		
 		var contaCorrentePessoaJuridica = new ContaPessoaJuridicaInsercaoDto(TipoConta.CORRENTE, cnpj);
@@ -89,7 +90,6 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 	public ContaDigitalPessoaJuridica alteraContaDigitalPessoaJuridica(
 			ContaDigitalPessoaJuridicaAlteracaoDto contaDigitalPessoaJuridicaAlteracaoDto) {
 		String agencia = contaDigitalPessoaJuridicaAlteracaoDto.getAgencia();
-		String conta = contaDigitalPessoaJuridicaAlteracaoDto.getConta();
 		String senha = contaDigitalPessoaJuridicaAlteracaoDto.getSenha();
 		String telefone = contaDigitalPessoaJuridicaAlteracaoDto.getTelefone();
 		String email = contaDigitalPessoaJuridicaAlteracaoDto.getEmail();
@@ -98,9 +98,7 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 		String razaoSocial = contaDigitalPessoaJuridicaAlteracaoDto.getRazaoSocial();
 		
 		validaAgencia(agencia);
-		validaConta(conta);
 		validaCnpj(cnpj, false);
-		validaAgenciaContaAlteracao(agencia, conta, new DocumentoCliente(cnpj, TipoDocumento.CNPJ));
 		validaSenha(senha);
 		validaTelefone(telefone);
 		validaEmail(email);
@@ -112,8 +110,10 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 				.orElseThrow(
 						() -> new ValidacaoException("Não foi encontrada uma conta com o CNPJ informado.", HttpStatus.BAD_REQUEST));
 		
+		String conta = contaDigitalPessoaJuridicaSalvaBancoDados.getConta();
+		validaAgenciaContaAlteracao(agencia, conta, new DocumentoCliente(cnpj, TipoDocumento.CNPJ));
+		
 		contaDigitalPessoaJuridicaSalvaBancoDados.setAgencia(agencia);
-		contaDigitalPessoaJuridicaSalvaBancoDados.setConta(conta);
 		contaDigitalPessoaJuridicaSalvaBancoDados.setSenha(senha);
 		contaDigitalPessoaJuridicaSalvaBancoDados.setTelefone(telefone);
 		contaDigitalPessoaJuridicaSalvaBancoDados.setEmail(email);

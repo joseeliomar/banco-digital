@@ -9,7 +9,6 @@ public class ContaDigitalPessoaFisicaAlteracaoDto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String agencia;
-	private String conta;
 	private String senha;
 	private String telefone;
 	private String email;
@@ -19,11 +18,10 @@ public class ContaDigitalPessoaFisicaAlteracaoDto implements Serializable {
 	private LocalDate dataNascimento;
 	private String nomeCompletoMae;
 
-	public ContaDigitalPessoaFisicaAlteracaoDto(String agencia, String conta, String senha, String telefone,
+	public ContaDigitalPessoaFisicaAlteracaoDto(String agencia, String senha, String telefone,
 			String email, Long idEndereco, String cpf, String nomeCompleto, LocalDate dataNascimento,
 			String nomeCompletoMae) {
 		this.agencia = agencia;
-		this.conta = conta;
 		this.senha = senha;
 		this.telefone = telefone;
 		this.email = email;
@@ -40,14 +38,6 @@ public class ContaDigitalPessoaFisicaAlteracaoDto implements Serializable {
 
 	public void setAgencia(String agencia) {
 		this.agencia = agencia;
-	}
-
-	public String getConta() {
-		return conta;
-	}
-
-	public void setConta(String conta) {
-		this.conta = conta;
 	}
 
 	public String getSenha() {

@@ -63,13 +63,13 @@ class ContaDigitalPessoaFisicaControllerTest {
 	public void setup() {
 		cpf1 = "12345678901";
 		
-		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto("1234567890", "0000000011", "12345678",
+		contaDigitalPessoaFisicaInsercaoDto1 = new ContaDigitalPessoaFisicaInsercaoDto("1234567890", "12345678",
 				"19980001234", "fulano@email.com", cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
-		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000011", "12345678",
+		contaDigitalPessoaFisica1 = new ContaDigitalPessoaFisica("1234567890", "0000000001", "12345678",
 				"19980001234", "fulano@email.com", 1L, null, null, cpf1, "Fulano de Tal",
-				LocalDate.of(2001, 1, 1), "Fulana de Tal");
+				LocalDate.of(2001, 1, 1), "Fulana de Tal", 2);
 	}
 
 	@DisplayName("Quando insere conta digital para pessoa física com sucesso deve ser retornada a URI e o código de status 201")
@@ -172,7 +172,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 		
 		String novoEmail = "novoEmail@email.com";
 		ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaComNovosDados = new ContaDigitalPessoaFisicaAlteracaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", novoEmail, 1L, cpf1, "Fulano de Tal",
+				"1234567890", "12345678", "19980001234", novoEmail, 1L, cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		contaDigitalPessoaFisica1.setEmail(novoEmail);
@@ -200,7 +200,7 @@ class ContaDigitalPessoaFisicaControllerTest {
 		
 		String novoEmail = "novoEmail@email.com";
 		ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaComNovosDados = new ContaDigitalPessoaFisicaAlteracaoDto(
-				"1234567890", "0000000011", "12345678", "19980001234", novoEmail, 1L, cpf1, "Fulano de Tal",
+				"1234567890", "12345678", "19980001234", novoEmail, 1L, cpf1, "Fulano de Tal",
 				LocalDate.of(2001, 1, 1), "Fulana de Tal");
 		
 		contaDigitalPessoaFisica1.setEmail(novoEmail);

@@ -62,8 +62,8 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 	@Test
 	void testGeraDadosConta_ComSucesso_DevemSerRetornadosDadosContaMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
-		var numeroContaExperado = "00000000001";
-		var digitoVerificadorContaExperado = 7;
+		var numeroContaExperado = "0000000001";
+		var digitoVerificadorContaExperado = 2;
 		testaGeracaoDadosConta(numeroContaExperado, digitoVerificadorContaExperado);
 	}
 
@@ -73,8 +73,8 @@ class ContaPessoaFisicaControllerIntegrationTest extends ConfiguracaoAmbienteTes
 	@Test
 	void testGeraDadosOutraConta_ComSucesso_DevemSerRetornadosDadosContaMaisCodigoStatus200()
 			throws JsonMappingException, JsonProcessingException {
-		var numeroContaExperado = "00000000002";
-		var digitoVerificadorContaExperado = 3;
+		var numeroContaExperado = "0000000002";
+		var digitoVerificadorContaExperado = 4;
 		testaGeracaoDadosConta(numeroContaExperado, digitoVerificadorContaExperado);
 	}
 

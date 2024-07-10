@@ -1,14 +1,17 @@
 package com.example.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.example.model.ContaDigitalPessoaJuridica;
 
-public class EnderecoInseridoDto {
+public class ContaDigitalPessoaJuridicaInseridaDto implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	private String agencia;
 	private String conta;
+	private int digitoVerificadorConta;
 	private String senha;
 	private String telefone;
 	private String email;
@@ -17,11 +20,13 @@ public class EnderecoInseridoDto {
 	private String cnpj;
 	private String razaoSocial;
 
-	public EnderecoInseridoDto() {}
+	public ContaDigitalPessoaJuridicaInseridaDto() {
+	}
 
-	public EnderecoInseridoDto(ContaDigitalPessoaJuridica contaDigitalPessoaJuridica) {
+	public ContaDigitalPessoaJuridicaInseridaDto(ContaDigitalPessoaJuridica contaDigitalPessoaJuridica) {
 		this.agencia = contaDigitalPessoaJuridica.getAgencia();
 		this.conta = contaDigitalPessoaJuridica.getConta();
+		this.digitoVerificadorConta = contaDigitalPessoaJuridica.getDigitoVerificadorConta();
 		this.senha = contaDigitalPessoaJuridica.getSenha();
 		this.telefone = contaDigitalPessoaJuridica.getTelefone();
 		this.email = contaDigitalPessoaJuridica.getEmail();
@@ -37,6 +42,10 @@ public class EnderecoInseridoDto {
 
 	public String getConta() {
 		return conta;
+	}
+
+	public int getDigitoVerificadorConta() {
+		return digitoVerificadorConta;
 	}
 
 	public String getSenha() {
@@ -80,7 +89,7 @@ public class EnderecoInseridoDto {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EnderecoInseridoDto other = (EnderecoInseridoDto) obj;
+		ContaDigitalPessoaJuridicaInseridaDto other = (ContaDigitalPessoaJuridicaInseridaDto) obj;
 		return Objects.equals(cnpj, other.cnpj);
 	}
 }

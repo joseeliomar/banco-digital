@@ -45,7 +45,7 @@ public class GeradorNumeroContaAfinsControllerTest {
 	@Test
 	void testGeraDadosContaComSucesso() throws UnsupportedEncodingException, Exception {
 		// Given
-		DadosContaDto dadosContaGeradaDto = new DadosContaDto("12345678915", 8);
+		DadosContaDto dadosContaGeradaDto = new DadosContaDto("0000000001", 2);
 		given(contaService.geraDadosConta()).willReturn(dadosContaGeradaDto);
 		
 		// When
