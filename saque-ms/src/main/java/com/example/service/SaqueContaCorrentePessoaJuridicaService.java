@@ -47,7 +47,7 @@ public class SaqueContaCorrentePessoaJuridicaService extends SaqueContaCorrenteS
 			DadosParaSaqueContaPessoaJuridicaDto dadosParaSaqueDto) {
 		ContaPessoaJuridicaBuscaDto1 contaCorrentePessoaJuridica = buscaContaCorrentePessoaJuridica(dadosParaSaqueDto.cnpjCliente());
 		
-		double novoSaldoContaCorrente = contaCorrentePessoaJuridica.getSaldo() + dadosParaSaqueDto.valorSaque();
+		double novoSaldoContaCorrente = contaCorrentePessoaJuridica.getSaldo() - dadosParaSaqueDto.valorSaque();
 		
 		contaCorrentePoupancaMsFeignClient.alteraContaPessoaJuridica(
 				new ContaPessoaJuridicaAlteracaoDto(contaCorrentePessoaJuridica.getId(), novoSaldoContaCorrente));

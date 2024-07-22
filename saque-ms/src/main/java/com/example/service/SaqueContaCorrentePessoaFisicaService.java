@@ -47,7 +47,7 @@ public class SaqueContaCorrentePessoaFisicaService extends SaqueContaCorrenteSer
 			DadosParaSaqueContaPessoaFisicaDto dadosParaSaqueDto) {
 		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaCorrentePessoaFisica(dadosParaSaqueDto.cpfCliente());
 		
-		double novoSaldoContaCorrente = contaCorrentePessoaFisica.getSaldo() + dadosParaSaqueDto.valorSaque();
+		double novoSaldoContaCorrente = contaCorrentePessoaFisica.getSaldo() - dadosParaSaqueDto.valorSaque();
 		
 		contaCorrentePoupancaMsFeignClient.alteraContaPessoaFisica(
 				new ContaPessoaFisicaAlteracaoDto(contaCorrentePessoaFisica.getId(), novoSaldoContaCorrente));

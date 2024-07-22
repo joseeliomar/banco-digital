@@ -117,7 +117,7 @@ class SaqueContaPessoaFisicaControllerIntegrationTests {
 	@Test
 	void testConfereSeSaldoContaCorrenteEstaCorretoAposPrimeiroSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
-		double valorEsperado = VALOR_PRIMEIRO_SAQUE;
+		double valorEsperado = - VALOR_PRIMEIRO_SAQUE;
 		confereSeSaldoContaCorrenteEstaCorreto(valorEsperado);
 	}
 
@@ -145,7 +145,7 @@ class SaqueContaPessoaFisicaControllerIntegrationTests {
 	@Test
 	void testConfereSeSaldoContaCorrenteEstaCorretoAposSegundoSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
-		double saldoEsperado = VALOR_PRIMEIRO_SAQUE + VALOR_SEGUNDO_SAQUE;
+		double saldoEsperado = - VALOR_PRIMEIRO_SAQUE - VALOR_SEGUNDO_SAQUE;
 		confereSeSaldoContaCorrenteEstaCorreto(saldoEsperado);
 	}
 	
