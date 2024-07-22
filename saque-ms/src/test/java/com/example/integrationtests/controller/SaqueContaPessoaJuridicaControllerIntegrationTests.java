@@ -4,8 +4,6 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.time.LocalDate;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -18,11 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.config.TestConfigs;
-import com.example.dto.ContaPessoaFisicaBuscaDto1;
-import com.example.dto.DadosParaDepositoContaPessoaFisicaDto;
+import com.example.dto.ContaPessoaJuridicaBuscaDto1;
+import com.example.dto.DadosParaSaqueContaPessoaJuridicaDto;
 import com.example.dto.DetalhesExcecaoDto;
 import com.example.enumeration.TipoConta;
-import com.example.integrationtests.dto.ContaDigitalPessoaFisicaInsercaoDto;
+import com.example.integrationtests.dto.ContaDigitalPessoaJuridicaInsercaoDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -39,19 +37,19 @@ import io.restassured.specification.RequestSpecification;
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class DepositoContaPessoaFisicaControllerIntegrationTests {
+class SaqueContaPessoaJuridicaControllerIntegrationTests {
 	
-	private static final String CAMINHO_BASE = "/depositoContaCorrentePessoaFisica/";
+	private static final String CAMINHO_BASE = "/saqueContaCorrentePessoaJuridica/";
 	
-	private static final double VALOR_PRIMEIRO_DEPOSITO = 435.50;
+	private static final double VALOR_PRIMEIRO_SAQUE = 435.50;
 	
-	private static final double VALOR_SEGUNDO_DEPOSITO = 500.99;
+	private static final double VALOR_SEGUNDO_SAQUE = 500.99;
 	
 	private RequestSpecification requestSpecification;
 	
-	private RequestSpecification requestSpecificationContaDigitalPessoaFisica;
+	private RequestSpecification requestSpecificationContaDigitalPessoaJuridica;
 	
-	private RequestSpecification requestSpecificationContaPessoaFisica;
+	private RequestSpecification requestSpecificationContaPessoaJuridica;
 	
 	@Autowired
 	private MetodosEmComumIntegrationTest metodosEmComumIntegrationTest;
@@ -62,7 +60,7 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	private DadosContaClientePessoaFisica dadosContaCliente1;
+	private DadosContaClientePessoaJuridica dadosContaCliente1;
 	
 	@BeforeAll
 	public void setupAll() {
@@ -75,98 +73,95 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 				.addFilter(new ResponseLoggingFilter(LogDetail.ALL))
 				.build();
 		
-		requestSpecificationContaDigitalPessoaFisica = new RequestSpecBuilder()
-				.setBasePath("/contaDigitalPessoaFisica/")
+		requestSpecificationContaDigitalPessoaJuridica = new RequestSpecBuilder()
+				.setBasePath("/contaDigitalPessoaJuridica/")
 				.setPort(metodosEmComumIntegrationTest.obterUmaPortaMicrosservico("conta-digital-cliente-ms"))
 				.build();
 		
-		requestSpecificationContaPessoaFisica = new RequestSpecBuilder()
-				.setBasePath("/contaPessoaFisica/")
+		requestSpecificationContaPessoaJuridica = new RequestSpecBuilder()
+				.setBasePath("/contaPessoaJuridica/")
 				.setPort(metodosEmComumIntegrationTest.obterUmaPortaMicrosservico("conta-corrente-poupanca-ms"))
 				.build();
 		
-		dadosContaCliente1 = new DadosContaClientePessoaFisica(
-				"0000000011", "1234567890", "12345678", "19980001234", "fulano@email.com", "12345678901",
-				"Fulano de Tal", LocalDate.of(2001, 1, 1), "Fulana de Tal");
+		dadosContaCliente1 = new DadosContaClientePessoaJuridica("0000000013",
+				"12345678", "19980001234", "fulano@email.com", "12345678990002", "Fábrica Tal");
 		
-		var contaDigitalPessoaFisicaInsercao = new ContaDigitalPessoaFisicaInsercaoDto(
+		var contaDigitalPessoaJuridicaInsercao = new ContaDigitalPessoaJuridicaInsercaoDto(
 				dadosContaCliente1.agencia(), 
 				dadosContaCliente1.senha(), 
 				dadosContaCliente1.telefone(), 
 				dadosContaCliente1.email(), 
-				dadosContaCliente1.cpfCliente(),
-				dadosContaCliente1.nomeCompleto(), 
-				dadosContaCliente1.dataNascimento(), 
-				dadosContaCliente1.nomeCompletoMae());
+				dadosContaCliente1.cnpjCliente(),
+				dadosContaCliente1.razaoSocial());
 		
-		insereContaDigitalPessoaFisica(contaDigitalPessoaFisicaInsercao);
+		insereContaDigitalPessoaJuridica(contaDigitalPessoaJuridicaInsercao);
 	}
 	
-	@DisplayName("Quando efetua o primeiro depósito em conta corrente de pessoa física com sucesso"
+	@DisplayName("Quando efetua o primeiro saque em conta corrente de pessoa jurídica com sucesso"
 			+ " deve ser retornado o código de status 200")
 	@Order(1)
 	@Test
-	void testEfetuaPrimeiroDeposito_ComSucesso_CodigoStatus200()
+	void testEfetuaPrimeiroSaque_ComSucesso_CodigoStatus200()
 			throws JsonProcessingException, Exception {
-		efetuaDepositoComSucesso(dadosContaCliente1.cpfCliente(), VALOR_PRIMEIRO_DEPOSITO);
+		efetuaSaqueComSucesso(dadosContaCliente1.cnpjCliente(), VALOR_PRIMEIRO_SAQUE);
 	}
 
 	@DisplayName("Confere se o saldo da conta corrente está correto após o primeiro "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(2)
 	@Test
-	void testConfereSeSaldoContaCorrenteEstaCorretoAposPrimeiroDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaCorrenteEstaCorretoAposPrimeiroSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
-		double valorEsperado = VALOR_PRIMEIRO_DEPOSITO;
+		double valorEsperado = VALOR_PRIMEIRO_SAQUE;
 		confereSeSaldoContaCorrenteEstaCorreto(valorEsperado);
 	}
 
 	@DisplayName("Confere se o saldo da conta poupança está correto após o primeiro "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(3)
 	@Test
-	void testConfereSeSaldoContaPoupancaEstaCorretoAposPrimeiroDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaPoupancaEstaCorretoAposPrimeiroSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
 		confereSeSaldoContaPoupancaEstaCorreto();
 	}
 	
-	@DisplayName("Quando efetua o segundo depósito em conta corrente de pessoa física com sucesso"
+	@DisplayName("Quando efetua o segundo saque em conta corrente de pessoa jurídica com sucesso"
 			+ " deve ser retornado o código de status 200")
 	@Order(4)
 	@Test
-	void testEfetuaSegundoDeposito_ComSucesso_CodigoStatus200()
+	void testEfetuaSegundoSaque_ComSucesso_CodigoStatus200()
 			throws JsonProcessingException, Exception {
-		efetuaDepositoComSucesso(dadosContaCliente1.cpfCliente(), VALOR_SEGUNDO_DEPOSITO);
+		efetuaSaqueComSucesso(dadosContaCliente1.cnpjCliente(), VALOR_SEGUNDO_SAQUE);
 	}
 
 	@DisplayName("Confere se o saldo da conta corrente está correto após o segundo "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(5)
 	@Test
-	void testConfereSeSaldoContaCorrenteEstaCorretoAposSegundoDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaCorrenteEstaCorretoAposSegundoSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
-		double saldoEsperado = VALOR_PRIMEIRO_DEPOSITO + VALOR_SEGUNDO_DEPOSITO;
+		double saldoEsperado = VALOR_PRIMEIRO_SAQUE + VALOR_SEGUNDO_SAQUE;
 		confereSeSaldoContaCorrenteEstaCorreto(saldoEsperado);
 	}
 	
 	@DisplayName("Confere se o saldo da conta poupança está correto após o segundo "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(6)
 	@Test
-	void testConfereSeSaldoContaPoupancaEstaCorretoAposSegundoDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaPoupancaEstaCorretoAposSegundoSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
 		confereSeSaldoContaPoupancaEstaCorreto();
 	}
 	
-	@DisplayName("Quando tenta depositar um valor negativo em conta corrente de pessoa física "
+	@DisplayName("Quando tenta sacar um valor negativo em conta corrente de pessoa jurídica "
 			+ " deve ser lançada uma exceção")
 	@Test
-	void testEfetuaDeposito_ValorNegativo_DeveSerLançadaUmaExcecao()
+	void testEfetuaSaque_ValorNegativo_DeveSerLançadaUmaExcecao()
 			throws JsonProcessingException, Exception {
 		double valorNegativo = -100.0;
-		String mensagemEsperada = "Não é possível depositar um valor negativo.";
+		String mensagemEsperada = "Não é possível sacar um valor negativo.";
 		
-		Response response = efetuaDeposito(dadosContaCliente1.cpfCliente(), valorNegativo);
+		Response response = efetuaSaque(dadosContaCliente1.cnpjCliente(), valorNegativo);
 		
 		String bodyResposta = response.then().extract().body().asString();
 		
@@ -176,15 +171,15 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 	}
 	
 	/**
-	 * Insere conta digital para pessoa física 
+	 * Insere conta digital para pessoa jurídica 
 	 * 
-	 * @param contaDigitalPessoaFisicaInsercaoDto
+	 * @param contaDigitalPessoaJuridicaInsercaoDto
 	 */
-	private void insereContaDigitalPessoaFisica(ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
+	private void insereContaDigitalPessoaJuridica(ContaDigitalPessoaJuridicaInsercaoDto contaDigitalPessoaJuridicaInsercaoDto) {
 		given()
-			.spec(requestSpecificationContaDigitalPessoaFisica)
+			.spec(requestSpecificationContaDigitalPessoaJuridica)
 			.contentType(ContentType.JSON)
-			.body(contaDigitalPessoaFisicaInsercaoDto)
+			.body(contaDigitalPessoaJuridicaInsercaoDto)
 		.when()
 			.post()
 		.then()
@@ -192,30 +187,30 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 	}
 	
 	/**
-	 * Efetua depósito com sucesso.
+	 * Efetua saque com sucesso.
 	 * 
-	 * @param cpfCliente
-	 * @param valorDeposito
+	 * @param cnpjCliente
+	 * @param valorSaque
 	 */
-	private void efetuaDepositoComSucesso(String cpfCliente, double valorDeposito) {
-		Response response = efetuaDeposito(cpfCliente, valorDeposito);
+	private void efetuaSaqueComSucesso(String cnpjCliente, double valorSaque) {
+		Response response = efetuaSaque(cnpjCliente, valorSaque);
 		response.then().statusCode(200);
 	}
 	
 	/**
-	 * Efetua depósito.
+	 * Efetua saque.
 	 * 
-	 * @param cpfCliente
-	 * @param valorDeposito
+	 * @param cnpjCliente
+	 * @param valorSaque
 	 */
-	private Response efetuaDeposito(String cpfCliente, double valorDeposito) {
-		DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto = new DadosParaDepositoContaPessoaFisicaDto(
-				cpfCliente, valorDeposito);
+	private Response efetuaSaque(String cnpjCliente, double valorSaque) {
+		DadosParaSaqueContaPessoaJuridicaDto dadosParaSaqueDto = new DadosParaSaqueContaPessoaJuridicaDto(
+				cnpjCliente, valorSaque);
 
 		Response response = given()
 			.spec(requestSpecification)
 			.contentType(ContentType.JSON)
-			.body(dadosParaDepositoDto)
+			.body(dadosParaSaqueDto)
 		.when()
 			.post();
 		
@@ -223,29 +218,29 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 	}
 	
 	/**
-	 * Busca uma conta de pessoa física pelo CPF e o tipo de conta.
+	 * Busca uma conta de pessoa jurídica pelo CNPJ e o tipo de conta.
 	 * 
-	 * @param cpf
+	 * @param cnpj
 	 * @param tipoConta
-	 * @return a conta de pessoa física encontrada.
+	 * @return a conta de pessoa jurídica encontrada.
 	 * @throws JsonProcessingException
 	 * @throws JsonMappingException
 	 */
-	private ContaPessoaFisicaBuscaDto1 buscaContaPessoaFisicaPeloCpfTipoConta(String cpf, TipoConta tipoConta)
+	private ContaPessoaJuridicaBuscaDto1 buscaContaPessoaJuridicaPeloCnpjTipoConta(String cnpj, TipoConta tipoConta)
 			throws JsonProcessingException, JsonMappingException {
 		String conteudoBodyResposta = given()
-					.spec(requestSpecificationContaPessoaFisica)
+					.spec(requestSpecificationContaPessoaJuridica)
 				.when()
-					.get("{cpf}/{tipoConta}", cpf, tipoConta.name())
+					.get("{cnpj}/{tipoConta}", cnpj, tipoConta.name())
 				.then()
 					.statusCode(200)
 				.extract()
 					.body()
 						.asString();
 		
-		ContaPessoaFisicaBuscaDto1 contaPessoaFisicaBuscadaBancoDados = objectMapper
-				.readValue(conteudoBodyResposta, ContaPessoaFisicaBuscaDto1.class);
-		return contaPessoaFisicaBuscadaBancoDados;
+		ContaPessoaJuridicaBuscaDto1 contaPessoaJuridicaBuscadaBancoDados = objectMapper
+				.readValue(conteudoBodyResposta, ContaPessoaJuridicaBuscaDto1.class);
+		return contaPessoaJuridicaBuscadaBancoDados;
 	}
 	
 	/**
@@ -256,8 +251,8 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 	 * @throws JsonMappingException
 	 */
 	private void confereSeSaldoContaCorrenteEstaCorreto(double saldoEsperado) throws JsonProcessingException, JsonMappingException {
-		ContaPessoaFisicaBuscaDto1 contaCorrenteBuscada = buscaContaPessoaFisicaPeloCpfTipoConta(
-				dadosContaCliente1.cpfCliente(), TipoConta.CORRENTE);
+		ContaPessoaJuridicaBuscaDto1 contaCorrenteBuscada = buscaContaPessoaJuridicaPeloCnpjTipoConta(
+				dadosContaCliente1.cnpjCliente(), TipoConta.CORRENTE);
 
 		assertNotNull(contaCorrenteBuscada);
 
@@ -275,8 +270,8 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 	private void confereSeSaldoContaPoupancaEstaCorreto() throws JsonProcessingException, JsonMappingException {
 		double saldoEsperado = 0.0;
 		
-		ContaPessoaFisicaBuscaDto1 contaPoupancaBuscada = buscaContaPessoaFisicaPeloCpfTipoConta(
-				dadosContaCliente1.cpfCliente(), TipoConta.POUPANCA);
+		ContaPessoaJuridicaBuscaDto1 contaPoupancaBuscada = buscaContaPessoaJuridicaPeloCnpjTipoConta(
+				dadosContaCliente1.cnpjCliente(), TipoConta.POUPANCA);
 
 		assertNotNull(contaPoupancaBuscada);
 

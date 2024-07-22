@@ -19,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.config.TestConfigs;
 import com.example.dto.ContaPessoaFisicaBuscaDto1;
-import com.example.dto.DadosParaDepositoContaPessoaFisicaDto;
+import com.example.dto.DadosParaSaqueContaPessoaFisicaDto;
 import com.example.dto.DetalhesExcecaoDto;
 import com.example.enumeration.TipoConta;
 import com.example.integrationtests.dto.ContaDigitalPessoaFisicaInsercaoDto;
@@ -39,13 +39,13 @@ import io.restassured.specification.RequestSpecification;
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-class DepositoContaPessoaFisicaControllerIntegrationTests {
+class SaqueContaPessoaFisicaControllerIntegrationTests {
 	
-	private static final String CAMINHO_BASE = "/depositoContaCorrentePessoaFisica/";
+	private static final String CAMINHO_BASE = "/saqueContaCorrentePessoaFisica/";
 	
-	private static final double VALOR_PRIMEIRO_DEPOSITO = 435.50;
+	private static final double VALOR_PRIMEIRO_SAQUE = 435.50;
 	
-	private static final double VALOR_SEGUNDO_DEPOSITO = 500.99;
+	private static final double VALOR_SEGUNDO_SAQUE = 500.99;
 	
 	private RequestSpecification requestSpecification;
 	
@@ -102,71 +102,71 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 		insereContaDigitalPessoaFisica(contaDigitalPessoaFisicaInsercao);
 	}
 	
-	@DisplayName("Quando efetua o primeiro depósito em conta corrente de pessoa física com sucesso"
+	@DisplayName("Quando efetua o primeiro saque em conta corrente de pessoa física com sucesso"
 			+ " deve ser retornado o código de status 200")
 	@Order(1)
 	@Test
-	void testEfetuaPrimeiroDeposito_ComSucesso_CodigoStatus200()
+	void testEfetuaPrimeiroSaque_ComSucesso_CodigoStatus200()
 			throws JsonProcessingException, Exception {
-		efetuaDepositoComSucesso(dadosContaCliente1.cpfCliente(), VALOR_PRIMEIRO_DEPOSITO);
+		efetuaSaqueComSucesso(dadosContaCliente1.cpfCliente(), VALOR_PRIMEIRO_SAQUE);
 	}
 
 	@DisplayName("Confere se o saldo da conta corrente está correto após o primeiro "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(2)
 	@Test
-	void testConfereSeSaldoContaCorrenteEstaCorretoAposPrimeiroDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaCorrenteEstaCorretoAposPrimeiroSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
-		double valorEsperado = VALOR_PRIMEIRO_DEPOSITO;
+		double valorEsperado = VALOR_PRIMEIRO_SAQUE;
 		confereSeSaldoContaCorrenteEstaCorreto(valorEsperado);
 	}
 
 	@DisplayName("Confere se o saldo da conta poupança está correto após o primeiro "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(3)
 	@Test
-	void testConfereSeSaldoContaPoupancaEstaCorretoAposPrimeiroDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaPoupancaEstaCorretoAposPrimeiroSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
 		confereSeSaldoContaPoupancaEstaCorreto();
 	}
 	
-	@DisplayName("Quando efetua o segundo depósito em conta corrente de pessoa física com sucesso"
+	@DisplayName("Quando efetua o segundo saque em conta corrente de pessoa física com sucesso"
 			+ " deve ser retornado o código de status 200")
 	@Order(4)
 	@Test
-	void testEfetuaSegundoDeposito_ComSucesso_CodigoStatus200()
+	void testEfetuaSegundoSaque_ComSucesso_CodigoStatus200()
 			throws JsonProcessingException, Exception {
-		efetuaDepositoComSucesso(dadosContaCliente1.cpfCliente(), VALOR_SEGUNDO_DEPOSITO);
+		efetuaSaqueComSucesso(dadosContaCliente1.cpfCliente(), VALOR_SEGUNDO_SAQUE);
 	}
 
 	@DisplayName("Confere se o saldo da conta corrente está correto após o segundo "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(5)
 	@Test
-	void testConfereSeSaldoContaCorrenteEstaCorretoAposSegundoDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaCorrenteEstaCorretoAposSegundoSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
-		double saldoEsperado = VALOR_PRIMEIRO_DEPOSITO + VALOR_SEGUNDO_DEPOSITO;
+		double saldoEsperado = VALOR_PRIMEIRO_SAQUE + VALOR_SEGUNDO_SAQUE;
 		confereSeSaldoContaCorrenteEstaCorreto(saldoEsperado);
 	}
 	
 	@DisplayName("Confere se o saldo da conta poupança está correto após o segundo "
-			+ "depósito na conta corrente do cliente")
+			+ "saque na conta corrente do cliente")
 	@Order(6)
 	@Test
-	void testConfereSeSaldoContaPoupancaEstaCorretoAposSegundoDepositoContaCorrenteCliente()
+	void testConfereSeSaldoContaPoupancaEstaCorretoAposSegundoSaqueContaCorrenteCliente()
 			throws JsonProcessingException, Exception {
 		confereSeSaldoContaPoupancaEstaCorreto();
 	}
 	
-	@DisplayName("Quando tenta depositar um valor negativo em conta corrente de pessoa física "
+	@DisplayName("Quando tenta sacar um valor negativo em conta corrente de pessoa física "
 			+ " deve ser lançada uma exceção")
 	@Test
-	void testEfetuaDeposito_ValorNegativo_DeveSerLançadaUmaExcecao()
+	void testEfetuaSaque_ValorNegativo_DeveSerLançadaUmaExcecao()
 			throws JsonProcessingException, Exception {
 		double valorNegativo = -100.0;
-		String mensagemEsperada = "Não é possível depositar um valor negativo.";
+		String mensagemEsperada = "Não é possível sacar um valor negativo.";
 		
-		Response response = efetuaDeposito(dadosContaCliente1.cpfCliente(), valorNegativo);
+		Response response = efetuaSaque(dadosContaCliente1.cpfCliente(), valorNegativo);
 		
 		String bodyResposta = response.then().extract().body().asString();
 		
@@ -192,30 +192,30 @@ class DepositoContaPessoaFisicaControllerIntegrationTests {
 	}
 	
 	/**
-	 * Efetua depósito com sucesso.
+	 * Efetua saque com sucesso.
 	 * 
 	 * @param cpfCliente
-	 * @param valorDeposito
+	 * @param valorSaque
 	 */
-	private void efetuaDepositoComSucesso(String cpfCliente, double valorDeposito) {
-		Response response = efetuaDeposito(cpfCliente, valorDeposito);
+	private void efetuaSaqueComSucesso(String cpfCliente, double valorSaque) {
+		Response response = efetuaSaque(cpfCliente, valorSaque);
 		response.then().statusCode(200);
 	}
 	
 	/**
-	 * Efetua depósito.
+	 * Efetua saque.
 	 * 
 	 * @param cpfCliente
-	 * @param valorDeposito
+	 * @param valorSaque
 	 */
-	private Response efetuaDeposito(String cpfCliente, double valorDeposito) {
-		DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto = new DadosParaDepositoContaPessoaFisicaDto(
-				cpfCliente, valorDeposito);
+	private Response efetuaSaque(String cpfCliente, double valorSaque) {
+		DadosParaSaqueContaPessoaFisicaDto dadosParaSaqueDto = new DadosParaSaqueContaPessoaFisicaDto(
+				cpfCliente, valorSaque);
 
 		Response response = given()
 			.spec(requestSpecification)
 			.contentType(ContentType.JSON)
-			.body(dadosParaDepositoDto)
+			.body(dadosParaSaqueDto)
 		.when()
 			.post();
 		

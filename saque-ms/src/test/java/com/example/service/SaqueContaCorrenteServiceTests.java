@@ -6,7 +6,7 @@ import com.example.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
 import com.example.openfeign.feignclient.ContaDigitalClienteMsFeignClient;
 import com.example.openfeign.feignclient.ExtratoBancarioMsFeignClient;
 
-public class DepositoContaCorrenteServiceTests {
+public class SaqueContaCorrenteServiceTests {
 	
 	protected static final String NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO = "Não deve ser lançada nehuma exceção.";
 	

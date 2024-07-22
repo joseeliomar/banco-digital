@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaPessoaFisicaBuscaDto1;
-import com.example.dto.DadosParaDepositoContaPessoaFisicaDto;
+import com.example.dto.DadosParaSaqueContaPessoaFisicaDto;
 import com.example.dto.ItemExtratoContaPessoaFisicaInsercaoDto;
 import com.example.enumeration.Operacao;
 import com.example.enumeration.TipoConta;
@@ -16,7 +16,7 @@ import com.example.openfeign.feignclient.ContaDigitalClienteMsFeignClient;
 import com.example.openfeign.feignclient.ExtratoBancarioMsFeignClient;
 
 @Service
-public class DepositoContaCorrentePessoaFisicaService extends DepositoContaCorrenteService {
+public class SaqueContaCorrentePessoaFisicaService extends SaqueContaCorrenteService {
 	@Autowired
 	private ExtratoBancarioMsFeignClient extratoBancarioMsFeignClient;
 
@@ -27,27 +27,27 @@ public class DepositoContaCorrentePessoaFisicaService extends DepositoContaCorre
 	private ContaDigitalClienteMsFeignClient contaDigitalClienteMsFeignClient;
 
 	/**
-	 * Efetua depósito em uma conta corrente de pessoa física.
+	 * Efetua saque em uma conta corrente de pessoa física.
 	 * 
-	 * @param dadosParaDepositoDto Os dados para o depósito
+	 * @param dadosParaSaqueDto Os dados para o saque
 	 */
-	public void efetuaDepositoContaCorrentePessoaFisica(DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto) {
-		super.validaValorDeposito(dadosParaDepositoDto.valorDeposito());
+	public void efetuaSaqueContaCorrentePessoaFisica(DadosParaSaqueContaPessoaFisicaDto dadosParaSaqueDto) {
+		super.validaValorSaque(dadosParaSaqueDto.valorSaque());
 		
-		atualizaSaldoContaCorrentePessoaFisica(dadosParaDepositoDto);
-		insereItemExtratoContaCorrentePessoaFisica(dadosParaDepositoDto);
+		atualizaSaldoContaCorrentePessoaFisica(dadosParaSaqueDto);
+		insereItemExtratoContaCorrentePessoaFisica(dadosParaSaqueDto);
 	}
 
 	/**
 	 * Atualiza o saldo de uma conta corrente de pessoa física.
 	 * 
-	 * @param dadosParaDepositoDto Os dados para o depósito
+	 * @param dadosParaSaqueDto Os dados para o saque
 	 */
 	private void atualizaSaldoContaCorrentePessoaFisica(
-			DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto) {
-		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaCorrentePessoaFisica(dadosParaDepositoDto.cpfCliente());
+			DadosParaSaqueContaPessoaFisicaDto dadosParaSaqueDto) {
+		ContaPessoaFisicaBuscaDto1 contaCorrentePessoaFisica = buscaContaCorrentePessoaFisica(dadosParaSaqueDto.cpfCliente());
 		
-		double novoSaldoContaCorrente = contaCorrentePessoaFisica.getSaldo() + dadosParaDepositoDto.valorDeposito();
+		double novoSaldoContaCorrente = contaCorrentePessoaFisica.getSaldo() + dadosParaSaqueDto.valorSaque();
 		
 		contaCorrentePoupancaMsFeignClient.alteraContaPessoaFisica(
 				new ContaPessoaFisicaAlteracaoDto(contaCorrentePessoaFisica.getId(), novoSaldoContaCorrente));
@@ -70,21 +70,21 @@ public class DepositoContaCorrentePessoaFisicaService extends DepositoContaCorre
 	/**
 	 * Insere novo item de extrato para uma conta corrente de pessoa física.
 	 * 
-	 * @param dadosParaDepositoDto Os dados para o depósito
+	 * @param dadosParaSaqueDto Os dados para o saque
 	 */
-	private void insereItemExtratoContaCorrentePessoaFisica(DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto) {
-		String cpfCliente = dadosParaDepositoDto.cpfCliente();
+	private void insereItemExtratoContaCorrentePessoaFisica(DadosParaSaqueContaPessoaFisicaDto dadosParaSaqueDto) {
+		String cpfCliente = dadosParaSaqueDto.cpfCliente();
 		
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisica = buscaContaDigitalCliente(cpfCliente);
 		
 		var novoItemExtratoContaCorrentePessoaFisicaInsercaoDto = new ItemExtratoContaPessoaFisicaInsercaoDto(
 				TipoConta.CORRENTE,
-				Operacao.DEPOSITO,
-				Operacao.DEPOSITO.getDescricao(),
+				Operacao.SAQUE,
+				Operacao.SAQUE.getDescricao(),
 				ESSE_MESMO_BANCO,
 				contaDigitalPessoaFisica.getAgencia(),
 				contaDigitalPessoaFisica.getConta(),
-				dadosParaDepositoDto.valorDeposito(),
+				dadosParaSaqueDto.valorSaque(),
 				cpfCliente);
 		
 		extratoBancarioMsFeignClient

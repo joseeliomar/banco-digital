@@ -16,19 +16,19 @@ import org.springframework.http.ResponseEntity;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
 import com.example.dto.ContaPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaPessoaFisicaBuscaDto1;
-import com.example.dto.DadosParaDepositoContaPessoaFisicaDto;
+import com.example.dto.DadosParaSaqueContaPessoaFisicaDto;
 import com.example.dto.ItemExtratoContaPessoaFisicaInsercaoDto;
 import com.example.enumeration.TipoConta;
 
 @ExtendWith(MockitoExtension.class)
-public class DepositoContaCorrentePessoaFisicaServiceTests extends DepositoContaCorrenteServiceTests {
+public class SaqueContaCorrentePessoaFisicaServiceTests extends SaqueContaCorrenteServiceTests {
 	
 	@InjectMocks
-	private DepositoContaCorrentePessoaFisicaService depositoContaCorrentePessoaFisicaService;
+	private SaqueContaCorrentePessoaFisicaService saqueContaCorrentePessoaFisicaService;
 	
-	@DisplayName("Quando é efetuado um depósito para pessoa física com sucesso, nenhuma exceção pode ser lançada")
+	@DisplayName("Quando é efetuado um saque para pessoa física com sucesso, nenhuma exceção pode ser lançada")
 	@Test
-	void testEfetuaDeposito_ComSucesso_NenhumaExcecaoDeveSerLancada() {
+	void testEfetuaSaque_ComSucesso_NenhumaExcecaoDeveSerLancada() {
 		// Given
 		String cpfCliente = "12345678901";
 
@@ -43,13 +43,13 @@ public class DepositoContaCorrentePessoaFisicaServiceTests extends DepositoConta
 		given(contaDigitalClienteMsFeignClient.buscaContaDigitalPessoaFisica(cpfCliente))
 				.willReturn(respostaBuscaContaDigitalPessoaJuridica);
 
-		DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto = new DadosParaDepositoContaPessoaFisicaDto(
+		DadosParaSaqueContaPessoaFisicaDto dadosParaSaqueDto = new DadosParaSaqueContaPessoaFisicaDto(
 				cpfCliente, 100.0);
 
 		// When & Then
 		assertDoesNotThrow(
-				() -> depositoContaCorrentePessoaFisicaService
-						.efetuaDepositoContaCorrentePessoaFisica(dadosParaDepositoDto),
+				() -> saqueContaCorrentePessoaFisicaService
+						.efetuaSaqueContaCorrentePessoaFisica(dadosParaSaqueDto),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 
 		verify(contaCorrentePoupancaMsFeignClient).buscaContaPessoaFisica(anyString(), any(TipoConta.class));

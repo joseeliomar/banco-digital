@@ -16,19 +16,19 @@ import org.springframework.http.ResponseEntity;
 import com.example.dto.ContaDigitalPessoaJuridicaDTO1Busca;
 import com.example.dto.ContaPessoaJuridicaAlteracaoDto;
 import com.example.dto.ContaPessoaJuridicaBuscaDto1;
-import com.example.dto.DadosParaDepositoContaPessoaJuridicaDto;
+import com.example.dto.DadosParaSaqueContaPessoaJuridicaDto;
 import com.example.dto.ItemExtratoContaPessoaJuridicaInsercaoDto;
 import com.example.enumeration.TipoConta;
 
 @ExtendWith(MockitoExtension.class)
-public class DepositoContaCorrentePessoaJuridicaServiceTests extends DepositoContaCorrenteServiceTests {
+public class SaqueContaCorrentePessoaJuridicaServiceTests extends SaqueContaCorrenteServiceTests {
 	
 	@InjectMocks
-	private DepositoContaCorrentePessoaJuridicaService depositoContaCorrentePessoaJuridicaService;
+	private SaqueContaCorrentePessoaJuridicaService saqueContaCorrentePessoaJuridicaService;
 	
 	@DisplayName("Quando é efetuado um depósito para pessoa jurídica com sucesso, nenhuma exceção pode ser lançada")
 	@Test
-	void testEfetuaDeposito_ComSucesso_NenhumaExcecaoDeveSerLancada() {
+	void testEfetuaSaque_ComSucesso_NenhumaExcecaoDeveSerLancada() {
 		// Given
 		String cnpjCliente = "12345678910001";
 
@@ -43,13 +43,13 @@ public class DepositoContaCorrentePessoaJuridicaServiceTests extends DepositoCon
 		given(contaDigitalClienteMsFeignClient.buscaContaDigitalPessoaJuridica(cnpjCliente))
 				.willReturn(respostaBuscaContaDigitalPessoaJuridica);
 
-		DadosParaDepositoContaPessoaJuridicaDto dadosParaDepositoDto = new DadosParaDepositoContaPessoaJuridicaDto(
+		DadosParaSaqueContaPessoaJuridicaDto dadosParaSaqueDto = new DadosParaSaqueContaPessoaJuridicaDto(
 				cnpjCliente, 100.0);
 
 		// When & Then
 		assertDoesNotThrow(
-				() -> depositoContaCorrentePessoaJuridicaService
-						.efetuaDepositoContaCorrentePessoaJuridica(dadosParaDepositoDto),
+				() -> saqueContaCorrentePessoaJuridicaService
+						.efetuaSaqueContaCorrentePessoaJuridica(dadosParaSaqueDto),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 
 		verify(contaCorrentePoupancaMsFeignClient).buscaContaPessoaJuridica(anyString(), any(TipoConta.class));
