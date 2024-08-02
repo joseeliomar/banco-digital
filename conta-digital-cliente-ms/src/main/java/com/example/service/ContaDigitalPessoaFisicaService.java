@@ -170,6 +170,16 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		return contaDigitalPessoaFisicaRepository.findByAgenciaAndConta(agencia, conta);
 	}
 	
+	public ContaDigitalPessoaFisicaDTO1Busca buscaContaDigitalPelaAgenciaContaComRespostaSemSenha(String agencia, String conta) {
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPelaAgenciaConta(agencia, conta);
+		
+		if (contaDigitalPessoaFisicaOptional.isPresent()) {
+			return new ContaDigitalPessoaFisicaDTO1Busca(contaDigitalPessoaFisicaOptional.get());
+		}
+		
+		return null;
+	}
+	
 	public void removeContaDigitalPessoaFisica(String cpf) {
 		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
 		

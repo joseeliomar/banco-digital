@@ -37,11 +37,11 @@ public class DepositoContaCorrentePessoaFisicaServiceTests extends DepositoConta
 		given(contaCorrentePoupancaMsFeignClient.buscaContaPessoaFisica(anyString(), any(TipoConta.class)))
 				.willReturn(respostaBuscaContaPessoaFisica);
 		
-		var contaDigitalPessoaJuridicaDTO1Busca = new ContaDigitalPessoaFisicaDTO1Busca("0000000011", "0000000001", 2,
+		var contaDigitalPessoaFisicaDTO1Busca = new ContaDigitalPessoaFisicaDTO1Busca("0000000011", "0000000001", 2,
 				"19980001234", "fulano@email.com", 1L, null, null, cpfCliente, "Fulano de Tal", null, "Fulana de Tal");
-		var respostaBuscaContaDigitalPessoaJuridica = ResponseEntity.ok(contaDigitalPessoaJuridicaDTO1Busca);
+		var respostaBuscaContaDigitalPessoaFisica = ResponseEntity.ok(contaDigitalPessoaFisicaDTO1Busca);
 		given(contaDigitalClienteMsFeignClient.buscaContaDigitalPessoaFisica(cpfCliente))
-				.willReturn(respostaBuscaContaDigitalPessoaJuridica);
+				.willReturn(respostaBuscaContaDigitalPessoaFisica);
 
 		DadosParaDepositoContaPessoaFisicaDto dadosParaDepositoDto = new DadosParaDepositoContaPessoaFisicaDto(
 				cpfCliente, 100.0);
