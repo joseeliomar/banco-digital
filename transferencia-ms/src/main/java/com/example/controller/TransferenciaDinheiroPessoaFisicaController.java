@@ -14,8 +14,8 @@ import com.example.dto.DadosParaTransferenciaEntreContasMesmoClienteDto;
 import com.example.service.TransferenciaComContasPessoaFisicaService;
 
 @RestController
-@RequestMapping("/saqueContaCorrentePessoaFisica")
-public class SaqueContaCorrentePessoaFisicaController {
+@RequestMapping("/transferenciaDinheiroPessoaFisica")
+public class TransferenciaDinheiroPessoaFisicaController {
 
 	@Autowired
 	private TransferenciaComContasPessoaFisicaService transferenciaComContasPessoaFisicaService;

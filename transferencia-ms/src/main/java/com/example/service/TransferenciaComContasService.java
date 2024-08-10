@@ -13,13 +13,13 @@ public abstract class TransferenciaComContasService {
 	protected static final Banco ESSE_MESMO_BANCO = Banco.JBANK;
 
 	/**
-	 * Valida o valor do saque.
+	 * Valida o valor da transferência.
 	 * 
 	 * @param valorSaque
 	 */
 	protected void validaValorTransferencia(double valorSaque) {
 		if (valorSaque < 0) {
-			throw new ValidacaoException("Não é possível sacar um valor negativo.", HttpStatus.BAD_REQUEST);
+			throw new ValidacaoException("Não é possível transferir um valor negativo.", HttpStatus.BAD_REQUEST);
 		}
 	}
 	

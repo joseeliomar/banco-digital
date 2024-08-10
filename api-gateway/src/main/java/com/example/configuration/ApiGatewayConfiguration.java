@@ -23,6 +23,7 @@ public class ApiGatewayConfiguration {
 				.route(x -> x.path("/geradorNumeroContaAfins/**").uri("lb://gerador-numero-conta-afins-ms"))
 				.route(x -> x.path("/saqueContaCorrentePessoaFisica/**").uri("lb://saque-ms"))
 				.route(x -> x.path("/saqueContaCorrentePessoaJuridica/**").uri("lb://saque-ms"))
+				.route(x -> x.path("/transferenciaDinheiroPessoaFisica/**").uri("lb://transferencia-ms"))
 				.build();
     }
 }

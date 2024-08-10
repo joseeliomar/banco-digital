@@ -41,17 +41,19 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 	 */
 	public void efetuaTransferenciaEntreContasMesmoCliente(
 			DadosParaTransferenciaEntreContasMesmoClienteDto dadosParaTransferenciaEntreContasMesmoClienteDto) {
-		TipoConta contaOrigemDinheiro = dadosParaTransferenciaEntreContasMesmoClienteDto.contaOrigemDinheiro();
+		TipoConta tipoContaOrigemDinheiro = dadosParaTransferenciaEntreContasMesmoClienteDto.tipoContaOrigemDinheiro();
 		double valorTransferencia = dadosParaTransferenciaEntreContasMesmoClienteDto.valorTransferencia();
 		String cpfCliente = dadosParaTransferenciaEntreContasMesmoClienteDto.cpfCliente();
 
-		super.validaContaOrigemDinheiro(contaOrigemDinheiro);
+		super.validaContaOrigemDinheiro(tipoContaOrigemDinheiro);
 		super.validaValorTransferencia(valorTransferencia);
 		super.validaCpf(cpfCliente);
 
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisica = buscaContaDigitalClientePeloCpf(cpfCliente);
+		
+		validaSeEncontradaContaDigitalClienteQueQuerTransferirDinheiro(contaDigitalPessoaFisica);
 
-		if (contaOrigemDinheiro == TipoConta.CORRENTE) {
+		if (tipoContaOrigemDinheiro == TipoConta.CORRENTE) {
 			transfereDinheiroDaContaCorrenteParaContaPoupanca(valorTransferencia, contaDigitalPessoaFisica);
 		} else {
 			transfereDinheiroDaContaPoupancaParaContaCorrente(valorTransferencia, contaDigitalPessoaFisica);
@@ -117,7 +119,7 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 	}
 
 	/**
-	 * Efetua transferência entre contas de clientes diferentes desse banco, ou
+	 * Efetua transferência entre contas de clientes diferentes desse banco (JBank), ou
 	 * seja, da conta corrente de um determinado cliente para a conta corrente de
 	 * outro determinado cliente ou da conta poupança de um determinado cliente para
 	 * a conta corrente de outro determinado cliente (a conta de destino do dinheiro
@@ -129,39 +131,44 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 			DadosParaTransferenciaEntreContasClientesDiferentesDto dadosParaTransferenciaEntreContasMesmoUsuarioDto) {
 		String cpfClienteDonoContaQueDinheiroSai = dadosParaTransferenciaEntreContasMesmoUsuarioDto
 				.cpfClienteDonoContaQueDinheiroSai();
-		TipoConta contaOrigemDinheiro = dadosParaTransferenciaEntreContasMesmoUsuarioDto.contaOrigemDinheiro();
+		TipoConta tipoContaOrigemDinheiro = dadosParaTransferenciaEntreContasMesmoUsuarioDto.tipoContaOrigemDinheiro();
 		double valorTransferencia = dadosParaTransferenciaEntreContasMesmoUsuarioDto.valorTransferencia();
 		String cpfClienteDonoContaQueDinheiroEntra = dadosParaTransferenciaEntreContasMesmoUsuarioDto
 				.cpfClienteDonoContaQueDinheiroEntra();
 
 		super.validaCpf(cpfClienteDonoContaQueDinheiroSai);
 		super.validaValorTransferencia(valorTransferencia);
-		super.validaContaOrigemDinheiro(contaOrigemDinheiro);
+		super.validaContaOrigemDinheiro(tipoContaOrigemDinheiro);
 		super.validaCpf(cpfClienteDonoContaQueDinheiroEntra);
 
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalClienteDonoContaQueDinheiroSai = buscaContaDigitalClientePeloCpf(
 				cpfClienteDonoContaQueDinheiroSai);
+		
+		validaSeEncontradaContaDigitalClienteQueQuerTransferirDinheiro(contaDigitalClienteDonoContaQueDinheiroSai);
+		
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalClienteDonoContaQueDinheiroEntra = buscaContaDigitalClientePeloCpf(
 				cpfClienteDonoContaQueDinheiroEntra);
+		
+		validaSeEncontradaContaDigitalClienteQueDeveReceberDinheiro(contaDigitalClienteDonoContaQueDinheiroEntra);
 
-		transfereDinheiroParaContaCorrenteOutroCliente(contaOrigemDinheiro, valorTransferencia,
+		transfereDinheiroParaContaCorrenteOutroCliente(tipoContaOrigemDinheiro, valorTransferencia,
 				contaDigitalClienteDonoContaQueDinheiroSai, contaDigitalClienteDonoContaQueDinheiroEntra);
 	}
 
 	/**
 	 * Transfere dinheiro para conta corrente de outro cliente.
 	 * 
-	 * @param contaOrigemDinheiro
+	 * @param tipoContaOrigemDinheiro
 	 * @param valorTransferencia
 	 * @param contaDigitalClienteDonoContaQueDinheiroSai
 	 * @param contaDigitalClienteDonoContaQueDinheiroEntra
 	 */
-	private void transfereDinheiroParaContaCorrenteOutroCliente(TipoConta contaOrigemDinheiro,
+	private void transfereDinheiroParaContaCorrenteOutroCliente(TipoConta tipoContaOrigemDinheiro,
 			double valorTransferencia, ContaDigitalPessoaFisicaDTO1Busca contaDigitalClienteDonoContaQueDinheiroSai,
 			ContaDigitalPessoaFisicaDTO1Busca contaDigitalClienteDonoContaQueDinheiroEntra) {
 		String cpfDonoContaDigitalClienteDonoContaQueDinheiroSai = contaDigitalClienteDonoContaQueDinheiroSai.getCpf();
 		
-		if (contaOrigemDinheiro == TipoConta.CORRENTE) {
+		if (tipoContaOrigemDinheiro == TipoConta.CORRENTE) {
 			atualizaSaldoContaCorrentePessoaFisica(- valorTransferencia, cpfDonoContaDigitalClienteDonoContaQueDinheiroSai);
 			insereItemExtratoContaPessoaFisica(TipoConta.CORRENTE,
 					Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA,
@@ -183,7 +190,8 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 					cpfDonoContaDigitalClienteDonoContaQueDinheiroSai);
 		}
 
-		atualizaSaldoContaCorrentePessoaFisica(valorTransferencia, contaDigitalClienteDonoContaQueDinheiroEntra.getCpf());
+		String cpfDonoContaDigitalClienteDonoContaQueDinheiroEntra = contaDigitalClienteDonoContaQueDinheiroEntra.getCpf();
+		atualizaSaldoContaCorrentePessoaFisica(valorTransferencia, cpfDonoContaDigitalClienteDonoContaQueDinheiroEntra);
 		insereItemExtratoContaPessoaFisica(TipoConta.CORRENTE,
 				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA,
 				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA.getDescricao() + ". Dinheiro vindo de: "
@@ -194,7 +202,7 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 				ESSE_MESMO_BANCO, 
 				contaDigitalClienteDonoContaQueDinheiroEntra.getAgencia(), 
 				contaDigitalClienteDonoContaQueDinheiroEntra.getConta(),
-				contaDigitalClienteDonoContaQueDinheiroEntra.getCpf());
+				cpfDonoContaDigitalClienteDonoContaQueDinheiroEntra);
 	}
 
 	/**
@@ -212,7 +220,7 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 		String cpfClienteDonoContaQueDinheiroSai = dadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto
 				.cpfClienteDonoContaQueDinheiroSai();
 		TipoConta contaOrigemDinheiro = dadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto
-				.contaOrigemDinheiro();
+				.tipoContaOrigemDinheiro();
 		double valorTransferencia = dadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto
 				.valorTransferencia();
 		Banco bancoDestino = dadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto
@@ -231,6 +239,8 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalClienteDonoContaQueDinheiroSai = buscaContaDigitalClientePeloCpf(
 				cpfClienteDonoContaQueDinheiroSai);
+		
+		validaSeEncontradaContaDigitalClienteQueQuerTransferirDinheiro(contaDigitalClienteDonoContaQueDinheiroSai);
 
 		if (contaOrigemDinheiro == TipoConta.CORRENTE) {
 			atualizaSaldoContaCorrentePessoaFisica(- valorTransferencia, contaDigitalClienteDonoContaQueDinheiroSai.getCpf());
@@ -271,6 +281,34 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 				contaDestino, 
 				cpfClienteDonoContaQueDinheiroSai);
 	}
+
+	/**
+	 * Valida se encontrada a conta digital do cliente que quer transferir dinheiro.
+	 * 
+	 * @param contaDigitalClienteQueQuerTransferirDinheiro
+	 */
+	private void validaSeEncontradaContaDigitalClienteQueQuerTransferirDinheiro(
+			ContaDigitalPessoaFisicaDTO1Busca contaDigitalClienteQueQuerTransferirDinheiro) {
+		if (contaDigitalClienteQueQuerTransferirDinheiro == null) {
+			throw new ValidacaoException(
+					"Não foi encontrada a conta digital do cliente que quer transferir o dinheiro.",
+					HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	/**
+	 * Valida se foi encontrada a conta digital do cliente que deve receber o dinheiro.
+	 * 
+	 * @param contaDigitalClienteQueDeveReceberDinheiro
+	 */
+	private void validaSeEncontradaContaDigitalClienteQueDeveReceberDinheiro(
+			ContaDigitalPessoaFisicaDTO1Busca contaDigitalClienteQueDeveReceberDinheiro) {
+		if (contaDigitalClienteQueDeveReceberDinheiro == null) {
+			throw new ValidacaoException(
+					"Não foi encontrada a conta digital do cliente que deve receber o dinheiro.",
+					HttpStatus.BAD_REQUEST);
+		}
+	}
 	
 	/**
 	 * Recebe dinheiro vindo de outra instituição financeira.
@@ -279,12 +317,12 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 	 */
 	public void recebeDinheiroVindoOutraInstituicaoFinanceira(
 			DadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceira dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto) {
-		Banco bancoOrigemDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.bancoOrigemDiheiro();
-		String agenciaOrigemDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.agenciaOrigemDiheiro();
-		String contaOrigemDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.contaOrigemDiheiro();
+		Banco bancoOrigemDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.bancoOrigemDinheiro();
+		String agenciaOrigemDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.agenciaOrigemDinheiro();
+		String contaOrigemDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.contaOrigemDinheiro();
 		double valorTransferencia = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.valorTransferencia();
-		String agenciaDestinoDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.agenciaDestinoDiheiro();
-		String contaDestinoDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.contaDestinoDiheiro();
+		String agenciaDestinoDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.agenciaDestinoDinheiro();
+		String contaDestinoDiheiro = dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto.contaDestinoDinheiro();
 
 		super.validaBancoOrigem(bancoOrigemDiheiro);
 		super.validaAgenciaOrigem(agenciaOrigemDiheiro);
