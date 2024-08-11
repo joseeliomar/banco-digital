@@ -52,7 +52,6 @@ public class ContaDigitalPessoaFisicaController {
 		return ResponseEntity.notFound().build();
 	}
 	
-	// criar os testes para esse método
 	@GetMapping("/{agencia}/{conta}")
 	public ResponseEntity<?> buscaContaDigitalPessoaFisica(@PathVariable String agencia, @PathVariable String conta) {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisicaDTO1Busca = contaDigitalPessoaFisicaService

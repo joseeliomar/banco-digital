@@ -29,12 +29,12 @@ import com.example.model.ItemExtratoContaPessoaJuridica;
 import com.example.repository.ItemExtratoContaPessoaJuridicaRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemExtratoContaPessoaJuridicaServiceTest extends ItemExtratoContaServiceTest {
+public class ExtratoContaPessoaJuridicaServiceTest extends ItemExtratoContaServiceTest {
 	
 	private static final String CNPJ_1 = "12345678990001";
 	
 	@InjectMocks
-	private ItemExtratoContaPessoaJuridicaService itemExtratoContaPessoaJuridicaService;
+	private ExtratoContaPessoaJuridicaService extratoContaPessoaJuridicaService;
 	
 	@Mock
 	private ItemExtratoContaPessoaJuridicaRepository itemExtratoContaPessoaJuridicaRepository;
@@ -70,7 +70,7 @@ public class ItemExtratoContaPessoaJuridicaServiceTest extends ItemExtratoContaS
 		
 		// When & Then
 		ItemExtratoContaPessoaJuridica actual = assertDoesNotThrow(
-				() -> itemExtratoContaPessoaJuridicaService
+				() -> extratoContaPessoaJuridicaService
 						.insereItemExtratoContaPessoaJuridica(itemExtratoContaPessoaJuridicaInsercaoDto),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 		
@@ -342,7 +342,7 @@ public class ItemExtratoContaPessoaJuridicaServiceTest extends ItemExtratoContaS
 				.willReturn(Optional.of(itemExtratoContaPessoaJuridica1));
 		willDoNothing().given(itemExtratoContaPessoaJuridicaRepository).delete(itemExtratoContaPessoaJuridica1);
 
-		itemExtratoContaPessoaJuridicaService.removeItemExtratoContaPessoaJuridica(idItemExtratoContaPessoaJuridica);
+		extratoContaPessoaJuridicaService.removeItemExtratoContaPessoaJuridica(idItemExtratoContaPessoaJuridica);
 
 		verify(itemExtratoContaPessoaJuridicaRepository, times(1)).delete(itemExtratoContaPessoaJuridica1);
 	}
@@ -363,7 +363,7 @@ public class ItemExtratoContaPessoaJuridicaServiceTest extends ItemExtratoContaS
 
 	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaJuridica() {
 		return assertThrows(ValidacaoException.class,
-				() -> itemExtratoContaPessoaJuridicaService
+				() -> extratoContaPessoaJuridicaService
 						.insereItemExtratoContaPessoaJuridica(itemExtratoContaPessoaJuridicaInsercaoDto),
 				() -> EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA);
 	}
@@ -371,7 +371,7 @@ public class ItemExtratoContaPessoaJuridicaServiceTest extends ItemExtratoContaS
 	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoRemocaoItemExtratoContaPessoaJuridica(
 			Long idItemExtratoContaPessoaJuridica) {
 		return assertThrows(ValidacaoException.class,
-				() -> itemExtratoContaPessoaJuridicaService
+				() -> extratoContaPessoaJuridicaService
 						.removeItemExtratoContaPessoaJuridica(idItemExtratoContaPessoaJuridica),
 				() -> EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA);
 	}

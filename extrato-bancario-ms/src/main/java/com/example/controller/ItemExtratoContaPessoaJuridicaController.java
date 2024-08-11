@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.dto.ItemExtratoContaPessoaJuridicaInsercaoDto;
 import com.example.dto.ItemExtratoContaPessoaJuridicaInseridoDto;
 import com.example.model.ItemExtratoContaPessoaJuridica;
-import com.example.service.ItemExtratoContaPessoaJuridicaService;
+import com.example.service.ExtratoContaPessoaJuridicaService;
 import com.example.utils.Utils;
 
 @RestController
@@ -22,12 +22,12 @@ import com.example.utils.Utils;
 public class ItemExtratoContaPessoaJuridicaController {
 
 	@Autowired
-	private ItemExtratoContaPessoaJuridicaService itemExtratoContaPessoaJuridicaService;
+	private ExtratoContaPessoaJuridicaService extratoContaPessoaJuridicaService;
 
 	@PostMapping("/")
 	public ResponseEntity<ItemExtratoContaPessoaJuridicaInseridoDto> insereItemExtratoContaPessoaJuridica(
 			@RequestBody ItemExtratoContaPessoaJuridicaInsercaoDto itemExtratoContaPessoaJuridicaInsercaoDto) {
-		ItemExtratoContaPessoaJuridica itemExtratoContaPessoaJuridica = itemExtratoContaPessoaJuridicaService
+		ItemExtratoContaPessoaJuridica itemExtratoContaPessoaJuridica = extratoContaPessoaJuridicaService
 				.insereItemExtratoContaPessoaJuridica(itemExtratoContaPessoaJuridicaInsercaoDto);
 		ItemExtratoContaPessoaJuridicaInseridoDto itemExtratoContaPessoaJuridicaInseridoDto = new ItemExtratoContaPessoaJuridicaInseridoDto(
 				itemExtratoContaPessoaJuridica);
@@ -37,7 +37,7 @@ public class ItemExtratoContaPessoaJuridicaController {
 
 	@DeleteMapping("/{idItemExtratoContaPessoaJuridica}")
 	public ResponseEntity<?> removeItemExtratoContaPessoaJuridica(@PathVariable Long idItemExtratoContaPessoaJuridica) {
-		itemExtratoContaPessoaJuridicaService.removeItemExtratoContaPessoaJuridica(idItemExtratoContaPessoaJuridica);
+		extratoContaPessoaJuridicaService.removeItemExtratoContaPessoaJuridica(idItemExtratoContaPessoaJuridica);
 		return ResponseEntity.noContent().build();
 	}
 }

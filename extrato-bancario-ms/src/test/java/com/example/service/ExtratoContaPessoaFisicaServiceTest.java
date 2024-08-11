@@ -1,6 +1,7 @@
 package com.example.service;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -9,7 +10,10 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +24,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.dto.ExtratoContaCorrenteDto;
 import com.example.dto.ItemExtratoContaPessoaFisicaInsercaoDto;
+import com.example.dto.MovimentacaoDto;
 import com.example.enumeration.Banco;
 import com.example.enumeration.Operacao;
 import com.example.enumeration.TipoConta;
@@ -29,12 +35,12 @@ import com.example.model.ItemExtratoContaPessoaFisica;
 import com.example.repository.ItemExtratoContaPessoaFisicaRepository;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaServiceTest {
+public class ExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaServiceTest {
 	
 	private static final String CPF_1 = "12345678901";
 	
 	@InjectMocks
-	private ItemExtratoContaPessoaFisicaService itemExtratoContaPessoaFisicaService;
+	private ExtratoContaPessoaFisicaService extratoContaPessoaFisicaService;
 	
 	@Mock
 	private ItemExtratoContaPessoaFisicaRepository itemExtratoContaPessoaFisicaRepository;
@@ -70,7 +76,7 @@ public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaSer
 		
 		// When & Then
 		ItemExtratoContaPessoaFisica actual = assertDoesNotThrow(
-				() -> itemExtratoContaPessoaFisicaService
+				() -> extratoContaPessoaFisicaService
 						.insereItemExtratoContaPessoaFisica(itemExtratoContaPessoaFisicaInsercaoDto),
 				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
 		
@@ -342,7 +348,7 @@ public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaSer
 				.willReturn(Optional.of(itemExtratoContaPessoaFisica1));
 		willDoNothing().given(itemExtratoContaPessoaFisicaRepository).delete(itemExtratoContaPessoaFisica1);
 
-		itemExtratoContaPessoaFisicaService.removeItemExtratoContaPessoaFisica(idItemExtratoContaPessoaFisica);
+		extratoContaPessoaFisicaService.removeItemExtratoContaPessoaFisica(idItemExtratoContaPessoaFisica);
 
 		verify(itemExtratoContaPessoaFisicaRepository, times(1)).delete(itemExtratoContaPessoaFisica1);
 	}
@@ -359,10 +365,58 @@ public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaSer
 
 		confirmaSeExcecaoLancadaContemMensagemEsperada(mensagemEsperada, exception);
 	}
+	
+	@DisplayName("Quando gera o extrato conta corrente com sucesso, nenhuma exceção deve ser lançada")
+	@Test
+	void testGeraExtratoContaCorrente_ComSucesso_NaoDeveSerLancadaExcecao() {
+		// Given
+		String cpfCliente = CPF_1;
+		int quantidadeDias = 30;
+		
+		List<ItemExtratoContaPessoaFisica> itensExtratoContaCorrente = new ArrayList<>();
+		
+		itensExtratoContaCorrente.add(new ItemExtratoContaPessoaFisica(TipoConta.CORRENTE, Operacao.DEPOSITO,
+				"Depósito", LocalDateTime.now(), Banco.BANCO_BRASIL, "0000000011", "1234567890", 100.0, cpfCliente));
+		
+		LocalDateTime dataFinalPeriodo = LocalDate.now().atStartOfDay();
+		LocalDateTime dataInicialPeriodo = dataFinalPeriodo.minusDays(quantidadeDias);
+		
+		given(itemExtratoContaPessoaFisicaRepository
+				.buscaItensExtrato(
+						cpfCliente, TipoConta.CORRENTE, dataInicialPeriodo, dataFinalPeriodo))
+				.willReturn(itensExtratoContaCorrente);
+		
+		// When & Then
+		ExtratoContaCorrenteDto actual = assertDoesNotThrow(
+				() -> extratoContaPessoaFisicaService
+						.geraExtratoContaCorrente(cpfCliente, quantidadeDias),
+				() -> NAO_DEVE_SER_LANCADA_NEHUMA_EXCECAO);
+		
+		assertNotNull(actual);
+		assertNotNull(actual.nome());
+		assertNotNull(actual.cpfCliente());
+		assertNotNull(actual.agencia());
+		assertNotNull(actual.conta());
+		assertNotNull(actual.totalEntradas());
+		assertNotNull(actual.totalSaidas());
+		assertNotNull(actual.movimentacoes());
+		
+		for (MovimentacaoDto movimentacao : actual.movimentacoes()) {
+			assertNotNull(movimentacao);
+			assertNotNull(movimentacao.dia());
+			assertNotNull(movimentacao.horario());
+			assertNotNull(movimentacao.banco());
+			assertNotNull(movimentacao.agenciaDestino());
+			assertNotNull(movimentacao.contaDestino());
+			assertNotNull(movimentacao.operacaoEfetuada());
+			assertNotNull(movimentacao.descricaoOperacao());
+			assertNotEquals(0.0, movimentacao.valor());
+		}
+	}
 
 	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoInsercaoItemExtratoContaPessoaFisica() {
 		return assertThrows(ValidacaoException.class,
-				() -> itemExtratoContaPessoaFisicaService
+				() -> extratoContaPessoaFisicaService
 						.insereItemExtratoContaPessoaFisica(itemExtratoContaPessoaFisicaInsercaoDto),
 				() -> EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA);
 	}
@@ -370,7 +424,7 @@ public class ItemExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaSer
 	private ValidacaoException confirmaSeSeraLancadaExcecaoTipoEsperadoRemocaoItemExtratoContaPessoaFisica(
 			Long idItemExtratoContaPessoaFisica) {
 		return assertThrows(ValidacaoException.class,
-				() -> itemExtratoContaPessoaFisicaService
+				() -> extratoContaPessoaFisicaService
 						.removeItemExtratoContaPessoaFisica(idItemExtratoContaPessoaFisica),
 				() -> EXCECAO_DO_TIPO_ESPERADO_NAO_FOI_LANCADA);
 	}

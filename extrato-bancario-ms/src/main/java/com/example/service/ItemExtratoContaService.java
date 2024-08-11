@@ -1,13 +1,18 @@
 package com.example.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.example.enumeration.Banco;
 import com.example.enumeration.Operacao;
 import com.example.enumeration.TipoConta;
 import com.example.exception.ValidacaoException;
+import com.example.openfeign.feignclient.ContaDigitalClienteMsFeignClient;
 
 public abstract class ItemExtratoContaService {
+	
+	@Autowired
+	protected ContaDigitalClienteMsFeignClient contaDigitalClienteMsFeignClient;
 
 	protected void validaTipoConta(TipoConta tipoConta) {
 		if (tipoConta == null) {

@@ -16,7 +16,7 @@ import com.example.model.ItemExtratoContaPessoaJuridica;
 import com.example.repository.ItemExtratoContaPessoaJuridicaRepository;
 
 @Service
-public class ItemExtratoContaPessoaJuridicaService extends ItemExtratoContaService{
+public class ExtratoContaPessoaJuridicaService extends ItemExtratoContaService{
 	
 	@Autowired
 	private ItemExtratoContaPessoaJuridicaRepository itemExtratoContaPessoaJuridicaRepository;

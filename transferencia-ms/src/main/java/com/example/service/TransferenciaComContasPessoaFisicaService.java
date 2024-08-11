@@ -80,8 +80,8 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 
 		atualizaSaldoContaCorrentePessoaFisica(valorTransferencia, contaDigitalPessoaFisica.getCpf());
 		insereItemExtratoContaPessoaFisica(TipoConta.CORRENTE,
-				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA,
-				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA.getDescricao(), 
+				Operacao.DEPOSITO,
+				Operacao.DEPOSITO.getDescricao(), 
 				valorTransferencia,
 				ESSE_MESMO_BANCO, 
 				contaDigitalPessoaFisica.getAgencia(), 
@@ -109,8 +109,8 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 
 		atualizaSaldoContaPoupancaPessoaFisica(valorTransferencia, contaDigitalPessoaFisica.getCpf());
 		insereItemExtratoContaPessoaFisica(TipoConta.POUPANCA,
-				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA,
-				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA.getDescricao(),
+				Operacao.DEPOSITO,
+				Operacao.DEPOSITO.getDescricao(),
 				valorTransferencia,
 				ESSE_MESMO_BANCO, 
 				contaDigitalPessoaFisica.getAgencia(), 
@@ -193,8 +193,8 @@ public class TransferenciaComContasPessoaFisicaService extends TransferenciaComC
 		String cpfDonoContaDigitalClienteDonoContaQueDinheiroEntra = contaDigitalClienteDonoContaQueDinheiroEntra.getCpf();
 		atualizaSaldoContaCorrentePessoaFisica(valorTransferencia, cpfDonoContaDigitalClienteDonoContaQueDinheiroEntra);
 		insereItemExtratoContaPessoaFisica(TipoConta.CORRENTE,
-				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA,
-				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA.getDescricao() + ". Dinheiro vindo de: "
+				Operacao.DEPOSITO,
+				Operacao.DEPOSITO.getDescricao() + ". Dinheiro vindo de: "
 						+ ESSE_MESMO_BANCO.getRazaoSocial() + ", agência "
 						+ contaDigitalClienteDonoContaQueDinheiroSai.getAgencia() + " e conta: "
 						+ contaDigitalClienteDonoContaQueDinheiroSai.getConta(), 
