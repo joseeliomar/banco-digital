@@ -1,3 +1,5 @@
+[![Continuous integration com GitHub](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml)
+
 # JBank (back-end de um banco digital em processo de desenvolvimento).
   - Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no meu portifólio de projetos aqui no GitHub.
   - Esse projeto está sendo construído com a arquitetura de microsserviços.
