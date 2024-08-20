@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: transferencia-ms
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}} # id da instância da aplicação no servidor Eureka

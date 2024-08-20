@@ -32,7 +32,7 @@ public abstract class ItemExtratoConta {
 	@Enumerated(EnumType.STRING)
 	private Operacao operacaoEfetuada;
 
-	@Column(name = "descricao_operacao", nullable = false, length = 100)
+	@Column(name = "descricao_operacao", nullable = false, length = 300)
 	private String descricaoOperacao;
 
 	@Column(name = "data_hora_cadastro", nullable = false)

@@ -22,34 +22,32 @@ public class TransferenciaDinheiroPessoaFisicaController {
 
 	@PostMapping("/efetuaTransferenciaEntreContasMesmoCliente")
 	public ResponseEntity<?> efetuaTransferenciaEntreContasMesmoCliente(
-			@RequestBody DadosParaTransferenciaEntreContasMesmoClienteDto dadosParaTransferenciaEntreContasMesmoClienteDto) {
-		transferenciaComContasPessoaFisicaService
-				.efetuaTransferenciaEntreContasMesmoCliente(dadosParaTransferenciaEntreContasMesmoClienteDto);
+			@RequestBody DadosParaTransferenciaEntreContasMesmoClienteDto dadosParaTransferencia) {
+		transferenciaComContasPessoaFisicaService.efetuaTransferenciaEntreContasMesmoCliente(dadosParaTransferencia);
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/efetuaTransferenciaEntreContasClientesDiferentesDesseBanco")
 	public ResponseEntity<?> efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(
-			@RequestBody DadosParaTransferenciaEntreContasClientesDiferentesDto dadosParaTransferenciaEntreContasMesmoUsuarioDto) {
-		transferenciaComContasPessoaFisicaService.efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(
-				dadosParaTransferenciaEntreContasMesmoUsuarioDto);
+			@RequestBody DadosParaTransferenciaEntreContasClientesDiferentesDto dadosParaTransferencia) {
+		transferenciaComContasPessoaFisicaService
+				.efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(dadosParaTransferencia);
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes")
 	public ResponseEntity<?> efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
-			@RequestBody DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto dadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto) {
+			@RequestBody DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto dadosParaTransferencia) {
 		transferenciaComContasPessoaFisicaService
-				.efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
-						dadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto);
+				.efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(dadosParaTransferencia);
 		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/recebeDinheiroVindoOutraInstituicaoFinanceira")
 	public ResponseEntity<?> recebeDinheiroVindoOutraInstituicaoFinanceira(
-			@RequestBody DadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceira dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto) {
-		transferenciaComContasPessoaFisicaService.recebeDinheiroVindoOutraInstituicaoFinanceira(
-				dadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceiraDto);
+			@RequestBody DadosParaRecebimentoDinheiroVindoOutraInstituicaoFinanceira dadosParaRecebimentoDinheiro) {
+		transferenciaComContasPessoaFisicaService
+				.recebeDinheiroVindoOutraInstituicaoFinanceira(dadosParaRecebimentoDinheiro);
 		return ResponseEntity.ok().build();
 	}
 }

@@ -89,20 +89,22 @@ public class ExtratoContaPessoaFisicaService extends ItemExtratoContaService{
 	public ExtratoContaCorrenteDto geraExtratoContaCorrente(String cpfCliente, int quantidadeDias) {
 		validaCpfCliente(cpfCliente);
 		
-		LocalDateTime dataFinalPeriodo = LocalDate.now().atStartOfDay();
-		LocalDateTime dataInicialPeriodo = dataFinalPeriodo.minusDays(quantidadeDias);
+		LocalDate dataFinalPeriodo = LocalDate.now();
+		LocalDate dataInicialPeriodo = dataFinalPeriodo.minusDays(quantidadeDias);
 		
 		List<ItemExtratoContaPessoaFisica> itensExtratoContaCorrente = itemExtratoContaPessoaFisicaRepository
 				.buscaItensExtrato(cpfCliente, TipoConta.CORRENTE, dataInicialPeriodo, dataFinalPeriodo);
 		
 		List<MovimentacaoDto> movimentacoes = new ArrayList<>();
-		Object[] operacoesNasQuaisEntramDinheiroParaConta = new Operacao[] { Operacao.DEPOSITO,
-				Operacao.TRANSFERENCIA_DE_OUTRA_INSTITUICAO_FINANCEIRA };
+		Object[] operacoesNasQuaisEntramDinheiroNaConta = new Operacao[] {
+				Operacao.DEPOSITO, 
+				Operacao.TRANSFERENCIA_VINDA_DE_OUTRA_INSTITUICAO_FINANCEIRA,
+				Operacao.TRANSFERENCIA_PARA_MESMA_INSTITUICAO_FINANCEIRA_ENTRADA_DINHEIRO};
 		double totalEntradas = 0.0;
 		double totalSaidas = 0.0;
 		for (ItemExtratoContaPessoaFisica itemExtratoContaCorrente : itensExtratoContaCorrente) {
 			LocalDateTime dataHoraCadastro = itemExtratoContaCorrente.getDataHoraCadastro();
-			String dataFormatadaSemHora = Utils.obtemDataFormatadaSemHorario(dataHoraCadastro);
+			String dataFormatadaSemHora = Utils.obtemDataFormatadaSemHorario(dataHoraCadastro.toLocalDate());
 			String horaFormatada = Utils.obtemHoraFormatada(dataHoraCadastro);
 			Operacao operacaoEfetuada = itemExtratoContaCorrente.getOperacaoEfetuada();
 			double valor = itemExtratoContaCorrente.getValor();
@@ -118,7 +120,7 @@ public class ExtratoContaPessoaFisicaService extends ItemExtratoContaService{
 					valor));
 			
 			if (Utils.primeiraOpcaoIgualAlgumaDemaisOpcoesEspecificadas(operacaoEfetuada,
-					operacoesNasQuaisEntramDinheiroParaConta)) {
+					operacoesNasQuaisEntramDinheiroNaConta)) {
 				totalEntradas += valor;
 			} else {
 				totalSaidas += valor;
@@ -129,9 +131,15 @@ public class ExtratoContaPessoaFisicaService extends ItemExtratoContaService{
 		
 		validaSeEncontradaContaDigitalCliente(contaDigitalPessoaFisica);
 		
-		ExtratoContaCorrenteDto extratoContaCorrenteDto = new ExtratoContaCorrenteDto(contaDigitalPessoaFisica.getNomeCompleto(), cpfCliente,
-				contaDigitalPessoaFisica.getAgencia(), contaDigitalPessoaFisica.getConta(), totalEntradas, totalSaidas,
-				movimentacoes);
+		String dataInicialPeriodoFormatada = Utils.obtemDataFormatadaSemHorario(dataInicialPeriodo);
+		String dataFinalPeriodoFormatada = Utils.obtemDataFormatadaSemHorario(dataFinalPeriodo);
+		
+		String periodo = dataInicialPeriodoFormatada + " a " + dataFinalPeriodoFormatada;
+		double saldoFinalPeriodo = totalEntradas - totalSaidas;
+		
+		ExtratoContaCorrenteDto extratoContaCorrenteDto = new ExtratoContaCorrenteDto(periodo,
+				contaDigitalPessoaFisica.getNomeCompleto(), cpfCliente, contaDigitalPessoaFisica.getAgencia(),
+				contaDigitalPessoaFisica.getConta(), totalEntradas, totalSaidas, saldoFinalPeriodo, movimentacoes);
 		
 		return extratoContaCorrenteDto;
 	}

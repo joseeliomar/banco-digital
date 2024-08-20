@@ -121,7 +121,9 @@ public class TransferenciaComContasPessoaFisicaServiceTests extends Transferenci
 				.willReturn(ResponseEntity.ok(contaDigitalDonoContaQueDinheiroSai));
 		
 		var contaDigitalDonoContaQueDinheiroEntra = criaContaDigitalDonoContaQueDinheiroEntra(cpfClienteDonoContaQueDinheiroEntra);
-		given(contaDigitalClienteMsFeignClient.buscaContaDigitalPessoaFisica(cpfClienteDonoContaQueDinheiroEntra))
+		String agenciaDestinoDinheiro = contaDigitalDonoContaQueDinheiroEntra.getAgencia();
+		String contaDestinoDinheiro = contaDigitalDonoContaQueDinheiroEntra.getConta();
+		given(contaDigitalClienteMsFeignClient.buscaContaDigitalPessoaFisica(agenciaDestinoDinheiro, contaDestinoDinheiro))
 				.willReturn(ResponseEntity.ok(contaDigitalDonoContaQueDinheiroEntra));
 		
 		var contaCorrenteQueDinheiroSai = new ContaPessoaFisicaBuscaDto1(1L, TipoConta.CORRENTE, 1000.0, cpfClienteDonoContaQueDinheiroSai);
@@ -133,7 +135,7 @@ public class TransferenciaComContasPessoaFisicaServiceTests extends Transferenci
 				.willReturn(ResponseEntity.ok(contaCorrenteQueDinheiroEntra));
 		
 		var dadosParaTransferenciaDto = new DadosParaTransferenciaEntreContasClientesDiferentesDto(
-				cpfClienteDonoContaQueDinheiroSai, 100.0, TipoConta.CORRENTE, cpfClienteDonoContaQueDinheiroEntra);
+				cpfClienteDonoContaQueDinheiroSai, 100.0, TipoConta.CORRENTE, agenciaDestinoDinheiro, contaDestinoDinheiro);
 
 		// When & Then
 		assertDoesNotThrow(
@@ -146,7 +148,7 @@ public class TransferenciaComContasPessoaFisicaServiceTests extends Transferenci
 		
 		
 		verify(contaDigitalClienteMsFeignClient).buscaContaDigitalPessoaFisica(cpfClienteDonoContaQueDinheiroSai);
-		verify(contaDigitalClienteMsFeignClient).buscaContaDigitalPessoaFisica(cpfClienteDonoContaQueDinheiroEntra);
+		verify(contaDigitalClienteMsFeignClient).buscaContaDigitalPessoaFisica(agenciaDestinoDinheiro, contaDestinoDinheiro);
 		
 		verify(contaCorrentePoupancaMsFeignClient, times(2))
 				.alteraContaPessoaFisica(any(ContaPessoaFisicaAlteracaoDto.class));
@@ -169,7 +171,9 @@ public class TransferenciaComContasPessoaFisicaServiceTests extends Transferenci
 				.willReturn(ResponseEntity.ok(contaDigitalDonoContaQueDinheiroSai));
 		
 		var contaDigitalDonoContaQueDinheiroEntra = criaContaDigitalDonoContaQueDinheiroEntra(cpfClienteDonoContaQueDinheiroEntra);
-		given(contaDigitalClienteMsFeignClient.buscaContaDigitalPessoaFisica(cpfClienteDonoContaQueDinheiroEntra))
+		String agenciaDestinoDinheiro = contaDigitalDonoContaQueDinheiroEntra.getAgencia();
+		String contaDestinoDinheiro = contaDigitalDonoContaQueDinheiroEntra.getConta();
+		given(contaDigitalClienteMsFeignClient.buscaContaDigitalPessoaFisica(agenciaDestinoDinheiro, contaDestinoDinheiro))
 				.willReturn(ResponseEntity.ok(contaDigitalDonoContaQueDinheiroEntra));
 		
 		var contaPoupancaQueDinheiroSai = new ContaPessoaFisicaBuscaDto1(1L, TipoConta.POUPANCA, 1000.0, cpfClienteDonoContaQueDinheiroSai);
@@ -181,7 +185,7 @@ public class TransferenciaComContasPessoaFisicaServiceTests extends Transferenci
 				.willReturn(ResponseEntity.ok(contaCorrenteQueDinheiroEntra));
 		
 		var dadosParaTransferenciaDto = new DadosParaTransferenciaEntreContasClientesDiferentesDto(
-				cpfClienteDonoContaQueDinheiroSai, 100.0, TipoConta.POUPANCA, cpfClienteDonoContaQueDinheiroEntra);
+				cpfClienteDonoContaQueDinheiroSai, 100.0, TipoConta.POUPANCA, agenciaDestinoDinheiro, contaDestinoDinheiro);
 
 		// When & Then
 		assertDoesNotThrow(
@@ -194,7 +198,7 @@ public class TransferenciaComContasPessoaFisicaServiceTests extends Transferenci
 		
 		
 		verify(contaDigitalClienteMsFeignClient).buscaContaDigitalPessoaFisica(cpfClienteDonoContaQueDinheiroSai);
-		verify(contaDigitalClienteMsFeignClient).buscaContaDigitalPessoaFisica(cpfClienteDonoContaQueDinheiroEntra);
+		verify(contaDigitalClienteMsFeignClient).buscaContaDigitalPessoaFisica(agenciaDestinoDinheiro, contaDestinoDinheiro);
 		
 		verify(contaCorrentePoupancaMsFeignClient, times(2))
 				.alteraContaPessoaFisica(any(ContaPessoaFisicaAlteracaoDto.class));

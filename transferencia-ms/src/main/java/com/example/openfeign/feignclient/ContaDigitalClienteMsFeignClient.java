@@ -14,7 +14,7 @@ public interface ContaDigitalClienteMsFeignClient {
 	@GetMapping("/contaDigitalPessoaFisica/{cpf}")
 	public ResponseEntity<ContaDigitalPessoaFisicaDTO1Busca> buscaContaDigitalPessoaFisica(@PathVariable String cpf);
 	
-	@GetMapping("/{agencia}/{conta}")
+	@GetMapping("/contaDigitalPessoaFisica/{agencia}/{conta}")
 	public ResponseEntity<ContaDigitalPessoaFisicaDTO1Busca> buscaContaDigitalPessoaFisica(@PathVariable String agencia,
 			@PathVariable String conta);
 	

@@ -1,6 +1,7 @@
 package com.example.utils;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
@@ -23,26 +24,26 @@ public class Utils {
 	}
 
 	/**
-	 * Obtem a data formata e sem horário.
+	 * Obtem a data formata.
 	 * 
-	 * @param dataHora data com horário.
-	 * @return a data formata e sem horário.
+	 * @param data
+	 * @return a data formata.
 	 */
-	public static String obtemDataFormatadaSemHorario(LocalDateTime dataHora) {
-		Month mes = dataHora.getMonth();
-		int numeroMes = dataHora.getMonthValue();
-		String nomeMes = ObtemNomeMes(numeroMes);
+	public static String obtemDataFormatadaSemHorario(LocalDate data) {
+		Month mes = data.getMonth();
+		int numeroMes = data.getMonthValue();
+		String nomeMes = ObtemNomeMes(numeroMes).toLowerCase();
 		
 		DateTimeFormatter formatter = DateTimeFormatter. ofPattern("dd yyyy");
-		String diaAno = dataHora.format(formatter);
+		String diaAno = data.format(formatter);
 		String dataFormatada = null;
 
 		if (mes.equals(Month.MAY)) {
 			CharSequence mesCom4letras = nomeMes.subSequence(0, 4);
-			dataFormatada = diaAno.replace(" ", " " + mesCom4letras + " ");
+			dataFormatada = diaAno.replace(" ", " de " + mesCom4letras + " de ");
 		} else {
 			CharSequence mesCom3letras = nomeMes.subSequence(0, 3);
-			dataFormatada = diaAno.replace(" ", " " + mesCom3letras + ". ");
+			dataFormatada = diaAno.replace(" ", " de " + mesCom3letras + ". de ");
 		}
 		
 		return dataFormatada;

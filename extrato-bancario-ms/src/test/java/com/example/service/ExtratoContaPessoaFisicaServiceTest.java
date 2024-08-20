@@ -378,8 +378,8 @@ public class ExtratoContaPessoaFisicaServiceTest extends ItemExtratoContaService
 		itensExtratoContaCorrente.add(new ItemExtratoContaPessoaFisica(TipoConta.CORRENTE, Operacao.DEPOSITO,
 				"Depósito", LocalDateTime.now(), Banco.BANCO_BRASIL, "0000000011", "1234567890", 100.0, cpfCliente));
 		
-		LocalDateTime dataFinalPeriodo = LocalDate.now().atStartOfDay();
-		LocalDateTime dataInicialPeriodo = dataFinalPeriodo.minusDays(quantidadeDias);
+		LocalDate dataFinalPeriodo = LocalDate.now();
+		LocalDate dataInicialPeriodo = dataFinalPeriodo.minusDays(quantidadeDias);
 		
 		given(itemExtratoContaPessoaFisicaRepository
 				.buscaItensExtrato(
