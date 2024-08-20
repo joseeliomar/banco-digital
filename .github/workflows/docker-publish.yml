@@ -28,11 +28,11 @@ jobs:
 
       - name: Constrói Container Image da API Gateway
         working-directory: ./api-gateway
-        run: mvn spring-boot:build-image -DskipTests
+        run: mvn spring-boot:build-image
 
       - name: Constrói Container Image do Microsserviço "jbank-core"
         working-directory: ./jbank-core
-        run: mvn spring-boot:build-image
+        run: mvn spring-boot:build-image -DskipTests
 
       - name: Constrói Container Image do Microsserviço "conta-corrente-poupanca-ms"
         working-directory: ./conta-corrente-poupanca-ms
