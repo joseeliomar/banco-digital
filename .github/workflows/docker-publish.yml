@@ -61,3 +61,50 @@ jobs:
       - name: Constrói Container Image do Microsserviço "transferencia-ms"
         working-directory: ./transferencia-ms
         run: mvn spring-boot:build-image -DskipTests
+        
+      - name: Docker Compose Build
+        working-directory: .
+        run: docker compose build
+
+      - name: Push to Docker Hub Container Registry
+        run: |
+          docker tag ${{ secrets.DOCKER_USERNAME }}/eureka-server:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/eureka-server:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/eureka-server:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/eureka-server:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/api-gateway:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/api-gateway:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/api-gateway:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/conta-corrente-poupanca-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/conta-corrente-poupanca-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/conta-corrente-poupanca-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/conta-corrente-poupanca-ms:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/conta-digital-cliente-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/conta-digital-cliente-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/conta-digital-cliente-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/conta-digital-cliente-ms:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/deposito-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/deposito-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/deposito-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/deposito-ms:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/endereco-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/endereco-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/endereco-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/endereco-ms:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/extrato-bancario-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/extrato-bancario-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/extrato-bancario-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/extrato-bancario-ms:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/gerador-numero-conta-afins-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/gerador-numero-conta-afins-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/gerador-numero-conta-afins-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/gerador-numero-conta-afins-ms:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/saque-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/saque-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/saque-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/saque-ms:latest
+          docker tag ${{ secrets.DOCKER_USERNAME }}/transferencia-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/transferencia-ms:${{ github.run_id }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/transferencia-ms:0.0.1-SNAPSHOT ${{ secrets.DOCKER_USERNAME }}/transferencia-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/eureka-server:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/eureka-server:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/api-gateway:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/conta-corrente-poupanca-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/conta-corrente-poupanca-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/conta-digital-cliente-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/conta-digital-cliente-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/deposito-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/deposito-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/endereco-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/endereco-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/extrato-bancario-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/extrato-bancario-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/gerador-numero-conta-afins-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/gerador-numero-conta-afins-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/saque-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/saque-ms:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/transferencia-ms:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/transferencia-ms:latest
