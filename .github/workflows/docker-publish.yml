@@ -30,38 +30,38 @@ jobs:
         working-directory: ./api-gateway
         run: mvn spring-boot:build-image
 
-#      - name: Constrói Container Image do Microsserviço "jbank-core"
-#        working-directory: ./jbank-core
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "jbank-core"
+        working-directory: ./jbank-core
+        run: mvn spring-boot:build-image -DskipTests
 
-#      - name: Constrói Container Image do Microsserviço "conta-corrente-poupanca-ms"
-#        working-directory: ./conta-corrente-poupanca-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "conta-corrente-poupanca-ms"
+        working-directory: ./conta-corrente-poupanca-ms
+        run: mvn spring-boot:build-image -DskipTests
 
-#      - name: Constrói Container Image do Microsserviço "conta-digital-cliente-ms"
-#        working-directory: ./conta-digital-cliente-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "conta-digital-cliente-ms"
+        working-directory: ./conta-digital-cliente-ms
+        run: mvn spring-boot:build-image -DskipTests
 
-#      - name: Constrói Container Image do Microsserviço "deposito-ms"
-#        working-directory: ./deposito-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "deposito-ms"
+        working-directory: ./deposito-ms
+        run: mvn spring-boot:build-image -DskipTests
 
-#      - name: Constrói Container Image do Microsserviço "endereco-ms"
-#        working-directory: ./endereco-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "endereco-ms"
+        working-directory: ./endereco-ms
+        run: mvn spring-boot:build-image -DskipTests
         
-#      - name: Constrói Container Image do Microsserviço "extrato-bancario-ms"
-#        working-directory: ./extrato-bancario-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "extrato-bancario-ms"
+        working-directory: ./extrato-bancario-ms
+        run: mvn spring-boot:build-image -DskipTests
         
-#      - name: Constrói Container Image do Microsserviço "gerador-numero-conta-afins-ms"
-#        working-directory: ./gerador-numero-conta-afins-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "gerador-numero-conta-afins-ms"
+        working-directory: ./gerador-numero-conta-afins-ms
+        run: mvn spring-boot:build-image -DskipTests
         
-#      - name: Constrói Container Image do Microsserviço "saque-ms"
-#        working-directory: ./saque-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "saque-ms"
+        working-directory: ./saque-ms
+        run: mvn spring-boot:build-image -DskipTests
         
-#      - name: Constrói Container Image do Microsserviço "transferencia-ms"
-#        working-directory: ./transferencia-ms
-#        run: mvn spring-boot:build-image -DskipTests
+      - name: Constrói Container Image do Microsserviço "transferencia-ms"
+        working-directory: ./transferencia-ms
+        run: mvn spring-boot:build-image -DskipTests
