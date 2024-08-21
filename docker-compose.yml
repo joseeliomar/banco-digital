@@ -4,7 +4,7 @@ networks:
 
 services:
   eureka-server:
-    image: eureka-server:latest
+    image: joseeliomar/eureka-server:latest
     ports:
       - 8761:8761
     networks:
