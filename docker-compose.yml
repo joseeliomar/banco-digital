@@ -1,0 +1,7 @@
+version: '3.4'
+
+services:
+  eureka-server:
+    image: eureka-server:0.0.1-SNAPSHOT
+    ports:
+      - 8761:8761
