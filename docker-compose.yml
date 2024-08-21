@@ -1,7 +1,299 @@
-version: '3.4'
+version: '3.8'
+
+networks:
+    jbank-network:
+      driver: bridge
 
 services:
   eureka-server:
     image: eureka-server:0.0.1-SNAPSHOT
     ports:
       - 8761:8761
+    networks:
+      - jbank-network
+
+  conta-digital-cliente-ms-db:
+    image: mysql:8.0.37
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: conta_digital_cliente_ms
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_TCP_PORT: 3312
+    ports:
+      - 3312:3312
+    expose:
+      - 3312 
+    networks:
+      - jbank-network
+
+  conta-corrente-poupanca-ms-db:
+    image: mysql:8.0.37
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: conta_corrente_poupanca_ms
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_TCP_PORT: 3309
+    ports:
+      - 3309:3309
+    expose:
+      - 3309 
+    networks:
+      - jbank-network
+
+  extrato-bancario-ms-db:
+    image: mysql:8.0.37
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: extrato_bancario_ms
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_TCP_PORT: 3310
+    ports:
+      - 3310:3310
+    expose:
+      - 3310
+    networks:
+      - jbank-network
+
+  gerador-numero-conta-afins-ms-db:
+    image: postgres:16.3
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: gerador_numero_conta_afins_ms
+    ports:
+      - 3313:3313
+    expose:
+      - 3313
+    networks:
+      - jbank-network
+
+  endereco-ms-db:
+    image: mysql:8.0.37
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: admin123
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: admin123
+      MYSQL_DATABASE: endereco_ms
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_TCP_PORT: 3311
+    ports:
+      - 3311:3311
+    expose:
+      - 3311 
+    networks:
+      - jbank-network
+
+  api-gateway:
+    image: joseeliomar/api-gateway:0.0.1-SNAPSHOT
+    ports:
+      - 8765:8765
+    depends_on:
+      - eureka-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+    networks:
+      - jbank-network
+
+  conta-corrente-poupanca-ms:
+    image: joseeliomar/conta-corrente-poupanca-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.DATASOURCE.URL: jdbc:mysql://conta-corrente-poupanca-ms-db:3309/conta_corrente_poupanca_ms?useSSL=false&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin123
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - conta-corrente-poupanca-ms-db
+      - api-gateway
+    networks:
+      - jbank-network
+
+  conta-digital-cliente-ms:
+    image: joseeliomar/conta-digital-cliente-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.DATASOURCE.URL: jdbc:mysql://conta-digital-cliente-ms-db:3312/conta_digital_cliente_ms?useSSL=false&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin123
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - conta-digital-cliente-ms-db
+      - api-gateway
+      - conta-corrente-poupanca-ms
+      - gerador-numero-conta-afins-ms
+    networks:
+      - jbank-network
+
+  deposito-ms:
+    image: joseeliomar/deposito-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - api-gateway
+      - conta-corrente-poupanca-ms
+      - conta-digital-cliente-ms
+      - extrato-bancario-ms
+    networks:
+      - jbank-network
+
+  endereco-ms:
+    image: joseeliomar/endereco-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.DATASOURCE.URL: jdbc:mysql://endereco-ms-db:3311/endereco_ms?useSSL=false&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin123
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - endereco-ms-db
+      - api-gateway
+    networks:
+      - jbank-network
+
+  extrato-bancario-ms:
+    image: joseeliomar/endereco-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.DATASOURCE.URL: jdbc:mysql://extrato-bancario-ms-db:3310/extrato_bancario_ms?useSSL=false&serverTimezone=UTC&enabledTLSProtocols=TLSv1.2
+      SPRING.DATASOURCE.USERNAME: root
+      SPRING.DATASOURCE.PASSWORD: admin123
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - extrato-bancario-ms-db
+      - api-gateway
+      - conta-digital-cliente-ms
+    networks:
+      - jbank-network
+
+  saque-ms:
+    image: joseeliomar/saque-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - api-gateway
+      - conta-corrente-poupanca-ms
+      - conta-digital-cliente-ms
+      - extrato-bancario-ms
+    networks:
+      - jbank-network
+
+  gerador-numero-conta-afins-ms:
+    image: joseeliomar/conta-digital-cliente-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+      SPRING.DATASOURCE.URL: jdbc:postgresql://gerador-numero-conta-afins-ms-db:3313/gerador_numero_conta_afins_ms
+      SPRING.DATASOURCE.USERNAME: postgres
+      SPRING.DATASOURCE.PASSWORD: admin123
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - gerador-numero-conta-afins-ms-db
+      - api-gateway
+    networks:
+      - jbank-network
+
+  transferencia-ms:
+    image: joseeliomar/transferencia-ms
+    restart: always
+    environment:
+      TZ: America/Sao_Paulo
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://naming-server:8761/eureka
+    deploy:
+      replicas: 1
+    ports:
+      - target: 0
+        published: 0
+        protocol: tcp
+        mode: host
+    depends_on:
+      - naming-server
+      - api-gateway
+      - conta-corrente-poupanca-ms
+      - conta-digital-cliente-ms
+      - extrato-bancario-ms
+    networks:
+      - jbank-network
