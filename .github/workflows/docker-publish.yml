@@ -1,0 +1,67 @@
+name: Continuous integration com GitHub
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Loggin no Docker Hub
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4.2.2
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Constrói Container Image do Eureka Server
+        working-directory: ./eureka-server
+        run: mvn spring-boot:build-image
+
+      - name: Constrói Container Image da API Gateway
+        working-directory: ./api-gateway
+        run: mvn spring-boot:build-image
+
+#      - name: Constrói Container Image do Microsserviço "jbank-core"
+#        working-directory: ./jbank-core
+#        run: mvn spring-boot:build-image -DskipTests
+
+#      - name: Constrói Container Image do Microsserviço "conta-corrente-poupanca-ms"
+#        working-directory: ./conta-corrente-poupanca-ms
+#        run: mvn spring-boot:build-image -DskipTests
+
+#      - name: Constrói Container Image do Microsserviço "conta-digital-cliente-ms"
+#        working-directory: ./conta-digital-cliente-ms
+#        run: mvn spring-boot:build-image -DskipTests
+
+#      - name: Constrói Container Image do Microsserviço "deposito-ms"
+#        working-directory: ./deposito-ms
+#        run: mvn spring-boot:build-image -DskipTests
+
+#      - name: Constrói Container Image do Microsserviço "endereco-ms"
+#        working-directory: ./endereco-ms
+#        run: mvn spring-boot:build-image -DskipTests
+        
+#      - name: Constrói Container Image do Microsserviço "extrato-bancario-ms"
+#        working-directory: ./extrato-bancario-ms
+#        run: mvn spring-boot:build-image -DskipTests
+        
+#      - name: Constrói Container Image do Microsserviço "gerador-numero-conta-afins-ms"
+#        working-directory: ./gerador-numero-conta-afins-ms
+#        run: mvn spring-boot:build-image -DskipTests
+        
+#      - name: Constrói Container Image do Microsserviço "saque-ms"
+#        working-directory: ./saque-ms
+#        run: mvn spring-boot:build-image -DskipTests
+        
+#      - name: Constrói Container Image do Microsserviço "transferencia-ms"
+#        working-directory: ./transferencia-ms
+#        run: mvn spring-boot:build-image -DskipTests
