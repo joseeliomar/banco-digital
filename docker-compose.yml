@@ -4,7 +4,7 @@ networks:
 
 services:
   eureka-server:
-    image: eureka-server:0.0.1-SNAPSHOT
+    image: eureka-server:latest
     ports:
       - 8761:8761
     networks:
@@ -102,7 +102,7 @@ services:
       - jbank-network
 
   api-gateway:
-    image: joseeliomar/api-gateway:0.0.1-SNAPSHOT
+    image: joseeliomar/api-gateway:latest
     ports:
       - 8765:8765
     depends_on:
@@ -113,7 +113,7 @@ services:
       - jbank-network
 
   conta-corrente-poupanca-ms:
-    image: joseeliomar/conta-corrente-poupanca-ms
+    image: joseeliomar/conta-corrente-poupanca-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
@@ -136,7 +136,7 @@ services:
       - jbank-network
 
   conta-digital-cliente-ms:
-    image: joseeliomar/conta-digital-cliente-ms
+    image: joseeliomar/conta-digital-cliente-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
@@ -161,7 +161,7 @@ services:
       - jbank-network
 
   deposito-ms:
-    image: joseeliomar/deposito-ms
+    image: joseeliomar/deposito-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
@@ -183,7 +183,7 @@ services:
       - jbank-network
 
   endereco-ms:
-    image: joseeliomar/endereco-ms
+    image: joseeliomar/endereco-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
@@ -206,7 +206,7 @@ services:
       - jbank-network
 
   extrato-bancario-ms:
-    image: joseeliomar/endereco-ms
+    image: joseeliomar/endereco-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
@@ -230,7 +230,7 @@ services:
       - jbank-network
 
   saque-ms:
-    image: joseeliomar/saque-ms
+    image: joseeliomar/saque-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
@@ -252,7 +252,7 @@ services:
       - jbank-network
 
   gerador-numero-conta-afins-ms:
-    image: joseeliomar/conta-digital-cliente-ms
+    image: joseeliomar/conta-digital-cliente-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
@@ -275,7 +275,7 @@ services:
       - jbank-network
 
   transferencia-ms:
-    image: joseeliomar/transferencia-ms
+    image: joseeliomar/transferencia-ms:latest
     restart: always
     environment:
       TZ: America/Sao_Paulo
