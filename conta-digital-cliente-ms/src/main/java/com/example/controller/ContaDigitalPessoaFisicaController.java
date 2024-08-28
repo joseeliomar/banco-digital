@@ -22,13 +22,18 @@ import com.example.model.ContaDigitalPessoaFisica;
 import com.example.service.ContaDigitalPessoaFisicaService;
 import com.example.utils.Utils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/contaDigitalPessoaFisica")
+@Tag(name = "Conta digital para pessoa física")
 public class ContaDigitalPessoaFisicaController {
 
 	@Autowired
 	private ContaDigitalPessoaFisicaService contaDigitalPessoaFisicaService;
 
+	@Operation(summary = "Realiza a inserção de uma conta digital")
 	@PostMapping("/")
 	public ResponseEntity<ContaDigitalPessoaFisicaInseridaDto> insereContaDigitalPessoaFisica(
 			@RequestBody ContaDigitalPessoaFisicaInsercaoDto contaDigitalPessoaFisicaInsercaoDto) {
@@ -40,6 +45,7 @@ public class ContaDigitalPessoaFisicaController {
 		return ResponseEntity.created(uriRecursoCriado).body(contaDigitalPessoaFisicaInseridaDto);
 	}
 	
+	@Operation(summary = "Realiza a busca de uma conta digital pelo CPF")
 	@GetMapping("/{cpf}")
 	public ResponseEntity<?> buscaContaDigitalPessoaFisica(@PathVariable String cpf) {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisicaDTO1Busca = contaDigitalPessoaFisicaService
@@ -52,6 +58,7 @@ public class ContaDigitalPessoaFisicaController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@Operation(summary = "Realiza a busca de uma conta digital pela agência e conta")
 	@GetMapping("/{agencia}/{conta}")
 	public ResponseEntity<?> buscaContaDigitalPessoaFisica(@PathVariable String agencia, @PathVariable String conta) {
 		ContaDigitalPessoaFisicaDTO1Busca contaDigitalPessoaFisicaDTO1Busca = contaDigitalPessoaFisicaService
@@ -64,6 +71,7 @@ public class ContaDigitalPessoaFisicaController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@Operation(summary = "Realiza a alteração de uma conta digital")
 	@PutMapping("/")
 	public ResponseEntity<ContaDigitalPessoaFisicaAlteradaDto> alteraContaDigitalPessoaFisica(
 			@RequestBody ContaDigitalPessoaFisicaAlteracaoDto contaDigitalPessoaFisicaAlteracaoDto) {
@@ -72,6 +80,7 @@ public class ContaDigitalPessoaFisicaController {
 		return ResponseEntity.ok(new ContaDigitalPessoaFisicaAlteradaDto(contaDigitalPessoaFisica));
 	}
 	
+	@Operation(summary = "Realiza a exclusão de uma conta digital")
 	@DeleteMapping("/{cpf}")
 	public ResponseEntity<?> removeContaDigitalPessoaFisica(@PathVariable String cpf) {
 		contaDigitalPessoaFisicaService.removeContaDigitalPessoaFisica(cpf);

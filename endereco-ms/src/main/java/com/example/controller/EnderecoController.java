@@ -24,13 +24,18 @@ import com.example.model.Endereco;
 import com.example.service.EnderecoService;
 import com.example.utils.Utils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/endereco")
+@Tag(name = "Endereço")
 public class EnderecoController {
 
 	@Autowired
 	private EnderecoService enderecoService;
 
+	@Operation(summary = "Realiza a inserção de um endereço")
 	@PostMapping("/")
 	public ResponseEntity<EnderecoInseridoDto> insereEndereco(@RequestBody EnderecoInsercaoDto enderecoInsercaoDto) {
 		Endereco endereco = enderecoService.insereEndereco(enderecoInsercaoDto);
@@ -39,6 +44,7 @@ public class EnderecoController {
 		return ResponseEntity.created(uriRecursoCriado).body(enderecoInseridoDto);
 	}
 	
+	@Operation(summary = "Realiza a busca de um endereço")
 	@GetMapping("/{idEndereco}")
 	public ResponseEntity<?> buscaEndereco(@PathVariable Long idEndereco) {
 		EnderecoBuscaDto1 enderecoBuscaDTO1 = enderecoService.buscaEnderecoCompleto(idEndereco);
@@ -50,8 +56,9 @@ public class EnderecoController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@Operation(summary = "Realiza a busca por endereços")
 	@GetMapping("/")
-	public ResponseEntity<Page<EnderecoBuscaDto1>> buscaTarefas(Pageable pageable) {
+	public ResponseEntity<Page<EnderecoBuscaDto1>> buscaEnderecos(Pageable pageable) {
 		Page<Endereco> enderecosEncontrados = enderecoService.buscaEnderecos(pageable);
 		
 		if (enderecosEncontrados.isEmpty()) {
@@ -63,12 +70,14 @@ public class EnderecoController {
 		return ResponseEntity.ok(enderecosEncontradosDto);
 	}
 	
+	@Operation(summary = "Realiza a alteração de um endereço")
 	@PutMapping("/")
 	public ResponseEntity<EnderecoAlteradoDto> alteraEndereco(@RequestBody EnderecoAlteracaoDto enderecoAlteracaoDto) {
 		Endereco endereco = enderecoService.alteraEndereco(enderecoAlteracaoDto);
 		return ResponseEntity.ok(new EnderecoAlteradoDto(endereco));
 	}
 	
+	@Operation(summary = "Realiza a exclusão de um endereço")
 	@DeleteMapping("/{idEndereco}")
 	public ResponseEntity<?> removeEndereco(@PathVariable Long idEndereco) {
 		enderecoService.removeEndereco(idEndereco);

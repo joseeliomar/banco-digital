@@ -17,13 +17,18 @@ import com.example.model.ItemExtratoContaPessoaFisica;
 import com.example.service.ExtratoContaPessoaFisicaService;
 import com.example.utils.Utils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/itemExtratoContaPessoaFisica")
+@Tag(name = "Item de extrato de conta corrente para pessoa física")
 public class ItemExtratoContaPessoaFisicaController {
 
 	@Autowired
 	private ExtratoContaPessoaFisicaService extratoContaPessoaFisicaService;
 
+	@Operation(summary = "Realização a inserção de um item de extrato")
 	@PostMapping("/")
 	public ResponseEntity<ItemExtratoContaPessoaFisicaInseridoDto> insereItemExtratoContaPessoaFisica(
 			@RequestBody ItemExtratoContaPessoaFisicaInsercaoDto itemExtratoContaPessoaFisicaInsercaoDto) {
@@ -35,6 +40,7 @@ public class ItemExtratoContaPessoaFisicaController {
 		return ResponseEntity.created(uriRecursoCriado).body(itemExtratoContaPessoaFisicaInseridoDto);
 	}
 	
+	@Operation(summary = "Realização a exclusão de um item de extrato")
 	@DeleteMapping("/{idItemExtratoContaPessoaFisica}")
 	public ResponseEntity<?> removeItemExtratoContaPessoaFisica(@PathVariable Long idItemExtratoContaPessoaFisica) {
 		extratoContaPessoaFisicaService.removeItemExtratoContaPessoaFisica(idItemExtratoContaPessoaFisica);

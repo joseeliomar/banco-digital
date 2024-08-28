@@ -24,13 +24,18 @@ import com.example.model.ContaPessoaFisica;
 import com.example.service.ContaPessoaFisicaService;
 import com.example.utils.Utils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/contaPessoaFisica")
+@Tag(name = "Conta corrente e conta poupança para pessoa física")
 public class ContaPessoaFisicaController {
 
 	@Autowired
 	private ContaPessoaFisicaService contaPessoaFisicaService;
 
+	@Operation(summary = "Realiza a inserção de uma conta corrente ou conta poupança")
 	@PostMapping("/")
 	public ResponseEntity<ContaPessoaFisicaInseridaDto> insereContaPessoaFisica(
 			@RequestBody ContaPessoaFisicaInsercaoDto contaPessoaFisicaInsercaoDto) {
@@ -47,6 +52,7 @@ public class ContaPessoaFisicaController {
 		return ResponseEntity.created(uriRecursoCriado).body(contaPessoaFisicaInseridaDto);
 	}
 	
+	@Operation(summary = "Realiza a busca de uma conta corrente ou conta poupança")
 	@GetMapping("/{cpf}/{tipoConta}")
 	public ResponseEntity<?> buscaContaPessoaFisica(@PathVariable String cpf, @PathVariable TipoConta tipoConta) {
 		ContaPessoaFisicaBuscaDto1 contaPessoaFisicaBuscaDto1 = contaPessoaFisicaService
@@ -59,6 +65,7 @@ public class ContaPessoaFisicaController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@Operation(summary = "Realiza a alteração de uma conta corrente ou conta poupança")
 	@PutMapping("/")
 	public ResponseEntity<ContaPessoaFisicaAlteradaDto> alteraContaPessoaFisica(
 			@RequestBody ContaPessoaFisicaAlteracaoDto contaPessoaFisicaAlteracaoDto) {
@@ -67,6 +74,7 @@ public class ContaPessoaFisicaController {
 		return ResponseEntity.ok(new ContaPessoaFisicaAlteradaDto(contaPessoaFisica));
 	}
 	
+	@Operation(summary = "Realiza a exclusão de uma conta corrente ou conta poupança")
 	@DeleteMapping("/{idContaPessoaFisica}")
 	public ResponseEntity<?> removeContaPessoaFisica(@PathVariable Long idContaPessoaFisica) {
 		contaPessoaFisicaService.removeContaPessoaFisica(idContaPessoaFisica);

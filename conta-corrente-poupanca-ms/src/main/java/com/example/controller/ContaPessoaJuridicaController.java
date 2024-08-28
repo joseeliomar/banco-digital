@@ -24,13 +24,18 @@ import com.example.model.ContaPessoaJuridica;
 import com.example.service.ContaPessoaJuridicaService;
 import com.example.utils.Utils;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/contaPessoaJuridica")
+@Tag(name = "Conta corrente e conta poupança para pessoa jurídica")
 public class ContaPessoaJuridicaController {
 
 	@Autowired
 	private ContaPessoaJuridicaService contaPessoaJuridicaService;
 
+	@Operation(summary = "Realiza a inserção de uma conta corrente ou conta poupança")
 	@PostMapping("/")
 	public ResponseEntity<ContaPessoaJuridicaInseridaDto> insereContaPessoaJuridica(
 			@RequestBody ContaPessoaJuridicaInsercaoDto contaPessoaJuridicaInsercaoDto) {
@@ -47,6 +52,7 @@ public class ContaPessoaJuridicaController {
 		return ResponseEntity.created(uriRecursoCriado).body(contaPessoaJuridicaInseridaDto);
 	}
 	
+	@Operation(summary = "Realiza a busca de uma conta corrente ou conta poupança")
 	@GetMapping("/{cnpj}/{tipoConta}")
 	public ResponseEntity<?> buscaContaPessoaJuridica(@PathVariable String cnpj, @PathVariable TipoConta tipoConta) {
 		ContaPessoaJuridicaBuscaDto1 contaPessoaJuridicaBuscaDto1 = contaPessoaJuridicaService
@@ -59,6 +65,7 @@ public class ContaPessoaJuridicaController {
 		return ResponseEntity.notFound().build();
 	}
 	
+	@Operation(summary = "Realiza a alteração de uma conta corrente ou conta poupança")
 	@PutMapping("/")
 	public ResponseEntity<ContaPessoaJuridicaAlteradaDto> alteraContaPessoaJuridica(
 			@RequestBody ContaPessoaJuridicaAlteracaoDto contaPessoaJuridicaAlteracaoDto) {
@@ -67,6 +74,7 @@ public class ContaPessoaJuridicaController {
 		return ResponseEntity.ok(new ContaPessoaJuridicaAlteradaDto(contaPessoaJuridica));
 	}
 	
+	@Operation(summary = "Realiza a exclusão de uma conta corrente ou conta poupança")
 	@DeleteMapping("/{idContaPessoaJuridica}")
 	public ResponseEntity<?> removeContaPessoaJuridica(@PathVariable Long idContaPessoaJuridica) {
 		contaPessoaJuridicaService.removeContaPessoaJuridica(idContaPessoaJuridica);

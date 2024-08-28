@@ -10,13 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.dto.DadosParaSaqueContaPessoaFisicaDto;
 import com.example.service.SaqueContaCorrentePessoaFisicaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/saqueContaCorrentePessoaFisica")
+@Tag(name = "Saque em conta corrente de pessoa física")
 public class SaqueContaCorrentePessoaFisicaController {
 
 	@Autowired
 	private SaqueContaCorrentePessoaFisicaService saqueContaCorrentePessoaFisicaService;
 
+	@Operation(summary = "Realiza um saque")
 	@PostMapping("/")
 	public ResponseEntity<?> efetuaSaqueContaPessoaFisica(
 			@RequestBody DadosParaSaqueContaPessoaFisicaDto dadosParaSaqueContaPessoaFisicaDto) {
