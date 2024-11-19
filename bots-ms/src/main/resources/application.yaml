@@ -1,0 +1,35 @@
+server:
+  port: 0
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+telegram:
+  bot:
+    token: ${BOT_TELEGRAM_AJB_TOKEN}
+    username: ${BOT_TELEGRAM_AJB_USERNAME}
+
+
+spring:
+  application:
+    name: bots-ms
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 600000000
+            read-timeout: 600000000
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/bot_assistent_jbank
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini

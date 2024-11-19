@@ -1,0 +1,26 @@
+server:
+  port: 0
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+
+spring:
+  application:
+    name: notifica-ms
+  kafka:
+    bootstrap-servers:
+    - localhost:9092
+    consumer:
+      group-id: notifica-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+
+twilio:
+  my-phone-number: ${MY_TWILIO_PHONE_NUMBER}
+  account-sid: ${MY_TWILIO_ACCOUNT_SID}
+  auth-token: ${MY_TWILIO_AUTH_TOKEN}
