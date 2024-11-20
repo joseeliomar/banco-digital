@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +19,13 @@ public class OllamaService implements IAService {
 
 	@Autowired
 	private OllamaFeignClient ollamaFeignClient;
+	
+	@Value("${ollama.model}")
+	private String ollamaModel;
 
 	@Override
 	public String processarMensagem(List<Message> mensagensConversa) {
-		DadosSolicitacaoRespostaDto dadosSolicitacaoRespostaDto = new DadosSolicitacaoRespostaDto("llama3.2:1b",
+		DadosSolicitacaoRespostaDto dadosSolicitacaoRespostaDto = new DadosSolicitacaoRespostaDto(this.ollamaModel,
 				mensagensConversa.stream().map(m -> new MensagensConversaDto(m.getRole(), m.getContent())).toList());
 
 		ResponseEntity<List<FracaoRespostaModeloDto>> respostaRequisicaoHttp = this.ollamaFeignClient
