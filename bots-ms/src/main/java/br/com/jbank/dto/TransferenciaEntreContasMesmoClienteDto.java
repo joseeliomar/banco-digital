@@ -1,8 +1,23 @@
 package br.com.jbank.dto;
 
-import br.com.jbank.enumeration.Operacao;
+public class TransferenciaEntreContasMesmoClienteDto extends DadosParaTransferenciaBancaria {
 
-public record TransferenciaEntreContasMesmoClienteDto(String cpfCliente, Operacao tipoTransferencia,
-		double valorTransferencia, String tipoContaOrigemDinheiro) {
+	private static final long serialVersionUID = 1L;
+	
+	private String cpfCliente;
+	private double valorTransferencia;
+	private String tipoContaOrigemDinheiro;
+
+	public String getCpfCliente() {
+		return cpfCliente;
+	}
+
+	public double getValorTransferencia() {
+		return valorTransferencia;
+	}
+
+	public String getTipoContaOrigemDinheiro() {
+		return tipoContaOrigemDinheiro;
+	}
 
 }

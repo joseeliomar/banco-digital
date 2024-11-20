@@ -1,6 +1,7 @@
 package br.com.jbank.bot.telegram;
 
 import java.time.Instant;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,11 +13,15 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import br.com.jbank.dto.TransferenciaEntreContasMesmoClienteDto;
+import br.com.jbank.dto.DadosParaTransferenciaBancaria;
+import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto;
+import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto;
+import br.com.jbank.dto.DadosParaTransferenciaEntreContasMesmoClienteDto;
 import br.com.jbank.enumeration.Operacao;
 import br.com.jbank.modelo.ConversationUserWithBot;
 import br.com.jbank.modelo.Message;
@@ -27,6 +32,8 @@ import br.com.jbank.service.OllamaService;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
+
+	private static final String STATUS_PARA_PROCESSAMENTO_TRANSFERENCIA = "OK_TUDO_PRONTO_PROCESSAMENTO_TRANSFERENCIA";
 
 	@Value("${telegram.bot.username}")
 	private String botUsername;
@@ -40,11 +47,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 	@Autowired
 	private TransferenciaFeignClient transferenciaFeignClient;
 
-	@Autowired
 	private ObjectMapper objectMapper;
 
 	public TelegramBot(@Value("${telegram.bot.token}") String botToken) {
 		super(botToken);
+		this.objectMapper = new ObjectMapper();
+		this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 	}
 
 	@Override
@@ -56,59 +64,83 @@ public class TelegramBot extends TelegramLongPollingBot {
 			ConversationUserWithBot conversaAtualComBot = buscaConversa(telegramChatId);
 			adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.USER.getTexto(), novaMensagemUsuario);
 
-			String respostaParaUsuario;
+			String respostaParaUsuario = null;
+			String respostaModelo = null;
 			try {
-				respostaParaUsuario = iAService.processarMensagem(conversaAtualComBot.getMessages());
+				respostaModelo = iAService.processarMensagem(conversaAtualComBot.getMessages());
 
-				if (respostaParaUsuario.contains("OK_TUDO_PRONTO_PROCESSAMENTO_DADOS")) {
-					Message ultimaMensagemBota = conversaAtualComBot.getMessages().get(conversaAtualComBot.getMessages().size() - 1);
-					ultimaMensagemBota.setContent(ultimaMensagemBota.getContent().replaceAll("OK_TUDO_PRONTO_PROCESSAMENTO_DADOS", ""));
-					
-					TransferenciaEntreContasMesmoClienteDto dadosParaTransferencia = geraDtoParaTransferencia(conversaAtualComBot);
-					// Converte a resposta em um objeto Transferencia
-//					ObjectMapper objectMapper = new ObjectMapper();
-//                    Transferencia transferencia = objectMapper.readValue(response, Transferencia.class);
-					// realiza aqui a transferência
-
-					Operacao operacao = dadosParaTransferencia.tipoTransferencia();
-
-					HttpStatusCode statusCode = null;
-					if (operacao.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO)) {
-						statusCode = this.transferenciaFeignClient
-								.efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(null).getStatusCode();
-						respostaParaUsuario += "A transferência ocorreu com sucesso";
-					} else if (operacao.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE)) {
-						statusCode = this.transferenciaFeignClient.efetuaTransferenciaEntreContasMesmoCliente(null)
-								.getStatusCode();
-					} else if (operacao
-							.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES)) {
-						statusCode = this.transferenciaFeignClient
-								.efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(null)
-								.getStatusCode();
-					} else {
-						respostaParaUsuario += "Escolha um os tipos de transferência que te informei.";
-					}
-
-					if (statusCode != null && statusCode.is2xxSuccessful()) {
-						respostaParaUsuario += "A transferência ocorreu com sucesso!";
-					}
+				if (respostaModelo.contains(STATUS_PARA_PROCESSAMENTO_TRANSFERENCIA)) {
+					respostaParaUsuario = executaTransferenciaBancaria(conversaAtualComBot);
+				} else {
+					adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.ASSISTANT.getTexto(), respostaModelo);
+					respostaParaUsuario = respostaModelo;
 				}
 			} catch (Exception e) {
 				respostaParaUsuario = "Desculpe, ocorreu um erro ao processar sua solicitação. Tente novamente.";
+				adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.SYSTEM.getTexto(), respostaModelo);
 				e.printStackTrace();
 			}
-
-			adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.ASSISTANT.getTexto(), respostaParaUsuario);
+			
 			conversationService.salvaConversa(conversaAtualComBot);
 
-			enviaRespostaBot(telegramChatId, respostaParaUsuario);
+			enviaRespostaBot(telegramChatId, respostaParaUsuario.toString());
 		}
 	}
 
-	private TransferenciaEntreContasMesmoClienteDto geraDtoParaTransferencia(
-			ConversationUserWithBot conversaUsuarioComBot) throws JsonMappingException, JsonProcessingException {
-		objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-		
+	private String executaTransferenciaBancaria(ConversationUserWithBot conversaAtualComBot)
+			throws JsonMappingException, JsonProcessingException {
+		String statusTransferencia = "";
+
+		DadosParaTransferenciaBancaria dadosParaTransferencia = obtemDadosTransferencia(conversaAtualComBot);
+		Operacao operacao = dadosParaTransferencia.getTipoTransferencia();
+
+		HttpStatusCode statusCode = null;
+		if (operacao.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO)) {
+			statusCode = efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(dadosParaTransferencia);
+		} else if (operacao.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE)) {
+			statusCode = efetuaTransferenciaEntreContasMesmoCliente(dadosParaTransferencia);
+		} else if (operacao.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES)) {
+			statusCode = efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
+					dadosParaTransferencia);
+		} else {
+			statusTransferencia = "Desculpe, mas você deve escolher um os tipos de transferência informados.";
+		}
+
+		if (statusCode != null && statusCode.is2xxSuccessful()) {
+			statusTransferencia = "A transferência ocorreu com sucesso!";
+		} else {
+			statusTransferencia = "Ocorreu algum problema durante a transferência. Por favor, solicite "
+					+ "novamente mais tarde que o último pedido de transferência seja processsado novamente. "
+					+ "Caso o problema persista, por favor, utilize o nosso aplicativo ou o nosso internet "
+					+ "bank. Problemas acontecem, mas estamos sempre trabalhando para resolve-los e para "
+					+ "melhorar os nossos produtos e serviços. Nos desculpe pelo transtorno.";
+		}
+		return statusTransferencia;
+	}
+
+	private HttpStatusCode efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
+			DadosParaTransferenciaBancaria dadosParaTransferencia) {
+		return this.transferenciaFeignClient.efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
+				(DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto) dadosParaTransferencia)
+				.getStatusCode();
+	}
+
+	private HttpStatusCode efetuaTransferenciaEntreContasMesmoCliente(
+			DadosParaTransferenciaBancaria dadosParaTransferencia) {
+		return this.transferenciaFeignClient.efetuaTransferenciaEntreContasMesmoCliente(
+				(DadosParaTransferenciaEntreContasMesmoClienteDto) dadosParaTransferencia).getStatusCode();
+	}
+
+	private HttpStatusCode efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(
+			DadosParaTransferenciaBancaria dadosParaTransferencia) {
+		return this.transferenciaFeignClient
+				.efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(
+						(DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto) dadosParaTransferencia)
+				.getStatusCode();
+	}
+
+	private DadosParaTransferenciaBancaria obtemDadosTransferencia(ConversationUserWithBot conversaUsuarioComBot)
+			throws JsonMappingException, JsonProcessingException {
 		String promptParaIA = "Agora que o cliente já informou os dados da transferência e confirmou que deseja "
 				+ "prosseguir com a transferência bancária: gere um JSON com o CPF do usuário, o valor da "
 				+ "transferência, o tipo de transferência e o tipo da conta de origem do dinheiro (origem do dinheiro)."
@@ -131,10 +163,26 @@ public class TelegramBot extends TelegramLongPollingBot {
 		adicionaNovaMensagemNaConversa(conversaUsuarioComBot, Role.SYSTEM.getTexto(), promptParaIA);
 		String json = iAService.processarMensagem(conversaUsuarioComBot.getMessages());
 
-		TransferenciaEntreContasMesmoClienteDto dadosParaTransferencia = objectMapper.readValue(json,
-				TransferenciaEntreContasMesmoClienteDto.class);
+		Map<String, Object> map = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
+		});
 
-		return dadosParaTransferencia;
+		String tipoTransferencia = (String) map.get("tipoTransferencia");
+
+		DadosParaTransferenciaBancaria dadosTransferenciaBancaria = null;
+		if (tipoTransferencia.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE.name())) {
+			dadosTransferenciaBancaria = objectMapper.convertValue(map,
+					DadosParaTransferenciaEntreContasMesmoClienteDto.class);
+		} else if (tipoTransferencia
+				.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO.name())) {
+			dadosTransferenciaBancaria = objectMapper.convertValue(map,
+					DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto.class);
+		} else if (tipoTransferencia
+				.equals(Operacao.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES.name())) {
+			dadosTransferenciaBancaria = objectMapper.convertValue(map,
+					DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto.class);
+		}
+
+		return dadosTransferenciaBancaria;
 	}
 
 	/**
@@ -205,8 +253,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 					+ "\"Entendido! Vamos começar novamente. Qual tipo de transferência você gostaria de realizar?\"\r\n"
 					+ "\r\n"
 					+ "Uma outra instrução é: se você já tiver obtido todas as informações necessárias para a transferência bancária atual que o cliente deseja realizar "
-					+ "e o cliente já tiver confirmado que deseja fazer a transferência atual, "
-					+ " no final da sua resposta você deve acrescentar a string \"OK_TUDO_PRONTO_PROCESSAMENTO_DADOS\" para que o sistema saiba que está tudo pronto para realizar a transferência";
+					+ "e o cliente já estiver confirmado que deseja fazer a transferência atual, "
+					+ " você deve responder apenas " + STATUS_PARA_PROCESSAMENTO_TRANSFERENCIA
+					+ " para que o sistema saiba que está tudo pronto para realizar a transferência";
 
 			ConversationUserWithBot novaConversa = new ConversationUserWithBot(telegramChatId, Instant.now());
 			adicionaNovaMensagemNaConversa(novaConversa, Role.SYSTEM.getTexto(), promptParaIA);

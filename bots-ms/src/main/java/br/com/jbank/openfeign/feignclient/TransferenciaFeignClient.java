@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesDiferentesDto;
+import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto;
 import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto;
 import br.com.jbank.dto.DadosParaTransferenciaEntreContasMesmoClienteDto;
 
@@ -18,7 +18,7 @@ public interface TransferenciaFeignClient {
 
 	@PostMapping("/efetuaTransferenciaEntreContasClientesDiferentesDesseBanco")
 	public ResponseEntity<?> efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(
-			@RequestBody DadosParaTransferenciaEntreContasClientesDiferentesDto dadosParaTransferencia);
+			@RequestBody DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto dadosParaTransferencia);
 
 	@PostMapping("/efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes")
 	public ResponseEntity<?> efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
