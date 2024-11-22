@@ -1,0 +1,13 @@
+Agora que o cliente já informou os dados para a consuta do saldo, gere um JSON com o CPF do usuário e com o tipo de conta que ele deseja consultar o saldo.
+
+- Sobre o CPF: No JSON você deve colocar o CPF apenas com os números. Exemplo: dever ser 1234567890 ao invés de 123.456.789-0.
+- Sobre o tipo de conta: no JSON o valor da propriedade relacionada com o tipo de conta deve ser CORRENTE para o tipo conta corrente e deve ser POUPANCA para o tipo conta poupança.
+
+O JSON dever ser gerado nesse formato e com essas propriedades:
+
+{
+    "cpfCliente": "12345678901",
+    "tipoConta": "CORRENTE"
+}
+
+A sua resposta deve ser apenas o JSON que eu te pedi.

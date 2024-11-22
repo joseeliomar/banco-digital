@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import br.com.jbank.dto.DadosSolicitacaoRespostaDto;
 import br.com.jbank.dto.FracaoRespostaModeloDto;
 import br.com.jbank.dto.MensagensConversaDto;
-import br.com.jbank.modelo.Message;
+import br.com.jbank.model.Message;
 import br.com.jbank.openfeign.feignclient.OllamaFeignClient;
 
 @Service
@@ -24,7 +24,7 @@ public class OllamaService implements IAService {
 	private String ollamaModel;
 
 	@Override
-	public String processarMensagem(List<Message> mensagensConversa) {
+	public String processarMensagens(List<Message> mensagensConversa) {
 		DadosSolicitacaoRespostaDto dadosSolicitacaoRespostaDto = new DadosSolicitacaoRespostaDto(this.ollamaModel,
 				mensagensConversa.stream().map(m -> new MensagensConversaDto(m.getRole(), m.getContent())).toList());
 

@@ -1,4 +1,4 @@
-package br.com.jbank.modelo;
+package br.com.jbank.model;
 
 import java.time.Instant;
 import java.util.ArrayList;

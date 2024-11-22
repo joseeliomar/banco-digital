@@ -36,3 +36,10 @@ spring:
 
 ollama:
   model: llama3.2
+
+ia-service: springAI # valores possiveis: "ollama" (para utilizar modelos de IA que são opensouce) ou "springIA" (para utilizar modelos fornecidos pelo Spring AI)
+
+camel:
+  component:
+    telegram:
+      authorization-token: ${BOT_TELEGRAM_AJB_TOKEN}

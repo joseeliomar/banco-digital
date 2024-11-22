@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import br.com.jbank.dto.DadosSolicitacaoRespostaDto;
 import br.com.jbank.dto.FracaoRespostaModeloDto;
 
-@FeignClient(name = "http://localhost:11434")
+@FeignClient(name = "OllamaFeignClient", url = "http://localhost:11434")
 public interface OllamaFeignClient {
 
 	@PostMapping("/api/chat")

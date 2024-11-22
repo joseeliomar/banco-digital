@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.jbank.modelo.ConversationUserWithBot;
+import br.com.jbank.model.ConversationUserWithBot;
 import br.com.jbank.repository.ConversationUserWithBotRepository;
 
 @Service
-public class ConversaUsuarioComBotService {
+public class ConversationUserWithBotService {
 
 	@Autowired
 	private ConversationUserWithBotRepository conversationRepository;

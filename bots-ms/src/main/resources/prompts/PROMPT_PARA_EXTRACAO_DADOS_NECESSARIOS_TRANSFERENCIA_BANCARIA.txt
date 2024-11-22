@@ -1,0 +1,62 @@
+Agora que o cliente já informou os dados da transferência e confirmou que deseja prosseguir com a transferência bancária, gere um JSON para mim.
+
+REGRAS PARA A EXTRAÇÃO E GERAÇÃO DO JSON COM OS DADOS PARA A TRANSFERÊNCIA BANCÁRIA:
+1. Se o cliente escolheu a opção "1 - Entre contas do mesmo cliente no JBank", o JSON deve apresentar as seguintes propriedades:
+	- cpfCliente: essa propriedade se refere ao CPF do cliente;
+	- tipoTransferencia: essa propriedade se refere ao tipo de transferência que o cliente escolheu. Preencha essa propriedade com o valor TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE; 
+	- valorTransferencia: essa propriedade se refere ao valor da transferência;
+	- tipoContaOrigemDinheiro: essa propriedade se refere a origem do dinheiro e o valor dessa propriedade deve ser CORRENTE para a opção "1 - Conta corrente" e ser POUPANCA para a opção "2 - Conta poupança".
+
+O JSON dever ser gerado nesse formato:
+
+{
+    "cpfCliente": "12345678901",
+    "tipoTransferencia": "TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE",
+    "valorTransferencia": 400.00,
+    "tipoContaOrigemDinheiro": "CORRENTE"
+}
+
+2. Se o cliente escolheu a opção "2 - Entre contas de clientes diferentes no JBank", o JSON deve apresentar as seguintes propriedades:
+	- cpfClienteDonoContaQueDinheiroSai: essa propriedade se refere ao CPF do cliente;
+	- tipoTransferencia: essa propriedade se refere ao tipo de transferência que o cliente escolheu. Preencha essa propriedade com o valor TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO;
+	- valorTransferencia: essa propriedade se refere ao valor da transferência;
+	- tipoContaOrigemDinheiro: essa propriedade se refere a origem do dinheiro e o valor dessa propriedade deve ser CORRENTE para a opção "1 - Conta corrente" e ser POUPANCA para a opção "2 - Conta poupança";
+	- agenciaDestino: essa propriedade se refere a agência de destino, ou seja para qual agência o dinheiro vai ir;
+    - contaDestino": essa propriedade se refere a conta de destino, ou seja para qual conta o dinheiro vai ir.
+
+O JSON dever ser gerado nesse formato:
+{
+    "cpfClienteDonoContaQueDinheiroSai": "12345678905",
+    "tipoTransferencia": "TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO",
+    "valorTransferencia": 500.0,
+    "tipoContaOrigemDinheiro": "CORRENTE",
+    "agenciaDestinoDinheiro": "0000000001",
+	"contaDestinoDinheiro": "0000000022"
+}
+
+3. Se o cliente escolheu a opção "3 - Para outra instituição financeira", o JSON deve apresentar as seguintes propriedades: 
+	- cpfClienteDonoContaQueDinheiroSai: essa propriedade se refere ao CPF do cliente;
+	- tipoTransferencia: essa propriedade se refere ao tipo de transferência que o cliente escolheu. Preencha essa propriedade com o valor TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES;
+	- valorTransferencia: essa propriedade se refere ao valor da transferência;
+	- tipoContaOrigemDinheiro: essa propriedade se refere a origem do dinheiro e o valor dessa propriedade deve ser CORRENTE para a opção "1 - Conta corrente" e ser POUPANCA para a opção "2 - Conta poupança";
+	- bancoDestino: essa propriedade se refere a instituição financeira de destino, ou seja para qual instituição o dinheiro vai ir;
+	- agenciaDestino: essa propriedade se refere a agência de destino, ou seja para qual agência o dinheiro vai ir;
+    - contaDestino": essa propriedade se refere a conta de destino, ou seja para qual conta o dinheiro vai ir.
+
+O JSON dever ser gerado nesse formato:
+{
+    "cpfClienteDonoContaQueDinheiroSai": "12345678905",
+    "tipoTransferencia": "TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES",
+    "valorTransferencia": 700.0,
+    "tipoContaOrigemDinheiro": "POUPANCA",
+    "bancoDestino": "BANCO_BRASIL",
+    "agenciaDestino": "0000000001",
+    "contaDestino": "0000000001"
+}
+
+REGRAS GERAIS SOBRE VALORES DO JSON:
+- Sobre o CPF: No JSON você deve colocar o CPF apenas com os números. Exemplo: dever ser 1234567890 ao invés de 123.456.789-0.
+- Sobre o valor de transferência: no JSON o valor deve ficar no formato de valores que os americanos usam. Exemplo: deve ser 100000.00 ao invés de 100000,00.
+
+OBSERVAÇÃO IMPORTANTE:
+A sua resposta deve ser apenas o JSON que eu te pedi.

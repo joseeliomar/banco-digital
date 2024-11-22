@@ -1,4 +1,4 @@
-package br.com.jbank.openai.config;
+package br.com.jbank.springai.config;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.context.annotation.Bean;
