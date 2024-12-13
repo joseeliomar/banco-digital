@@ -1,16 +1,15 @@
 ![Static Badge](https://img.shields.io/badge/java-21)  [![Continuous integration com GitHub](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml)
 
-# Artigo do LinkedIn com a Apresentação do Sistema de Banco Digital
-
-**Link do artigo (no vídeo mostro o sistema funcionando):** bit.ly/artigo-linkedin-meu-sistema-banco
-
 # JBank (Back-End de um Banco Digital em Desenvolvimento)
 
 - Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no meu portifólio de projetos aqui no GitHub.
 - Esse projeto está sendo construído com a arquitetura de microsserviços.
 
-# Requisitos Funcionais
+# Artigo do LinkedIn com a Apresentação do Sistema de Banco Digital
 
+**Link do artigo (no vídeo mostro o sistema funcionando):** bit.ly/artigo-linkedin-meu-sistema-banco
+
+# Requisitos Funcionais
 ## 1. Criação da conta digital do cliente
 - O sistema deverá criar cada conta digital para pessoa física com os seguintes dados obrigatórios: CPF, senha da conta, número de telefone, e-mail, nome completo, data de nascimento, país em que nasceu, nome completo da mãe e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP. Nesse caso o CPF será o código da conta digital.
 - O sistema deverá criar cada conta digital para pessoa jurídica com os seguintes dados obrigatórios: CNPJ, senha da conta, número de telefone, e-mail, nome social e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP. Nesse caso o CNPJ será o código da conta digital.
