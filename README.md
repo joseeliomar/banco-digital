@@ -1,9 +1,8 @@
-![Static Badge](https://img.shields.io/badge/java-21)  
-[![Continuous integration com GitHub](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml)
+![Static Badge](https://img.shields.io/badge/java-21)  [![Continuous integration com GitHub](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml)
 
 # Artigo do LinkedIn com a Apresentação do Sistema de Banco Digital
 
-**Link do artigo (no vídeo mostro o sistema funcionando):** bit.ly/artigo-linkedin-meu-sistema-banco
+**Link do artigo (no vídeo mostro o sistema funcionando):** [bit.ly/artigo-linkedin-meu-sistema-banco](bit.ly/artigo-linkedin-meu-sistema-banco)
 
 # JBank (Back-End de um Banco Digital em Desenvolvimento)
 
