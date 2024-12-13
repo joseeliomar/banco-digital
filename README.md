@@ -1,85 +1,64 @@
-![Static Badge](https://img.shields.io/badge/java-21)
+![Static Badge](https://img.shields.io/badge/java-21)  
 [![Continuous integration com GitHub](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml)
 
-# Artigo do LinkedIn com a apresentação desse meu sistema de banco de digital funcionando
-Link do artigo (no vídeo mostro o sistema funcionando): bit.ly/artigo-linkedin-meu-sistema-banco
+# Artigo do LinkedIn com a Apresentação do Sistema de Banco Digital
 
-# JBank (back-end de um banco digital em processo de desenvolvimento).
-  - Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no meu portifólio de projetos aqui no GitHub.
-  - Esse projeto está sendo construído com a arquitetura de microsserviços.
+**Link do artigo (no vídeo mostro o sistema funcionando):** bit.ly/artigo-linkedin-meu-sistema-banco
 
-# Requisitos funcionais
+# JBank (Back-End de um Banco Digital em Desenvolvimento)
 
-## Requisitos funcionais relacionados a criação da conta digital do cliente.
+- Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no meu portifólio de projetos aqui no GitHub.
+- Esse projeto está sendo construído com a arquitetura de microsserviços.
 
-  O sistema deverá criar cada conta digital para pessoa física com os seguintes dados obrigatórios: CPF, senha da conta, número de telefone, e-mail, nome completo, data de nascimento, país em que nasceu, nome completo da mãe e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP. Nesse caso o CPF será o código da conta digital.
- 
-  O sistema deverá criar cada conta digital para pessoa jurídica com os seguintes dados obrigatórios: CNPJ, senha da conta, número de telefone, e-mail, nome social e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP. Nesse caso o CNPJ será o código da conta digital.
-  
-  O sistema deverá gerar automaticamente o número da agência e da conta no momento da criação da conta digital tanto para pessoa física, quanto para pessoa jurídica.
-  
-  O sistema deverá permitir o cadastro da senha, mas ela deverá ser informada duas vezes e as duas senhas informadas deverão ser comparadas para saber se são iguais. A senha deverá ter no mínimo 8 números.
-## Requisitos funcionais relacionados com a alteração da conta digital do cliente.
+# Requisitos Funcionais
 
-  O sistema deverá permitir alterar os seguintes dados da conta digital para pessoa física: senha da conta, número de telefone, e-mail, nome completo, data de nascimento, país em que nasceu, nome completo da mãe e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP.
-  O sistema deverá permitir alterar os seguintes dados da conta digital para pessoa jurídica: senha da conta, número de telefone, e-mail, nome social e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP.
-  
-  O sistema deverá permitir a alteração da senha informando a senha atual e a nova senha. A senha deverá ter no mínimo 8 números.
-  
-## Requisitos funcionais relacionados com a exclusão da conta digital do cliente.
-  O sistema deverá permitir a remoção da conta digital para pessoa física.
-  
-  O sistema deverá permitir a remoção da conta digital para pessoa jurídica.
-## Requisitos funcionais relacionados com a busca da conta digital do cliente.
-  O sistema deverá permitir a busca da conta digital pelo CFP.
-  
-  O sistema deverá permitir a busca da conta digital pelo CNPJ.
-  
-  O sistema deverá permitir a busca da conta digital pelo número da agência e da conta.
-  
-## Requisitos funcionais relacionados com a criação da conta corrente e da conta poupança.
+## 1. Criação da conta digital do cliente
+- O sistema deverá criar cada conta digital para pessoa física com os seguintes dados obrigatórios: CPF, senha da conta, número de telefone, e-mail, nome completo, data de nascimento, país em que nasceu, nome completo da mãe e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP. Nesse caso o CPF será o código da conta digital.
+- O sistema deverá criar cada conta digital para pessoa jurídica com os seguintes dados obrigatórios: CNPJ, senha da conta, número de telefone, e-mail, nome social e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP. Nesse caso o CNPJ será o código da conta digital.
+- O sistema deverá gerar automaticamente o número da agência e da conta no momento da criação da conta digital tanto para pessoa física, quanto para pessoa jurídica.
+- O sistema deverá permitir o cadastro da senha, mas ela deverá ser informada duas vezes e as duas senhas informadas deverão ser comparadas para saber se são iguais. A senha deverá ter no mínimo 8 números.
 
-  O sistema deverá criar automaticamente a conta corrente no momento da criação da conta digital.
-  
-  O sistema deverá criar automaticamente a conta poupança no momento da criação da conta digital.
-  
-## Requisitos funcionais relacionados com a busca da conta corrente e da conta poupança.
+## 2. Alteração da conta digital do cliente
 
-  O sistema deverá permitir a busca da conta corrente pelo código da conta digital do cliente.
+- O sistema deverá permitir alterar os seguintes dados da conta digital para pessoa física: senha da conta, número de telefone, e-mail, nome completo, data de nascimento, país em que nasceu, nome completo da mãe e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP.
+- O sistema deverá permitir alterar os seguintes dados da conta digital para pessoa jurídica: senha da conta, número de telefone, e-mail, nome social e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP.
+- O sistema deverá permitir a alteração da senha informando a senha atual e a nova senha. A senha deverá ter no mínimo 8 números.
   
-  O sistema deverá permitir a busca da conta poupança pelo código da conta digital do cliente.
-  
-## Requisitos funcionais relacionados com o depósito.
+## 3. Exclusão da conta digital do cliente
+- O sistema deverá permitir a remoção da conta digital para pessoa física.
+- O sistema deverá permitir a remoção da conta digital para pessoa jurídica.
 
-  O sistema deverá permitir que sejam feitos depósitos por boleto.
+## 4. Busca da conta digital do cliente
+- O sistema deverá permitir a busca da conta digital pelo CFP.
+- O sistema deverá permitir a busca da conta digital pelo CNPJ.
+- O sistema deverá permitir a busca da conta digital pelo número da agência e da conta.
   
-  O sistema deverá permitir que sejam feitos depósitos por Pix.
+## 5. Criação da conta corrente e da conta poupança
+- O sistema deverá criar automaticamente a conta corrente no momento da criação da conta digital.
+- O sistema deverá criar automaticamente a conta poupança no momento da criação da conta digital.
   
-## Requisitos funcionais relacionados com o saque
-
-  O sistema deverá permitir que sejam feitos saques.
+## 6. Busca da conta corrente e da conta poupança
+- O sistema deverá permitir a busca da conta corrente pelo código da conta digital do cliente.
+- O sistema deverá permitir a busca da conta poupança pelo código da conta digital do cliente.
   
-## Requisitos funcionais relacionados com a transferência para contas de outras instituições financeiras
-
-  O sistema deverá permitir que sejam feitas transferências para contas de outras instituições financeiras.
+## 7. Relacionados com o depósito
+- O sistema deverá permitir que sejam feitos depósitos por boleto.
+- O sistema deverá permitir que sejam feitos depósitos por Pix.
   
-## Requisitos funcionais relacionados com a transferência entre contas do próprio banco
-
-  O sistema deverá permitir que sejam feitas transferências da conta corrente para a conta poupança.
+## 8. Relacionados com o saque
+- O sistema deverá permitir que sejam feitos saques.
   
-  O sistema deverá permitir que sejam feitas transferências da conta poupança para a conta corrente.
+## 9. Transferência para contas de outras instituições financeiras
+- O sistema deverá permitir que sejam feitas transferências para contas de outras instituições financeiras.
   
-## Requisitos funcionais relacionados com o extrato da conta corrente.
-
-  O sistema deverá registrar todas as transferências feitas e todos os saques e depósitos feitos.
+## 10. Transferência entre contas do próprio banco
+- O sistema deverá permitir que sejam feitas transferências da conta corrente para a conta poupança.
+- O sistema deverá permitir que sejam feitas transferências da conta poupança para a conta corrente.
   
-  O sistema deverá permitir que seja gerado o extra da conta corrente.
-  
-  O sistema deverá permitir que seja gerado o extra da conta poupança.
-  
-## Requisitos funcionais relacionados ao login no sistema.
-
-  O sistema deverá permitir que seja feito login via token.
+## 11. Extrato da conta corrente
+- O sistema deverá registrar todas as transferências feitas e todos os saques e depósitos feitos.
+- O sistema deverá permitir que seja gerado o extra da conta corrente.
+- O sistema deverá permitir que seja gerado o extra da conta poupança.
 
 # Visão geral do sistema
 Aqui é mostrada uma visão geral do sistema com os microsserviços e os bancos de dados deles.
