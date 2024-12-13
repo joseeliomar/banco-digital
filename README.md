@@ -2,7 +2,7 @@
 
 # Artigo do LinkedIn com a Apresentação do Sistema de Banco Digital
 
-**Link do artigo (no vídeo mostro o sistema funcionando):** <a href="bit.ly/artigo-linkedin-meu-sistema-banco">bit.ly/artigo-linkedin-meu-sistema-banco</a>
+**Link do artigo (no vídeo mostro o sistema funcionando):** bit.ly/artigo-linkedin-meu-sistema-banco
 
 # JBank (Back-End de um Banco Digital em Desenvolvimento)
 
