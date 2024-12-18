@@ -72,9 +72,21 @@ Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do
 - O sistema deverá permitir que seja gerado o extra da conta poupança.
 
 # Visão geral do sistema
-Aqui é mostrada uma visão geral do sistema com os microsserviços e os bancos de dados deles.
+Aqui é mostrada uma visão geral do sistema com os microsserviços, porém sem detalhar a comunicação de cada microsserviço com outros microsserviços.
 
 <img src="/imagens-para-o-readme/Visão geral do sistema.png">
+
+## Explicação:
+- API Gateway: Microsserviço responsável por fazer o roteamentos das requisições HTTP feitas para o sistema.
+- Service Discovery (eureka-server): Microsserviço responsável pela localização dos microsserviços. Os microsserviços do sistema se conectam no eureka-server e informa os seus dados e assim, o eureka-server fica sabendo qual endereço IP e porta cada um desses microsserviços está usando;
+- conta-corrente-poupanca-ms: Microsserviço responsável pelo gerenciamento da conta corrente e da conta poupança.
+- conta-digital-cliente-ms: Microsserviço responsável pelo gerenciamento das contas digitais do banco que podem ser físicas e jurídicas;
+- deposito-ms: Microsserviço responsável pelos depósitos bancários;
+- saque-ms: Microsserviço responsável pelos saques bancários;
+- transferencia-ms: Microsserviço responsável pelas operações de transferência bancária.
+- extrato-bancario-ms: Microsserviço responsável pela geração dos extratos bancários;
+- endereco-ms: Microsserviço responsável pelo gerenciamento dos endereços.
+- gerador-numero-conta-afins-ms: Microsserviço responsável pela geração de números de contas com o digito verificador e operações parecidas.
 
 ## Diagramas de classes
 Aqui são encontrados os diagramas de classes dos microsserviços.
