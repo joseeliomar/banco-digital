@@ -79,8 +79,8 @@ Aqui é mostrada uma visão geral do sistema com os microsserviços, porém sem 
 ## Explicação:
 - API Gateway: Microsserviço responsável por fazer o roteamentos das requisições HTTP feitas para o sistema. No caso da imagem acima, a API Gatway está fazendo o roteamento para os microsserviços que estão envolvidos pelo retângulo roxo;
 - Service Discovery (eureka-server): Microsserviço responsável pela localização dos microsserviços. No caso da imagem acima, todos os microsserviços que envolvidos pelo retângulo verde se conectam ao Service Discovery e informam para ele os seus dados e assim, o Service Discovery fica sabendo qual endereço IP e porta cada um desses microsserviços está usando, essas informações são utilizadas para fazer o balanceamento de carga;
-- conta-corrente-poupanca-ms: Microsserviço responsável pelo gerenciamento da conta corrente e da conta poupança;
 - conta-digital-cliente-ms: Microsserviço responsável pelo gerenciamento das contas digitais do banco que podem ser físicas e jurídicas;
+- conta-corrente-poupanca-ms: Microsserviço responsável pelo gerenciamento da conta corrente e da conta poupança;
 - deposito-ms: Microsserviço responsável pelos depósitos bancários;
 - saque-ms: Microsserviço responsável pelos saques bancários;
 - transferencia-ms: Microsserviço responsável pelas operações de transferência bancária;
