@@ -2,8 +2,7 @@
 
 # JBank (Back-End de um Banco Digital)
 
-- Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no meu portifólio de projetos aqui no GitHub.
-- Esse projeto está sendo construído com a arquitetura de microsserviços.
+Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do setor financeiro, como abertura de contas, depósitos, saques, geração de extratos com as movimentações bancárias realizadas pelos clientes e múltiplas modalidades de transferências.
 
 # Nesse projeto utilizei:
 
