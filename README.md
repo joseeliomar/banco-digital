@@ -1,11 +1,9 @@
 ![Static Badge](https://img.shields.io/badge/java-21)  [![Continuous integration com GitHub](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml)
 
 # JBank (Back-End de um Banco Digital)
-
 Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do setor financeiro, como abertura de contas, depósitos, saques, geração de extratos com as movimentações bancárias realizadas pelos clientes e múltiplas modalidades de transferências.
 
 # Nesse projeto utilizei:
-
 - Java;
 - Spring Boot;
 - Arquitetura de microsserviços;
@@ -21,8 +19,7 @@ Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do
 - Integração de sistemas com Apache Camel;
 - IA Generativa para o assistente virtual do sistema.
 
-# Artigo do LinkedIn com a Apresentação do Sistema de Banco Digital
-
+# Artigo do LinkedIn em que apresento o sistema funcionando:
 **Link do artigo (no vídeo mostro o sistema funcionando):** bit.ly/artigo-linkedin-meu-sistema-banco
 
 # Requisitos Funcionais
@@ -80,22 +77,17 @@ Aqui é mostrada uma visão geral do sistema com os microsserviços e os bancos 
 <img src="/imagens-para-o-readme/Visão geral do sistema.png">
 
 ## Diagramas de classes
-
 Aqui são encontrados os diagramas de classes dos microsserviços.
 
 ## Diagrama de classes do microsserviço conta-digital-cliente-ms
-
 <img src="/imagens-para-o-readme/Diagrama de classes do microsserviço conta-digital-cliente-ms.png">
 
 ## Diagrama de classes do microsserviço endereco-ms
-
 <img src="/imagens-para-o-readme/Diagrama de classes do microsserviço endereco-ms.png">
 
 ## Diagrama de classes do microsserviço conta-corrente-poupanca-ms
-
 <img src="/imagens-para-o-readme/Diagrama de classes do microsserviço conta-corrente-poupanca-ms.png">
 
 ## Diagrama de classes do microsserviço extrato-bancario-ms
-
 <img src="/imagens-para-o-readme/Diagrama de classes do microsserviço extrato-bancario-ms.png">
 
