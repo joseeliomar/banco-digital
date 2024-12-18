@@ -77,16 +77,18 @@ Aqui é mostrada uma visão geral do sistema com os microsserviços, porém sem 
 <img src="/imagens-para-o-readme/Visão geral do sistema.png">
 
 ## Explicação:
-- API Gateway: Microsserviço responsável por fazer o roteamentos das requisições HTTP feitas para o sistema. No caso da imagem acima, a API Gatway está fazendo o roteamento para os microsserviços que estão envolvidos pelo retângulo roxo.
+- API Gateway: Microsserviço responsável por fazer o roteamentos das requisições HTTP feitas para o sistema. No caso da imagem acima, a API Gatway está fazendo o roteamento para os microsserviços que estão envolvidos pelo retângulo roxo;
 - Service Discovery (eureka-server): Microsserviço responsável pela localização dos microsserviços. No caso da imagem acima, todos os microsserviços que envolvidos pelo retângulo verde se conectam ao Service Discovery e informam para ele os seus dados e assim, o Service Discovery fica sabendo qual endereço IP e porta cada um desses microsserviços está usando, essas informações são utilizadas para fazer o balanceamento de carga;
-- conta-corrente-poupanca-ms: Microsserviço responsável pelo gerenciamento da conta corrente e da conta poupança.
+- conta-corrente-poupanca-ms: Microsserviço responsável pelo gerenciamento da conta corrente e da conta poupança;
 - conta-digital-cliente-ms: Microsserviço responsável pelo gerenciamento das contas digitais do banco que podem ser físicas e jurídicas;
 - deposito-ms: Microsserviço responsável pelos depósitos bancários;
 - saque-ms: Microsserviço responsável pelos saques bancários;
-- transferencia-ms: Microsserviço responsável pelas operações de transferência bancária.
+- transferencia-ms: Microsserviço responsável pelas operações de transferência bancária;
 - extrato-bancario-ms: Microsserviço responsável pela geração dos extratos bancários;
-- endereco-ms: Microsserviço responsável pelo gerenciamento dos endereços.
-- gerador-numero-conta-afins-ms: Microsserviço responsável pela geração de números de contas com o digito verificador e operações parecidas.
+- endereco-ms: Microsserviço responsável pelo gerenciamento dos endereços;
+- gerador-numero-conta-afins-ms: Microsserviço responsável pela geração de números de contas com o digito verificador e operações parecidas;
+- notifica-ms: Microsserviço responsável pelo envio de mensagens para os usuários utilizando serviços externos como o Twilio;
+- bots-ms: Microsserviço responsável pela comunicação dos clientes com o assistente virtual.
 
 ## Diagramas de classes
 Aqui são encontrados os diagramas de classes dos microsserviços.
