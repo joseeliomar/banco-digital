@@ -1,9 +1,26 @@
 ![Static Badge](https://img.shields.io/badge/java-21)  [![Continuous integration com GitHub](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/joseeliomar/banco-digital/actions/workflows/docker-publish.yml)
 
-# JBank (Back-End de um Banco Digital em Desenvolvimento)
+# JBank (Back-End de um Banco Digital)
 
 - Esse projeto está sendo feito com o objetivo de eu praticar o que tenho aprendido e para ficar no meu portifólio de projetos aqui no GitHub.
 - Esse projeto está sendo construído com a arquitetura de microsserviços.
+
+# Nesse projeto utilizei:
+
+- Java;
+- Spring Boot;
+- Arquitetura de microsserviços;
+- APIs REST;
+- TDD (Desenvolvimento Orientado a Testes);
+- Testes unitários;
+- Testes de integração;
+- Docker;
+- Mensageria com Kafka;
+- Bancos de dados relacionais (MySQL e PostgreSQL);
+- Banco de dados não relacional (MongoDB);
+- Swagger (documentação de APIs);
+- Integração de sistemas com Apache Camel;
+- IA Generativa para o assistente virtual do sistema.
 
 # Artigo do LinkedIn com a Apresentação do Sistema de Banco Digital
 
