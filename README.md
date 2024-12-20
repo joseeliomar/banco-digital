@@ -71,7 +71,7 @@ Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do
 - O sistema deverá permitir que seja gerado o extra da conta poupança.
 
 ## 12. Assistente virtual
-- O sistema deverá ter um assistente virtual alimentado por inteligência artificial (IA) que realizará de forma autonôma a consulta de saldo e transações bancárias (todas as modalidades disponíveis) solicitas pelo cliente via Telegram (App de mensagens semelhante ao WhatsApp).
+- O sistema deverá ter um assistente virtual alimentado por inteligência artificial (IA) que realizará de forma autonôma as consultas de saldo e as transações bancárias (todas as modalidades disponíveis) solicitas pelo cliente via Telegram (App de mensagens semelhante ao WhatsApp).
 
 ## 13. Serviço de notificação
 - O sistema deverá notificar o cliente através de SMS sempre que alguma transação bancária for realizada pelo sistema. A notificação deverá ter os detalhes da transação efetuada.
