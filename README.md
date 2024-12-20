@@ -30,7 +30,6 @@ Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do
 - O sistema deverá permitir o cadastro da senha, mas ela deverá ser informada duas vezes e as duas senhas informadas deverão ser comparadas para saber se são iguais. A senha deverá ter no mínimo 8 números.
 
 ## 2. Alteração da conta digital do cliente
-
 - O sistema deverá permitir alterar os seguintes dados da conta digital para pessoa física: senha da conta, número de telefone, e-mail, nome completo, data de nascimento, país em que nasceu, nome completo da mãe e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP.
 - O sistema deverá permitir alterar os seguintes dados da conta digital para pessoa jurídica: senha da conta, número de telefone, e-mail, nome social e endereço formado pela rua, pelo número, bairro, município, unidade federativa e CEP.
 - O sistema deverá permitir a alteração da senha informando a senha atual e a nova senha. A senha deverá ter no mínimo 8 números.
@@ -70,6 +69,12 @@ Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do
 - O sistema deverá registrar todas as transferências feitas e todos os saques e depósitos feitos.
 - O sistema deverá permitir que seja gerado o extra da conta corrente.
 - O sistema deverá permitir que seja gerado o extra da conta poupança.
+
+## 12. Assistente virtual
+- O sistema deverá ter um assistente virtual alimentado por inteligência artificial (IA) que realizará de forma autonôma a consulta de saldo e transações bancárias (todas as modalidades disponíveis) solicitas pelo cliente via Telegram (App de mensagens semelhante ao WhatsApp).
+
+## 13. Serviço de notificação
+- O sistema deverá notificar o cliente através de SMS sempre que alguma transação bancária for realizada pelo sistema. A notificação deverá ter os detalhes da transação efetuada.
 
 # Visão geral do sistema
 Aqui é mostrada uma visão geral do sistema com os microsserviços, porém sem detalhar a comunicação de cada microsserviço com outros microsserviços.
