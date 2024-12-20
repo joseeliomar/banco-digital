@@ -77,7 +77,7 @@ Esse sistema de banco digital (back-end) e é focado em funcionalidades reais do
 - O sistema deverá notificar o cliente através de SMS sempre que alguma transação bancária for realizada pelo sistema. A notificação deverá ter os detalhes da transação efetuada.
 
 # Visão geral do sistema
-Aqui é mostrada uma visão geral do sistema com os microsserviços, porém sem detalhar a comunicação de cada microsserviço com outros microsserviços.
+Aqui é mostrada uma visão geral do sistema com os microsserviços, porém sem detalhar a comunicação de entre os microsserviços.
 
 <img src="/imagens-para-o-readme/Visão geral do sistema.png">
 
