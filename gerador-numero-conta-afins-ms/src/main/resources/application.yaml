@@ -15,7 +15,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/gerador_numero_conta_afins_ms
     username: postgres
-    password: abc123456
+    password: 1234567
   jpa:
     hibernate:
       ddl-auto: update

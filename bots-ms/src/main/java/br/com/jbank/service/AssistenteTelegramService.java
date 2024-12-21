@@ -1,6 +1,7 @@
 package br.com.jbank.service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.camel.Exchange;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,8 +21,9 @@ import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesDiferentesDesse
 import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto;
 import br.com.jbank.dto.DadosParaTransferenciaEntreContasMesmoClienteDto;
 import br.com.jbank.enumeration.NomeArquivoPrompt;
-import br.com.jbank.enumeration.TipoTransferencia;
 import br.com.jbank.enumeration.StatusOkProcessamentoOperacao;
+import br.com.jbank.enumeration.TipoTransferencia;
+import br.com.jbank.exception.NoResponseException;
 import br.com.jbank.model.ConversationUserWithBot;
 import br.com.jbank.model.Message;
 import br.com.jbank.openai.enumeration.Role;
@@ -78,8 +79,8 @@ public class AssistenteTelegramService {
 			String respostaParaUsuario = null;
 			String respostaModelo = null;
 			try {
-				respostaModelo = iAService.processarMensagens(conversaAtualComBot.getMessages());
-
+				respostaModelo = obtemRespostaModelo(conversaAtualComBot.getMessages());
+				
 				if (respostaModelo
 						.contains(StatusOkProcessamentoOperacao.STATUS_PARA_PROCESSAMENTO_TRANSFERENCIA.getValor())) {
 					respostaParaUsuario = executaTransferenciaBancaria(conversaAtualComBot);
@@ -94,13 +95,26 @@ public class AssistenteTelegramService {
 				}
 			} catch (Exception e) {
 				respostaParaUsuario = "Desculpe, ocorreu um erro ao processar sua solicitação. Tente novamente.";
-				adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.SYSTEM.getTexto(), respostaModelo);
+				adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.SYSTEM.getTexto(), respostaParaUsuario);
 				e.printStackTrace();
 			}
 
 			conversationService.salvaConversa(conversaAtualComBot);
 			exchange.getMessage().setBody(respostaParaUsuario);
 		}
+	}
+
+	
+	/**
+	 * Obtem a resposta do modelo de IA.
+	 * 
+	 * @param mensagensConversa
+	 * @return a resposta do modelo.
+	 * @throws NoResponseException
+	 */
+	private String obtemRespostaModelo(List<Message> mensagensConversa) throws NoResponseException {
+		return iAService.processarMensagens(mensagensConversa)
+				.orElseThrow(() -> new NoResponseException("O modelo não conseguiu gerar uma resposta."));
 	}
 
 	/**
@@ -144,14 +158,12 @@ public class AssistenteTelegramService {
 	private DadosParaConsultaSaldo obtemDadosConsultaSaldo(ConversationUserWithBot conversaUsuarioComBot) {
 		String promptParaIA = carregadorPrompts
 				.getPrompt(NomeArquivoPrompt.PROMPT_PARA_EXTRACAO_DADOS_NECESSARIO_CONSULTA_SALDO.getNome());
-
-		adicionaNovaMensagemNaConversa(conversaUsuarioComBot, Role.SYSTEM.getTexto(), promptParaIA);
-		String json = iAService.processarMensagens(conversaUsuarioComBot.getMessages());
-
+		
 		DadosParaConsultaSaldo dadosTransferenciaBancaria = null;
 		try {
+			String json = obtemJsonDadosExtraidosPeloModelo(conversaUsuarioComBot, promptParaIA);
 			dadosTransferenciaBancaria = objectMapper.readValue(json, DadosParaConsultaSaldo.class);
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
@@ -167,18 +179,19 @@ public class AssistenteTelegramService {
 	 *         outra mensagem que envolve esse processo de transferência.
 	 */
 	private String executaTransferenciaBancaria(ConversationUserWithBot conversaAtualComBot) {
-		DadosExtraidosTransferenciaBancaria dadosExtraidosTransferenciaBancaria = obtemDadosTransferencia(
+		DadosExtraidosTransferenciaBancaria dadosExtraidos = obtemDadosTransferencia(
 				conversaAtualComBot);
-		DadosParaTransferenciaBancaria dadosParaTransferenciaBancaria = dadosExtraidosTransferenciaBancaria
-				.dadosParaTransferenciaBancaria();
-
-		if (dadosExtraidosTransferenciaBancaria == null || dadosParaTransferenciaBancaria == null) {
+		
+		if (dadosExtraidos == null || dadosExtraidos.dadosParaTransferenciaBancaria() == null) {
 			return "Ocorreu algum problema ao tentarmos obter os dados necessário para a transferência. "
 					+ MENSAGEM_DESCULPA_PELO_PROBLEMA_OCORRIDO;
 		}
+		
+		DadosParaTransferenciaBancaria dadosParaTransferenciaBancaria = dadosExtraidos
+				.dadosParaTransferenciaBancaria();
 
 		HttpStatusCode statusCode = null;
-		TipoTransferencia operacao = dadosExtraidosTransferenciaBancaria.tipoTransferencia();
+		TipoTransferencia operacao = dadosExtraidos.tipoTransferencia();
 		if (operacao.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO)) {
 			statusCode = efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(dadosParaTransferenciaBancaria);
 		} else if (operacao.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE)) {
@@ -255,11 +268,10 @@ public class AssistenteTelegramService {
 	private DadosExtraidosTransferenciaBancaria obtemDadosTransferencia(ConversationUserWithBot conversaUsuarioComBot) {
 		String promptParaIA = carregadorPrompts
 				.getPrompt(NomeArquivoPrompt.PROMPT_PARA_EXTRACAO_DADOS_NECESSARIOS_TRANSFERENCIA_BANCARIA.getNome());
-
-		adicionaNovaMensagemNaConversa(conversaUsuarioComBot, Role.SYSTEM.getTexto(), promptParaIA);
-		String json = iAService.processarMensagens(conversaUsuarioComBot.getMessages());
+		
 
 		try {
+			String json = obtemJsonDadosExtraidosPeloModelo(conversaUsuarioComBot, promptParaIA);
 			Map<String, Object> map = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
 			});
 
@@ -287,11 +299,25 @@ public class AssistenteTelegramService {
 				return new DadosExtraidosTransferenciaBancaria(
 						TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES, dadosTransferenciaBancaria);
 			}
-		} catch (JsonProcessingException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
 		return null;
+	}
+
+	/**
+	 * Obtem JSON com os dados extraidos pelo modelo de IA.
+	 * 
+	 * @param conversaUsuarioComBot
+	 * @param promptComInstrucoesExtracaoDados Prompt com as instruções para a extração dos dados.
+	 * @return JSON com os dados extraidos.
+	 * @throws Exception 
+	 */
+	private String obtemJsonDadosExtraidosPeloModelo(ConversationUserWithBot conversaUsuarioComBot, String promptComInstrucoesExtracaoDados) throws NoResponseException {
+		List<Message> historicoMensagens = conversaUsuarioComBot.copiaHistorico();
+		historicoMensagens.add(new Message(Role.SYSTEM.getTexto(), promptComInstrucoesExtracaoDados, Instant.now()));
+		return obtemRespostaModelo(historicoMensagens).replaceAll("```json", "").replaceAll("```", "");
 	}
 
 	/**

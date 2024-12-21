@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import br.com.jbank.service.GoogleCloudAIService;
 import br.com.jbank.service.IAService;
 import br.com.jbank.service.OllamaService;
 import br.com.jbank.service.SpringAIService;
@@ -26,8 +27,10 @@ public class ConfigIAService {
 		IAService iaService = new OllamaService(); // service padrão caso não seja informado um valor válido ou nenhum
 													// valor para a configuração
 
-		if ("springAI".equals(configuracaoIAService)) {
+		if ("SpringIAService".equals(configuracaoIAService)) {
 			iaService = new SpringAIService();
+		} else if ("GoogleCloudAIService".equals(configuracaoIAService)) {
+			iaService = new GoogleCloudAIService();
 		}
 
 		return iaService;

@@ -8,12 +8,6 @@ server:
       enabled: true
       force: true
 
-telegram:
-  bot:
-    token: ${BOT_TELEGRAM_AJB_TOKEN}
-    username: ${BOT_TELEGRAM_AJB_USERNAME}
-
-
 spring:
   application:
     name: bots-ms
@@ -37,7 +31,13 @@ spring:
 ollama:
   model: llama3.2
 
-ia-service: springAI # valores possiveis: "ollama" (para utilizar modelos de IA que são opensouce) ou "springIA" (para utilizar modelos fornecidos pelo Spring AI)
+google-cloud:
+  projectId: ${GOOGLE_CLOUD_PROJECT_ID}
+  location: ${GOOGLE_CLOUD_LOCATION}
+  ia:
+    model: ${GOOGLE_CLOUD_MODEL}
+
+ia-service: GoogleCloudAIService
 
 camel:
   component:

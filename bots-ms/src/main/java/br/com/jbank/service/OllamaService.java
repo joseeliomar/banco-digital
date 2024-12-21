@@ -1,6 +1,7 @@
 package br.com.jbank.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class OllamaService implements IAService {
 	private String ollamaModel;
 
 	@Override
-	public String processarMensagens(List<Message> mensagensConversa) {
+	public Optional<String> processarMensagens(List<Message> mensagensConversa) {
 		DadosSolicitacaoRespostaDto dadosSolicitacaoRespostaDto = new DadosSolicitacaoRespostaDto(this.ollamaModel,
 				mensagensConversa.stream().map(m -> new MensagensConversaDto(m.getRole(), m.getContent())).toList());
 
@@ -35,6 +36,6 @@ public class OllamaService implements IAService {
                 .map(fracao -> fracao.message().content())
                 .collect(Collectors.joining(""));;
 
-		return respostaModelo;
+		return Optional.of(respostaModelo);
 	}
 }

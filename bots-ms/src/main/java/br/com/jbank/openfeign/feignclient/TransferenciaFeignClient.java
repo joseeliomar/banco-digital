@@ -9,7 +9,7 @@ import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesDiferentesDesse
 import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto;
 import br.com.jbank.dto.DadosParaTransferenciaEntreContasMesmoClienteDto;
 
-@FeignClient(name = "transferencia-ms")
+@FeignClient(name = "transferencia-ms", path = "/transferenciaDinheiroPessoaFisica")
 public interface TransferenciaFeignClient {
 
 	@PostMapping("/efetuaTransferenciaEntreContasMesmoCliente")

@@ -27,7 +27,11 @@ public class ConversationUserWithBot {
 		this.dateTimeOfCreation = dateTimeOfCreation;
 		this.messages = new ArrayList<>();
 	}
-
+	
+	public List<Message> copiaHistorico() {
+		return new ArrayList<>(messages);
+	}
+	
 	public String getId() {
 		return id;
 	}

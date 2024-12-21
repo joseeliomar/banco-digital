@@ -1,15 +1,5 @@
 {"properties": [
   {
-    "name": "telegram.bot.token",
-    "type": "java.lang.String",
-    "description": "A description for 'telegram.bot.token'"
-  },
-  {
-    "name": "telegram.bot.username",
-    "type": "java.lang.String",
-    "description": "A description for 'telegram.bot.username'"
-  },
-  {
     "name": "ollama.model",
     "type": "java.lang.String",
     "description": "A description for 'ollama.model'"
@@ -17,6 +7,21 @@
   {
     "name": "ia-service",
     "type": "java.lang.String",
-    "description": "A description for 'ia-service'"
+    "description": "Denifine qual AIService irá ser utilizada. Valores possiveis: OllamaService (para utilizar modelos de IA oferecidos pelo Ollama) ou SpringIAService (para utilizar modelos fornecidos pelo Spring AI) ou gemini para utilzar o GoogleCloudAIService pelo Vertex AI do Google Cloud usando a dependência do Google Cloud."
+  },
+  {
+    "name": "google-cloud.project-id",
+    "type": "java.lang.String",
+    "description": "A description for 'google-cloud.project-id'"
+  },
+  {
+    "name": "google-cloud.location",
+    "type": "java.lang.String",
+    "description": "A description for 'google-cloud.location'"
+  },
+  {
+    "name": "google-cloud.ia.model",
+    "type": "java.lang.String",
+    "description": "A description for 'google-cloud.ia.model'"
   }
 ]}
