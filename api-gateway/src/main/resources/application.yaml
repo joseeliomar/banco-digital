@@ -3,3 +3,6 @@ server:
 spring:
   application:
     name: api-gateway
+
+jwt:
+  secret: ${JWT_SECRET:my-secret-key}

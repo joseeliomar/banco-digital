@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.dto.ContaDigitalPessoaFisicaAlteracaoDto;
 import com.example.dto.ContaDigitalPessoaFisicaDTO1Busca;
+import com.example.dto.ContaDigitalPessoaFisicaDTO2Busca;
 import com.example.dto.ContaDigitalPessoaFisicaInsercaoDto;
 import com.example.dto.ContaPessoaFisicaBuscaDto1;
 import com.example.dto.ContaPessoaFisicaInsercaoDto;
@@ -51,7 +52,8 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		validaNomeCompletoMae(nomeCompletoMae);
 		
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
-		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, numeroConta, senha,
+		var senhaCriptografada = criptografaSenha(senha);
+		ContaDigitalPessoaFisica contaDigitalPessoaFisica = new ContaDigitalPessoaFisica(agencia, numeroConta, senhaCriptografada,
 				telefone, email, null, dataHoraCadastro, null, cpf, nomeCompleto, dataNascimento, nomeCompletoMae,
 				digitoVerificadorConta);
 		var contaDigitalPessoaFisicaCadastrada = contaDigitalPessoaFisicaRepository.save(contaDigitalPessoaFisica);
@@ -163,6 +165,20 @@ public class ContaDigitalPessoaFisicaService extends ContaDigitalService {
 		}
 		
 		return null;
+	}
+	
+	public ContaDigitalPessoaFisicaDTO2Busca buscaContaDigitalPeloCpfComRespostaComSenha(String cpf) {
+		Optional<ContaDigitalPessoaFisica> contaDigitalPessoaFisicaOptional = buscaContaDigitalPeloCpf(cpf);
+		
+		if (contaDigitalPessoaFisicaOptional.isPresent()) {
+			return new ContaDigitalPessoaFisicaDTO2Busca(contaDigitalPessoaFisicaOptional.get());
+		}
+		
+		return null;
+	}
+	
+	public String buscaSenhaContaDigitalPeloCpf(String cpf) {
+		return this.contaDigitalPessoaFisicaRepository.findSenhaByCpf(cpf);
 	}
 
 	@Override

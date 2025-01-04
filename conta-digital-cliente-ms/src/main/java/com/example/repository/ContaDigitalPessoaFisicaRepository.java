@@ -14,4 +14,6 @@ public interface ContaDigitalPessoaFisicaRepository extends JpaRepository<ContaD
 
 	Optional<ContaDigitalPessoaFisica> findByAgenciaAndContaAndCpfNot(String agencia, String conta, String cpf);
 
+	String findSenhaByCpf(String cpf);
+
 }

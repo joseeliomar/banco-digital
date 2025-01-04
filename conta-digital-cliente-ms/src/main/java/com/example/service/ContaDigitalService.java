@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.enumeration.DocumentoCliente;
 import com.example.enumeration.TipoDocumento;
@@ -31,6 +33,13 @@ public abstract class ContaDigitalService {
 	
 	@Autowired
 	private GeradorNumeroContaAfinsMsFeignClient geradorNumeroContaAfinsMsFeignClient;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	protected String criptografaSenha(String senha) {
+		return this.passwordEncoder.encode(senha);
+	}
 	
 	public abstract Optional<? extends ContaDigitalCliente> buscaContaDigitalPelaAgenciaConta(String agencia,
 			String conta);

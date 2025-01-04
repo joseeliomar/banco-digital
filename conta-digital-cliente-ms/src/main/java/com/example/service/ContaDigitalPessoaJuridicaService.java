@@ -46,7 +46,8 @@ public class ContaDigitalPessoaJuridicaService extends ContaDigitalService {
 		validaRazaoSocial(razaoSocial);
 		
 		LocalDateTime dataHoraCadastro = LocalDateTime.now();
-		ContaDigitalPessoaJuridica contaDigitalPessoaJuridica = new ContaDigitalPessoaJuridica(agencia, numeroConta, senha,
+		var senhaCriptografada = criptografaSenha(senha);
+		ContaDigitalPessoaJuridica contaDigitalPessoaJuridica = new ContaDigitalPessoaJuridica(agencia, numeroConta, senhaCriptografada,
 				telefone, email, null, dataHoraCadastro, null, cnpj, razaoSocial, digitoVerificadorConta);
 		var contaDigitalPessoaJuridicaCadastrada = contaDigitalPessoaJuridicaRepository.save(contaDigitalPessoaJuridica);
 		

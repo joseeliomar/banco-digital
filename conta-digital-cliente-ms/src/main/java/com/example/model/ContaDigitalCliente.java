@@ -19,7 +19,7 @@ public abstract class ContaDigitalCliente {
 	@Column(nullable = false, length = 10)
 	private int digitoVerificadorConta;
 
-	@Column(nullable = false, length = 16)
+	@Column(nullable = false, length = 500)
 	private String senha;
 
 	@Column(nullable = false, length = 11)
