@@ -1,4 +1,4 @@
-Agora que o cliente já informou os dados da transferência e confirmou que deseja prosseguir com a transferência bancária, gere um JSON para mim.
+Agora que o cliente já informou os dados da transferência atual e confirmou que deseja prosseguir com essa transferência bancária, gere um JSON para mim.
 
 REGRAS PARA A EXTRAÇÃO E GERAÇÃO DO JSON COM OS DADOS PARA A TRANSFERÊNCIA BANCÁRIA:
 1. Se o cliente escolheu a opção "1 - Entre contas do mesmo cliente no JBank", o JSON deve apresentar as seguintes propriedades:
@@ -21,8 +21,8 @@ O JSON dever ser gerado nesse formato:
 	- tipoTransferencia: essa propriedade se refere ao tipo de transferência que o cliente escolheu. Preencha essa propriedade com o valor TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO;
 	- valorTransferencia: essa propriedade se refere ao valor da transferência;
 	- tipoContaOrigemDinheiro: essa propriedade se refere a origem do dinheiro e o valor dessa propriedade deve ser CORRENTE para a opção "1 - Conta corrente" e ser POUPANCA para a opção "2 - Conta poupança";
-	- agenciaDestino: essa propriedade se refere a agência de destino, ou seja para qual agência o dinheiro vai ir;
-    - contaDestino": essa propriedade se refere a conta de destino, ou seja para qual conta o dinheiro vai ir.
+	- agenciaDestinoDinheiro: essa propriedade se refere a agência de destino, ou seja para qual agência o dinheiro vai ir;
+    - contaDestinoDinheiro": essa propriedade se refere a conta de destino, ou seja para qual conta o dinheiro vai ir.
 
 O JSON dever ser gerado nesse formato:
 {

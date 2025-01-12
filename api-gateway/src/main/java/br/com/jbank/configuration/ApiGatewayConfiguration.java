@@ -24,8 +24,8 @@ public class ApiGatewayConfiguration {
 				.filter(authenticationFilter.apply(new AuthenticationFilter.Config()));
  
 		return builder.routes()
-				.route(x -> x.path("/contaDigitalPessoaFisica/**").filters(filtroAutenticacao).uri("lb://conta-digital-cliente-ms"))
-				.route(x -> x.path("/contaDigitalPessoaJuridica/**").filters(filtroAutenticacao).uri("lb://conta-digital-cliente-ms"))
+				.route(x -> x.path("/contaDigitalPessoaFisica/**").uri("lb://conta-digital-cliente-ms"))
+				.route(x -> x.path("/contaDigitalPessoaJuridica/**").uri("lb://conta-digital-cliente-ms"))
 				.route(x -> x.path("/contaPessoaFisica/**").filters(filtroAutenticacao).uri("lb://conta-corrente-poupanca-ms"))
 				.route(x -> x.path("/contaPessoaJuridica/**").filters(filtroAutenticacao).uri("lb://conta-corrente-poupanca-ms"))
 				.route(x -> x.path("/depositoContaCorrentePessoaFisica/**").filters(filtroAutenticacao).uri("lb://deposito-ms"))

@@ -37,7 +37,7 @@ google-cloud:
   ia:
     model: ${GOOGLE_CLOUD_MODEL}
 
-ia-service: GoogleCloudAIService
+ia-service: SpringIAService
 
 camel:
   component:

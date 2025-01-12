@@ -2,16 +2,16 @@ package br.com.jbank.service;
 
 import java.util.Map;
 
-import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.MessageType;
 
-public class MensagemChatSpringAI implements Message {
+public class MensagemChatSpringAI extends AssistantMessage {
 	
 	private String content;
 	private MessageType messageType;
 	
 	public MensagemChatSpringAI(br.com.jbank.model.Message message) {
-		this.content = message.getContent();
+		super(message.getContent());
 		this.messageType = MessageType.fromValue(message.getRole());
 	}
 

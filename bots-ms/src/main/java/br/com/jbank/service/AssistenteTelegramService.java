@@ -2,43 +2,23 @@ package br.com.jbank.service;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.camel.Exchange;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import br.com.jbank.dto.ContaPessoaFisicaBuscaDto1;
-import br.com.jbank.dto.DadosParaTransferenciaBancaria;
-import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto;
-import br.com.jbank.dto.DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto;
-import br.com.jbank.dto.DadosParaTransferenciaEntreContasMesmoClienteDto;
 import br.com.jbank.enumeration.NomeArquivoPrompt;
 import br.com.jbank.enumeration.StatusOkProcessamentoOperacao;
-import br.com.jbank.enumeration.TipoTransferencia;
 import br.com.jbank.exception.NoResponseException;
 import br.com.jbank.model.ConversationUserWithBot;
 import br.com.jbank.model.Message;
 import br.com.jbank.openai.enumeration.Role;
-import br.com.jbank.openfeign.feignclient.ContaCorrentePoupancaMsFeignClient;
-import br.com.jbank.openfeign.feignclient.TransferenciaFeignClient;
 import br.com.jbank.prompt.CarregadorPrompts;
-import br.com.jbank.utils.Utils;
+import br.com.jbank.service.strategy.solicitaprocessamento.OperacaoSolicitadaStrategy;
 
 @Service
 public class AssistenteTelegramService {
-
-	private static final String MENSAGEM_DESCULPA_PELO_PROBLEMA_OCORRIDO = 
-			"Caso o problema persista, por favor, utilize o nosso aplicativo ou o nosso internet "
-			+ "bank. Problemas acontecem, mas estamos sempre trabalhando para resolve-los e para "
-			+ "melhorar os nossos produtos e serviços. Nos desculpe pelo transtorno.";
 
 	@Autowired
 	@Qualifier("selectedIAService")
@@ -48,20 +28,10 @@ public class AssistenteTelegramService {
 	private ConversationUserWithBotService conversationService;
 
 	@Autowired
-	private TransferenciaFeignClient transferenciaFeignClient;
-
-	@Autowired
-	private ContaCorrentePoupancaMsFeignClient contaCorrentePoupancaMsFeignClient;
-
-	@Autowired
 	private CarregadorPrompts carregadorPrompts;
 
-	private ObjectMapper objectMapper;
-
-	public AssistenteTelegramService() {
-		this.objectMapper = new ObjectMapper();
-		this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-	}
+	@Autowired
+	private OperacaoSolicitadaFactory operacaoSolicitadaFactory;
 
 	/**
 	 * Processa a mensagem recebida.
@@ -69,30 +39,17 @@ public class AssistenteTelegramService {
 	 * @param exchange
 	 */
 	public void processaMensagemRecebida(Exchange exchange) {
-		String novaMensagemUsuario = exchange.getIn().getBody(String.class);
+		String novaMensagemUsuario = extraiMensagemEnviadaPeloUsuario(exchange);
 		if (novaMensagemUsuario != null && !novaMensagemUsuario.isEmpty()) {
-			String telegramChatId = exchange.getIn().getHeader("CamelTelegramChatId", String.class);
+			String telegramChatId = extraiIDChatTelegram(exchange);
 
 			ConversationUserWithBot conversaAtualComBot = buscaConversa(telegramChatId);
 			adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.USER.getTexto(), novaMensagemUsuario);
 
 			String respostaParaUsuario = null;
-			String respostaModelo = null;
 			try {
-				respostaModelo = obtemRespostaModelo(conversaAtualComBot.getMessages());
-				
-				if (respostaModelo
-						.contains(StatusOkProcessamentoOperacao.STATUS_PARA_PROCESSAMENTO_TRANSFERENCIA.getValor())) {
-					respostaParaUsuario = executaTransferenciaBancaria(conversaAtualComBot);
-					adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.SYSTEM.getTexto(), respostaParaUsuario);
-				} else if (respostaModelo
-						.contains(StatusOkProcessamentoOperacao.STATUS_PARA_CONSULTA_SALDO.getValor())) {
-					respostaParaUsuario = executaConsultaSaldo(conversaAtualComBot);
-					adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.SYSTEM.getTexto(), respostaParaUsuario);
-				} else {
-					respostaParaUsuario = respostaModelo;
-					adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.ASSISTANT.getTexto(), respostaModelo);
-				}
+				String respostaModelo = obtemRespostaModelo(conversaAtualComBot.getMessages());
+				respostaParaUsuario = processaSolitacaoFeitaPeloUsuario(conversaAtualComBot, respostaModelo);
 			} catch (Exception e) {
 				respostaParaUsuario = "Desculpe, ocorreu um erro ao processar sua solicitação. Tente novamente.";
 				adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.SYSTEM.getTexto(), respostaParaUsuario);
@@ -100,11 +57,70 @@ public class AssistenteTelegramService {
 			}
 
 			conversationService.salvaConversa(conversaAtualComBot);
-			exchange.getMessage().setBody(respostaParaUsuario);
+			configuraRespostaParaUsuarioExchange(exchange, respostaParaUsuario);
 		}
 	}
 
-	
+	/**
+	 * Processa solicitação feita pelo usuário.
+	 * 
+	 * @param conversaAtualComBot
+	 * @param respostaModelo
+	 * @return uma resposta para o usuário.
+	 */
+	private String processaSolitacaoFeitaPeloUsuario(ConversationUserWithBot conversaAtualComBot,
+			String respostaModelo) {
+		StatusOkProcessamentoOperacao statusOkProcessamentoOperacao = StatusOkProcessamentoOperacao
+				.obterItem(respostaModelo);
+		if (statusOkProcessamentoOperacao != null) {
+			OperacaoSolicitadaStrategy operacaoSolicitada = this.operacaoSolicitadaFactory
+					.getInstance(statusOkProcessamentoOperacao);
+			
+			if (operacaoSolicitada == null) {
+				return "Desculpe, ocorreu algum problema e não conseguimos extrair a operação solicitada.";
+			}
+			
+			String respostaParaUsuario = operacaoSolicitada.processar(conversaAtualComBot);
+			
+			adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.SYSTEM.getTexto(), respostaParaUsuario);
+			
+			return respostaParaUsuario;
+		} else {
+			adicionaNovaMensagemNaConversa(conversaAtualComBot, Role.ASSISTANT.getTexto(), respostaModelo);
+			return respostaModelo;
+		}
+	}
+
+	/**
+	 * Configura resposta para usuário na exchange.
+	 * 
+	 * @param exchange
+	 * @param respostaParaUsuario
+	 */
+	private void configuraRespostaParaUsuarioExchange(Exchange exchange, String respostaParaUsuario) {
+		exchange.getMessage().setBody(respostaParaUsuario);
+	}
+
+	/**
+	 * Extrai o ID do chat do Telegram.
+	 * 
+	 * @param exchange
+	 * @return
+	 */
+	private String extraiIDChatTelegram(Exchange exchange) {
+		return exchange.getIn().getHeader("CamelTelegramChatId", String.class);
+	}
+
+	/**
+	 * Extrai a mensagem que foi enviada pelo usuário.
+	 * 
+	 * @param exchange
+	 * @return A mensagem que foi enviada pelo usuário.
+	 */
+	private String extraiMensagemEnviadaPeloUsuario(Exchange exchange) {
+		return exchange.getIn().getBody(String.class);
+	}
+
 	/**
 	 * Obtem a resposta do modelo de IA.
 	 * 
@@ -115,209 +131,6 @@ public class AssistenteTelegramService {
 	private String obtemRespostaModelo(List<Message> mensagensConversa) throws NoResponseException {
 		return iAService.processarMensagens(mensagensConversa)
 				.orElseThrow(() -> new NoResponseException("O modelo não conseguiu gerar uma resposta."));
-	}
-
-	/**
-	 * Executa a consulta do saldo da conta do cliente.
-	 * 
-	 * @param conversaAtualComBot
-	 * @return resposta sobre a consulta do saldo, que pode ser tanto uma mensagem
-	 *         informando o saldo atual quanto alguma outra mensagem que envolve
-	 *         esse processo de consulta.
-	 */
-	private String executaConsultaSaldo(ConversationUserWithBot conversaAtualComBot) {
-		DadosParaConsultaSaldo dadosParaConsultaSaldo = obtemDadosConsultaSaldo(conversaAtualComBot);
-
-		if (dadosParaConsultaSaldo == null) {
-			return "Ocorreu algum problema ao tentarmos obter os dados necessário para a consultado do saldo. "
-					+ MENSAGEM_DESCULPA_PELO_PROBLEMA_OCORRIDO;
-		}
-
-		ResponseEntity<ContaPessoaFisicaBuscaDto1> respostaAPI = contaCorrentePoupancaMsFeignClient
-				.buscaContaPessoaFisica(dadosParaConsultaSaldo.cpfCliente(), dadosParaConsultaSaldo.tipoConta());
-
-		HttpStatusCode statusCode = respostaAPI.getStatusCode();
-
-		if (statusCode != null && statusCode.is2xxSuccessful()) {
-			ContaPessoaFisicaBuscaDto1 contaPessoaFisica = respostaAPI.getBody();
-			return "O saldo atual da sua conta " + contaPessoaFisica.getTipoConta().getNome().toLowerCase() + " é de "
-					+ Utils.formataValorReais(contaPessoaFisica.getSaldo()) + ".";
-		} else {
-			return "Ocorreu algum problema durante a consultado do saldo. Por favor, solicite "
-					+ "novamente mais tarde que o último pedido de consulta de saldo seja processsado novamente. "
-					+ MENSAGEM_DESCULPA_PELO_PROBLEMA_OCORRIDO;
-		}
-	}
-
-	/**
-	 * Obtem os dados necessários para a consulta do saldo da conta desejada.
-	 * 
-	 * @param conversaUsuarioComBot
-	 * @return os dados necessários para a consultado do saldo.
-	 */
-	private DadosParaConsultaSaldo obtemDadosConsultaSaldo(ConversationUserWithBot conversaUsuarioComBot) {
-		String promptParaIA = carregadorPrompts
-				.getPrompt(NomeArquivoPrompt.PROMPT_PARA_EXTRACAO_DADOS_NECESSARIO_CONSULTA_SALDO.getNome());
-		
-		DadosParaConsultaSaldo dadosTransferenciaBancaria = null;
-		try {
-			String json = obtemJsonDadosExtraidosPeloModelo(conversaUsuarioComBot, promptParaIA);
-			dadosTransferenciaBancaria = objectMapper.readValue(json, DadosParaConsultaSaldo.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return dadosTransferenciaBancaria;
-	}
-
-	/**
-	 * Executa a transferência bancária desejada.
-	 * 
-	 * @param conversaAtualComBot
-	 * @return resposta sobre a transferência, que pode ser tanto uma mensagem
-	 *         informando que a transferência ocorreu com sucesso quanto alguma
-	 *         outra mensagem que envolve esse processo de transferência.
-	 */
-	private String executaTransferenciaBancaria(ConversationUserWithBot conversaAtualComBot) {
-		DadosExtraidosTransferenciaBancaria dadosExtraidos = obtemDadosTransferencia(
-				conversaAtualComBot);
-		
-		if (dadosExtraidos == null || dadosExtraidos.dadosParaTransferenciaBancaria() == null) {
-			return "Ocorreu algum problema ao tentarmos obter os dados necessário para a transferência. "
-					+ MENSAGEM_DESCULPA_PELO_PROBLEMA_OCORRIDO;
-		}
-		
-		DadosParaTransferenciaBancaria dadosParaTransferenciaBancaria = dadosExtraidos
-				.dadosParaTransferenciaBancaria();
-
-		HttpStatusCode statusCode = null;
-		TipoTransferencia operacao = dadosExtraidos.tipoTransferencia();
-		if (operacao.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO)) {
-			statusCode = efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(dadosParaTransferenciaBancaria);
-		} else if (operacao.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE)) {
-			statusCode = efetuaTransferenciaEntreContasMesmoCliente(dadosParaTransferenciaBancaria);
-		} else if (operacao
-				.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES)) {
-			statusCode = efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
-					dadosParaTransferenciaBancaria);
-		} else {
-			return "Desculpe, ocorreu algum problema e não conseguimos extrair a modalidade de transferência. "
-					+ MENSAGEM_DESCULPA_PELO_PROBLEMA_OCORRIDO;
-		}
-
-		if (statusCode != null && statusCode.is2xxSuccessful()) {
-			return "A transferência ocorreu com sucesso!";
-		} else {
-			return "Ocorreu algum problema durante a transferência. Por favor, solicite "
-					+ "novamente mais tarde que o último pedido de transferência seja processsado novamente. "
-					+ MENSAGEM_DESCULPA_PELO_PROBLEMA_OCORRIDO;
-		}
-	}
-
-	/**
-	 * Efetua transferência entre contas de cliente de instituições financeiras
-	 * diferentes.
-	 * 
-	 * @param dadosParaTransferencia
-	 * @return o código de status HTTP que foi retornado ao tentar efetuar a
-	 *         transferência via API.
-	 */
-	private HttpStatusCode efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
-			DadosParaTransferenciaBancaria dadosParaTransferencia) {
-		return this.transferenciaFeignClient.efetuaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentes(
-				(DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto) dadosParaTransferencia)
-				.getStatusCode();
-	}
-
-	/**
-	 * Efetua transferência entre contas do mesmo cliente, ou seja, da conta
-	 * corrente para a conta poupança, mas também da conta poupança para a conta
-	 * corrente.
-	 * 
-	 * @param dadosParaTransferencia
-	 * @return o código de status HTTP que foi retornado ao tentar efetuar a
-	 *         transferência via API.
-	 */
-	private HttpStatusCode efetuaTransferenciaEntreContasMesmoCliente(
-			DadosParaTransferenciaBancaria dadosParaTransferencia) {
-		return this.transferenciaFeignClient.efetuaTransferenciaEntreContasMesmoCliente(
-				(DadosParaTransferenciaEntreContasMesmoClienteDto) dadosParaTransferencia).getStatusCode();
-	}
-
-	/**
-	 * Efetua transferência entre contas de clientes diferentes desse banco.
-	 * 
-	 * @param dadosParaTransferencia
-	 * @return o código de status HTTP que foi retornado ao tentar efetuar a
-	 *         transferência via API.
-	 */
-	private HttpStatusCode efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(
-			DadosParaTransferenciaBancaria dadosParaTransferencia) {
-		return this.transferenciaFeignClient
-				.efetuaTransferenciaEntreContasClientesDiferentesDesseBanco(
-						(DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto) dadosParaTransferencia)
-				.getStatusCode();
-	}
-
-	/**
-	 * Obtem os dados necessários para a transferência bancária desejada.
-	 * 
-	 * @param conversaUsuarioComBot
-	 * @return
-	 */
-	private DadosExtraidosTransferenciaBancaria obtemDadosTransferencia(ConversationUserWithBot conversaUsuarioComBot) {
-		String promptParaIA = carregadorPrompts
-				.getPrompt(NomeArquivoPrompt.PROMPT_PARA_EXTRACAO_DADOS_NECESSARIOS_TRANSFERENCIA_BANCARIA.getNome());
-		
-
-		try {
-			String json = obtemJsonDadosExtraidosPeloModelo(conversaUsuarioComBot, promptParaIA);
-			Map<String, Object> map = objectMapper.readValue(json, new TypeReference<Map<String, Object>>() {
-			});
-
-			String tipoTransferencia = (String) map.get("tipoTransferencia");
-
-			DadosParaTransferenciaBancaria dadosTransferenciaBancaria = null;
-			if (tipoTransferencia.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE.name())) {
-				dadosTransferenciaBancaria = objectMapper.convertValue(map,
-						DadosParaTransferenciaEntreContasMesmoClienteDto.class);
-				
-				return new DadosExtraidosTransferenciaBancaria(
-						TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_MESMO_CLIENTE, dadosTransferenciaBancaria);
-			} else if (tipoTransferencia
-					.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO.name())) {
-				dadosTransferenciaBancaria = objectMapper.convertValue(map,
-						DadosParaTransferenciaEntreContasClientesDiferentesDesseBancoDto.class);
-				
-				return new DadosExtraidosTransferenciaBancaria(
-						TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_DIFERENTES_DESSE_BANCO, dadosTransferenciaBancaria);
-			} else if (tipoTransferencia
-					.equals(TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES.name())) {
-				dadosTransferenciaBancaria = objectMapper.convertValue(map,
-						DadosParaTransferenciaEntreContasClientesInstituicoesFinanceirasDiferentesDto.class);
-				
-				return new DadosExtraidosTransferenciaBancaria(
-						TipoTransferencia.TRANSFERENCIA_ENTRE_CONTAS_CLIENTES_INSTITUICOES_FINANCEIRAS_DIFERENTES, dadosTransferenciaBancaria);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-
-	/**
-	 * Obtem JSON com os dados extraidos pelo modelo de IA.
-	 * 
-	 * @param conversaUsuarioComBot
-	 * @param promptComInstrucoesExtracaoDados Prompt com as instruções para a extração dos dados.
-	 * @return JSON com os dados extraidos.
-	 * @throws Exception 
-	 */
-	private String obtemJsonDadosExtraidosPeloModelo(ConversationUserWithBot conversaUsuarioComBot, String promptComInstrucoesExtracaoDados) throws NoResponseException {
-		List<Message> historicoMensagens = conversaUsuarioComBot.copiaHistorico();
-		historicoMensagens.add(new Message(Role.SYSTEM.getTexto(), promptComInstrucoesExtracaoDados, Instant.now()));
-		return obtemRespostaModelo(historicoMensagens).replaceAll("```json", "").replaceAll("```", "");
 	}
 
 	/**
