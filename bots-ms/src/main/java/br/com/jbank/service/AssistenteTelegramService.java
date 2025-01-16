@@ -90,7 +90,7 @@ public class AssistenteTelegramService {
 			return respostaModelo;
 		}
 	}
-
+	
 	/**
 	 * Configura resposta para usuário na exchange.
 	 * 

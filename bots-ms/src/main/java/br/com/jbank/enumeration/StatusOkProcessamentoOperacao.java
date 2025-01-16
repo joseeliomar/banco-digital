@@ -5,7 +5,7 @@ public enum StatusOkProcessamentoOperacao {
 			"OK! Tudo pronto para o processamento da transferência"),
 	STATUS_PARA_CONSULTA_SALDO("OK_TUDO_PRONTO_PARA_CONSULTA_SALDO",
 			"OK! Tudo pronto para realização da consulta do saldo.");
-	
+
 	private String valor;
 	private String descricao;
 
@@ -13,10 +13,13 @@ public enum StatusOkProcessamentoOperacao {
 		this.valor = valor;
 		this.descricao = descricao;
 	}
-	
+
 	public static StatusOkProcessamentoOperacao obterItem(String valor) {
-		for (StatusOkProcessamentoOperacao item: values()) {
-			if (item.valor.equals(valor)) {
+		if (valor == null) return null;
+		
+		for (StatusOkProcessamentoOperacao item : values()) {
+			if (valor.contains(item.valor)) { // usando contains por conta de que a string de confirmação do status pode
+												// estar acompanhada de por exemplo um ponto final.
 				return item;
 			}
 		}
