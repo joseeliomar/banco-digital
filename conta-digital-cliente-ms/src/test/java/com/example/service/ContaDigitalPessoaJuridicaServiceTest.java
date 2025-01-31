@@ -87,6 +87,7 @@ class ContaDigitalPessoaJuridicaServiceTest extends ContaDigitalServiceTest {
 	
 	@BeforeEach
 	void setup() {
+		setupCompartilhado();
 		// Given
 		codigoEnderecoExistente = 1L;
 		
